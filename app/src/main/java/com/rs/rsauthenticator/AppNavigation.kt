@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
-import com.example.share.screens.HomeScreen
+import com.rs.rsauthenticator.screens.HomeScreen
+import com.rs.rsauthenticator.screens.ForgotPasswordScreen
 import com.rs.rsauthenticator.screens.LoginScreen
+import com.rs.rsauthenticator.screens.RegistrationScreen
 
 
 @Composable
@@ -27,6 +29,12 @@ fun AppNavigation(context: Context, navController: NavHostController) {
         }
         composable("login") {
             LoginScreen(context, navController)
+        }
+        composable("registration") {
+            RegistrationScreen(context, navController)
+        }
+        composable("forgot_password") {
+            ForgotPasswordScreen(context, navController)
         }
         composable("appDetails/{appName}") { backStackEntry ->
             val appName = backStackEntry.arguments?.getString("appName")

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.rs.rsauthenticator.screens.MainApp
 import com.rs.rsauthenticator.ui.theme.RsAuthenticatorTheme
 
 class MainActivity : ComponentActivity() {

@@ -1,19 +1,17 @@
-package com.rs.rsauthenticator
+package com.rs.rsauthenticator.screens
 
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
 
+import androidx.navigation.compose.rememberNavController
+import com.rs.rsauthenticator.AppNavigation
 import com.rs.rsauthenticator.components.MainSideBar
-import com.rs.rsauthenticator.ui.theme.RsAuthenticatorTheme
+
 
 @Composable
 fun MainApp(applicationContext: Context) {

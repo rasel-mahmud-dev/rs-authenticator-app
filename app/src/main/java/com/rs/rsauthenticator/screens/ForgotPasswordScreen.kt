@@ -1,24 +1,12 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,24 +14,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
-import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.form.TextInput
 
 @Composable
-fun LoginScreen(applicationContext: Context, navHostController: NavHostController) {
+fun ForgotPasswordScreen(applicationContext: Context, navHostController: NavHostController) {
 
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -66,9 +49,10 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
             navigate = {
                 navHostController.navigate("home")
             },
-            title = "Login",
+            title = "Forgot Password.",
             px = 40.dp
         )
+
 
         Column(
             modifier = Modifier
@@ -103,7 +87,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                             .align(Alignment.CenterHorizontally)
                     ) {
                         Text(
-                            text = "Login",
+                            text = "Forgot password.",
                             color = Color.White,
                             fontSize = 40.sp,
                             style = MaterialTheme.typography.labelLarge
@@ -166,21 +150,17 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                                 color = Color.Blue,
                                 fontSize = 14.sp,
                                 modifier = Modifier
-                                    .clickable {
-                                        navHostController.navigate("registration")
-                                    }
+                                    .clickable { /* Handle Create Account */ }
                             )
 
                         }
 
                         Text(
                             text = "Forgot Password?",
-                            color = Color.White,
+                            color = Color.Red,
                             fontSize = 14.sp,
                             modifier = Modifier
-                                .clickable {
-                                    navHostController.navigate("forgot_password")
-                                }
+                                .clickable { /* Handle Forgot Password */ }
                         )
                     }
 
@@ -188,7 +168,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                         modifier = Modifier
                             .padding(0.dp, 20.dp)
                             .align(Alignment.CenterHorizontally),
-                        label = "Submit",
+                        label = "Login",
                         onClick = {},
                         icon = null,
                         px = 80.dp,
