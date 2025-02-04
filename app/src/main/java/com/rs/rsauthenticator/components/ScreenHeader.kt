@@ -2,6 +2,7 @@ package com.rs.rsauthenticator.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,7 +37,7 @@ fun ScreenHeader(
         .then(if (w != null) Modifier.width(w) else Modifier)
         .then(if (h != null) Modifier.height(h) else Modifier)
 
-
+    
     Row(
         modifier = buttonModifier
             .fillMaxWidth()

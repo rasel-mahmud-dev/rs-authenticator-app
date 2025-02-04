@@ -73,5 +73,14 @@ dependencies {
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.6")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("androidx.sqlite:sqlite:2.4.0")
-    implementation("com.google.accompanist:accompanist-coil:0.15.0")
+
+    // K-tor
+    val ktorVersion = "2.3.12"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
 }

@@ -1,6 +1,7 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,7 +35,9 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
     var firstName by remember { mutableStateOf(TextFieldValue("")) }
 
 
+    fun handleRegistration() {
 
+    }
 
     Box(
         modifier = Modifier
@@ -57,7 +60,6 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
         )
 
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,9 +73,6 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
-//                    .padding(horizontal = 16.dp),
-//                shape = RoundedCornerShape(16.dp),
-//                colors = CardDefaults.cardColors(containerColor = Color(0x16FFFFFF))
                 colors = CardDefaults.cardColors(
                     containerColor = Color.Transparent
                 )
@@ -119,24 +118,9 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                         onChange = {
                             firstName = it
                         },
-                        label = "firstName",
+                        label = "First Name",
                         keyboardType = KeyboardType.Text
                     )
-                    Spacer(Modifier.height(1.dp))
-
-
-                    TextInput(
-                        value = phone,
-                        placeholder = "Enter phone.",
-                        onChange = {
-                            phone = it
-                        },
-                        label = "Phone",
-                        keyboardType = KeyboardType.Phone
-                    )
-                    Spacer(Modifier.height(1.dp))
-
-
 
                     TextInput(
                         value = email,
@@ -147,7 +131,16 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                         label = "Email",
                         keyboardType = KeyboardType.Email
                     )
-                    Spacer(Modifier.height(1.dp))
+
+                    TextInput(
+                        value = phone,
+                        placeholder = "Enter phone.",
+                        onChange = {
+                            phone = it
+                        },
+                        label = "Phone",
+                        keyboardType = KeyboardType.Phone
+                    )
 
                     TextInput(
                         value = password,
@@ -158,6 +151,7 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                         label = "Password",
                         keyboardType = KeyboardType.Password
                     )
+
 
                     Row(
                         modifier = Modifier
@@ -190,7 +184,9 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                             .padding(0.dp, 20.dp)
                             .align(Alignment.CenterHorizontally),
                         label = "Submit",
-                        onClick = {},
+                        onClick = {
+                            handleRegistration()
+                        },
                         icon = null,
                         px = 80.dp,
                         py = 14.dp,

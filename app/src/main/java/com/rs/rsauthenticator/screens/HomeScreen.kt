@@ -87,17 +87,19 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
                     ) {
                         Column(
                             modifier = Modifier
-                                .width(130.dp)
-                                .height(130.dp),
+                                .width(160.dp)
+                                .height(160.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            CustomText(icon = it.iconName, fs = 30.sp, color = Color(0xFFF44336))
+                            CustomText(icon = it.iconName, fs = 25.sp, color = Color(0xFFF44336))
                             Spacer(Modifier.height(8.dp))
-                            Text(
-                                text = it.name, textAlign = TextAlign.Center, color = Color(
+                            CustomText(
+                                text = it.name, textAlign = TextAlign.Center,
+                                color = Color(
                                     0xFFEFEFEF
-                                )
+                                ),
+                                fs = 12.sp
                             )
                         }
                     }

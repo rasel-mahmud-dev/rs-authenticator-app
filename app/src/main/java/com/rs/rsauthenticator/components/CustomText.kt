@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ import com.rs.rsauthenticator.ui.theme.fontAwesome
 @Composable
 fun CustomText(
     text: String? = null,
+    textAlign: TextAlign? = null,
     color: Color? = null,
     style: TextStyle? = null,
     fontFamily: FontFamily? = null,
@@ -64,6 +66,7 @@ fun CustomText(
         text = icon ?: text ?: "",
         color = color ?: Color.White,
         fontFamily = fontM,
+        textAlign = textAlign ?: TextAlign.Start,
         fontWeight = fontWeight,
         fontSize = fs ?: 16.sp,
         style = style ?: MaterialTheme.typography.bodyLarge,
