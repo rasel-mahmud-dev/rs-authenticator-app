@@ -3,11 +3,11 @@ package com.rs.rsauthenticator
 import android.content.Context
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rs.rsauthenticator.components.ProtectedRoute
+import com.rs.rsauthenticator.screens.AppsScreen
 
 import com.rs.rsauthenticator.screens.HomeScreen
 import com.rs.rsauthenticator.screens.ForgotPasswordScreen
@@ -23,11 +23,23 @@ fun AppNavigation(context: Context, navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = if (isAuthenticated) "home" else "login"
+//        startDestination = if (isAuthenticated) "home" else "login"
+        startDestination = "apps"
     ) {
+
         composable("home") {
             if (isAuthenticated) {
                 HomeScreen(context, navController)
+            } else {
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }
+        }
+
+        composable("apps") {
+            if (isAuthenticated) {
+                AppsScreen(context, navController)
             } else {
                 navController.navigate("login") {
                     popUpTo("home") { inclusive = true }
@@ -69,5 +81,4 @@ fun AppNavigation(context: Context, navController: NavHostController) {
             }
         }
     }
-
 }

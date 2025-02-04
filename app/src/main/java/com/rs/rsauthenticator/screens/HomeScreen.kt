@@ -40,11 +40,9 @@ var items = listOf(
     MenuItem("Apps", "\uf3e0", "apps")               // Grid Layout / Apps Icon
 )
 
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(applicationContext: Context, navController: NavHostController) {
-
 
     Box(
         modifier = Modifier
@@ -54,8 +52,6 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
                     colors = listOf(Color(0xFFEF4720), Color(0xFF89A5CE))
                 )
             )
-            .padding(16.dp)
-
     ) {
 
 

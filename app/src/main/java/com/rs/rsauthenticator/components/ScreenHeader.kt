@@ -2,8 +2,6 @@ package com.rs.rsauthenticator.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -27,7 +25,7 @@ fun ScreenHeader(
     w: Dp? = null,
     py: Dp? = null,
     radius: Dp? = null,
-    bgColor: Color? = Color.Transparent,
+    bgColor: Color? = null,
     navigate: () -> Unit,
     title: String
 
@@ -59,6 +57,6 @@ fun ScreenHeader(
             CustomText(icon = "\uf053", fs = 16.sp)
         }
 
-        CustomText(text = title, fontWeight = FontWeight.Bold, fs = 24.sp)
+        CustomText(text = title, fontWeight = FontWeight.Medium, fs = 20.sp)
     }
 }
