@@ -37,107 +37,87 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
     }
 
 
-    Box(
-
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFEF4720), Color(0xFF89A5CE))
-                )
-            )
+    RsColumn(
+        modifier = Modifier.fillMaxSize(),
+        bgColor = (Color(0xFF1A1A1A)),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
 
 
-        RsColumn {
+        Box(
+            modifier = Modifier
+                .weight(1F)
+                .padding(16.dp),
+        ) {
+            if (activeTab == "tokens") {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFF1A1A1A))
-            ) {
+                RsColumn(modifier = Modifier) {
 
-                if (activeTab == "tokens") {
                     RsColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(vertical = 16.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
-                        Column(
+                        Image(
+                            painter = rememberAsyncImagePainter("https://avatars.githubusercontent.com/u/99707905?v=4"),
+                            contentDescription = "Rs Authenticator Logo",
                             modifier = Modifier
-                                .padding(0.dp, 20.dp, 0.dp, 40.dp)
-                        ) {
-
-                            RsColumn(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Image(
-                                    painter = rememberAsyncImagePainter("https://avatars.githubusercontent.com/u/99707905?v=4"),
-                                    contentDescription = "Rs Authenticator Logo",
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .clip(CircleShape)
-                                        .align(Alignment.CenterHorizontally),
-                                    contentScale = ContentScale.Crop,
-                                )
-                            }
-
-                            RsColumn(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                CustomText(
-                                    modifier = Modifier,
-                                    text = "Rs Authenticator",
-                                    fs = 14.sp,
-                                    pt = 5.dp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                            }
-
-                            RsColumn(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                CustomText(
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier,
-                                    text = "Rs Authenticator Authenticator  Authenticator  Authenticator sdfsd Authenticator  sd Authenticator",
-                                    fs = 14.sp,
-                                    pt = 5.dp,
-                                    fontWeight = FontWeight.Normal,
-                                    color = Color.White
-                                )
-                            }
-                        }
-
-                        PrimaryButton(
-                            onClick = {},
-                            modifier = Modifier.padding(3.dp),
-                            label = "sdf",
-                            icon = ""
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .align(Alignment.CenterHorizontally),
+                            contentScale = ContentScale.Crop,
                         )
-
-
                     }
 
-                } else {
+                    RsColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CustomText(
+                            modifier = Modifier,
+                            text = "Rs Authenticator",
+                            fs = 14.sp,
+                            pt = 5.dp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
 
-                    SettingScreen(applicationContext, navController)
+                    RsColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CustomText(
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier,
+                            text = "Rs Authenticator Authenticator  Authenticator  Authenticator sdfsd Authenticator  sd Authenticator",
+                            fs = 14.sp,
+                            pt = 5.dp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White
+                        )
+                    }
                 }
 
-
-                RsColumn(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    HomeBottomNav(activeTab = activeTab, onChangeTab = { activeTab = it })
+                RsColumn(Modifier.align(Alignment.BottomEnd)) {
+                    PrimaryButton(
+                        onClick = {},
+                        modifier = Modifier.padding(3.dp),
+                        label = "New Connection",
+                        icon = ""
+                    )
                 }
-
-
+            } else {
+                SettingScreen(applicationContext, navController)
             }
         }
+
+
+        RsColumn(modifier = Modifier) {
+            HomeBottomNav(activeTab = activeTab, onChangeTab = { activeTab = it })
+        }
+
     }
+
 }
+
