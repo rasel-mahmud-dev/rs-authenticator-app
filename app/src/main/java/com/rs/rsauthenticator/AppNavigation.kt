@@ -8,9 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rs.rsauthenticator.components.ProtectedRoute
 import com.rs.rsauthenticator.screens.AppsScreen
+import com.rs.rsauthenticator.screens.ConnectAppScreen
 
 import com.rs.rsauthenticator.screens.HomeScreen
 import com.rs.rsauthenticator.screens.ForgotPasswordScreen
+import com.rs.rsauthenticator.screens.HomeScreen2
 import com.rs.rsauthenticator.screens.LoginScreen
 import com.rs.rsauthenticator.screens.RegistrationScreen
 import com.rs.rsauthenticator.state.AuthState
@@ -24,12 +26,12 @@ fun AppNavigation(context: Context, navController: NavHostController) {
     NavHost(
         navController = navController,
 //        startDestination = if (isAuthenticated) "home" else "login"
-        startDestination = "apps"
+        startDestination = "home"
     ) {
 
         composable("home") {
             if (isAuthenticated) {
-                HomeScreen(context, navController)
+                HomeScreen2(context, navController)
             } else {
                 navController.navigate("login") {
                     popUpTo("home") { inclusive = true }
@@ -40,6 +42,25 @@ fun AppNavigation(context: Context, navController: NavHostController) {
         composable("apps") {
             if (isAuthenticated) {
                 AppsScreen(context, navController)
+            } else {
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }
+        }
+
+        composable("connect_app") {
+            if (isAuthenticated) {
+                ConnectAppScreen(context, navController)
+            } else {
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }
+        }
+        composable("capture_qr") {
+            if (isAuthenticated) {
+                ConnectAppScreen(context, navController)
             } else {
                 navController.navigate("login") {
                     popUpTo("home") { inclusive = true }

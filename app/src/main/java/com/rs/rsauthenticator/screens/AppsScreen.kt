@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
+import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.ToastState
@@ -153,7 +154,6 @@ fun AppsScreen(applicationContext: Context, navHostController: NavHostController
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-
             LazyColumn(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp)) {
                 items(items) { item ->
                     Column(
@@ -202,6 +202,19 @@ fun AppsScreen(applicationContext: Context, navHostController: NavHostController
 
 
             }
+        }
+
+        RsIconButton(modifier = Modifier
+            .zIndex(300F)
+            .align(Alignment.BottomEnd)
+            .padding(20.dp),
+            w = 50.dp,
+            h = 50.dp,
+            bgColor = Color(0x54FFFFFF),
+            onClick = {
+                navHostController.navigate("connect_app")
+            }) {
+            CustomText(icon = "\uf055", fs = 26.sp)
         }
     }
 }
