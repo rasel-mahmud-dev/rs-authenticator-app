@@ -73,10 +73,6 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                     isSuccess = true,
                     message = "Successfully logged user."
                 )
-                coroutineScope.launch {
-                    delay(5000)
-                    toastState = toastState.copy(isOpen = false)
-                }
 
 
                 AuthState.setAuthInfo(
@@ -88,14 +84,25 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                         token = res.data.session.token,
                     )
                 )
+                navHostController.navigate("home")
             }
 
         } catch (ex: Exception) {
             println(ex)
+
+            toastState = toastState.copy(
+                isOpen = true,
+                isSuccess = false,
+                message = ex.message
+            )
+
+        } finally {
+            coroutineScope.launch {
+                delay(5000)
+                toastState = toastState.copy(isOpen = false)
+            }
         }
     }
-
-    println(AuthState.auth)
 
     Box(
         modifier = Modifier

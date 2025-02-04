@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 
 
-data class ToastState(var isOpen: Boolean, var isSuccess: Boolean, var message: String)
+data class ToastState(var isOpen: Boolean, var isSuccess: Boolean, var message: String?)
 
 
 @Composable
