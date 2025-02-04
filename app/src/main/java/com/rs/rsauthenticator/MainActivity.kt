@@ -16,12 +16,16 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.rs.rsauthenticator.screens.MainApp
+import com.rs.rsauthenticator.state.AuthState
 import com.rs.rsauthenticator.ui.theme.RsAuthenticatorTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        AuthState.initialize(this)
+
         setContent {
             RsAuthenticatorTheme {
 
@@ -34,8 +38,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    innerPadding
-                    Column(Modifier.padding(0.dp)) {
+                    Column(Modifier.padding(innerPadding)) {
                         MainApp(applicationContext)
                     }
                 }

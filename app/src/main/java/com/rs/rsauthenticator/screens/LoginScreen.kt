@@ -38,7 +38,10 @@ import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
+import com.rs.rsauthenticator.database.AuthDatabase
 import com.rs.rsauthenticator.http.services.ApiService
+import com.rs.rsauthenticator.state.Auth
+import com.rs.rsauthenticator.state.AuthState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -47,6 +50,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
 
     var email by remember { mutableStateOf(TextFieldValue("rasel@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
+
 
     var toastState by remember {
         mutableStateOf(
@@ -73,12 +77,25 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                     delay(5000)
                     toastState = toastState.copy(isOpen = false)
                 }
+
+
+                AuthState.setAuthInfo(
+                    applicationContext,
+                    Auth(
+                        email = res.data.user.email,
+                        _id = res.data.user._id,
+                        username = res.data.user.username,
+                        token = res.data.session.token,
+                    )
+                )
             }
 
         } catch (ex: Exception) {
             println(ex)
         }
     }
+
+    println(AuthState.auth)
 
     Box(
         modifier = Modifier
@@ -101,11 +118,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
             px = 40.dp
         )
 
-
-        Toast(
-            modifier = Modifier,
-            toastState = toastState,
-        )
+        Toast(modifier = Modifier, toastState = toastState)
 
         Column(
             modifier = Modifier

@@ -139,10 +139,6 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
             text = "Rs Authenticator: v:0.0.1",
             fs = 10.sp,
             color = Color.White,
-
         )
-
-
-        Text("dfsdf")
     }
 }
