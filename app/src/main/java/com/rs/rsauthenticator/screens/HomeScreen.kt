@@ -2,28 +2,31 @@ package com.rs.rsauthenticator.screens
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.components.CustomText
-import com.rs.rsauthenticator.components.FlexBox
-
 
 data class MenuItem(val name: String, val iconName: String, val route: String)
 
@@ -31,7 +34,11 @@ var items = listOf(
     MenuItem("Home", "\uf015", "home"),                // Home Icon
     MenuItem("Registration", "\uf234", "registration"), // User Plus Icon
     MenuItem("Login", "\uf2f6", "login"),              // Sign In Icon
+    MenuItem("Login", "\uf2f6", "login"),              // Sign In Icon
     MenuItem("Forgot Password", "\uf084", "forgot_password"), // Key Icon
+    MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
+    MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
+    MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
     MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
     MenuItem("Apps", "\uf3e0", "apps")               // Grid Layout / Apps Icon
 )
@@ -54,14 +61,37 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
 
     ) {
 
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
+
+            Column(
+                modifier = Modifier
+                    .padding(0.dp, 40.dp)
+            ) {
+                Image(
+                    painter = rememberAsyncImagePainter("https://avatars.githubusercontent.com/u/99707905?v=4"),
+                    contentDescription = "Rs Authenticator Logo",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .align(Alignment.CenterHorizontally),
+                    contentScale = ContentScale.Crop,
+                )
+                CustomText(
+                    modifier = Modifier,
+                    text = "Rs Authenticator",
+                    fs = 14.sp,
+                    pt = 5.dp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
 
 
             FlowRow(

@@ -69,7 +69,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+//    implementation("io.coil-kt:coil-compose:2.4.0")
+
+//    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+
+    implementation("io.coil-kt:coil-compose:2.4.0") // If using Coil v2
+
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.6")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("androidx.sqlite:sqlite:2.4.0")
@@ -83,4 +88,5 @@ dependencies {
     implementation("io.ktor:ktor-client-android:$ktorVersion")
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
+
 }
