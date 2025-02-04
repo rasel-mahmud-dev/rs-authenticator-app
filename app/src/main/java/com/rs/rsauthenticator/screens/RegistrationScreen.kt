@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,18 +26,26 @@ import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.form.TextInput
+import com.rs.rsauthenticator.http.services.ApiService
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegistrationScreen(applicationContext: Context, navHostController: NavHostController) {
 
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
-    var phone by remember { mutableStateOf(TextFieldValue("")) }
-    var firstName by remember { mutableStateOf(TextFieldValue("")) }
+    var email by remember { mutableStateOf(TextFieldValue("rasel.mahmud.dev@gmail.com")) }
+    var password by remember { mutableStateOf(TextFieldValue("12345")) }
+    var phone by remember { mutableStateOf(TextFieldValue("01785513737")) }
+    var firstName by remember { mutableStateOf(TextFieldValue("Rasel")) }
 
+    val coroutineScope = rememberCoroutineScope()
 
-    fun handleRegistration() {
-
+    suspend fun handleRegistration() {
+        try {
+            val res = ApiService.register(firstName.text, email.text, password.text)
+            println(res)
+        } catch (ex: Exception) {
+            println(ex)
+        }
     }
 
     Box(
@@ -185,7 +194,9 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                             .align(Alignment.CenterHorizontally),
                         label = "Submit",
                         onClick = {
-                            handleRegistration()
+                            coroutineScope.launch {
+                                handleRegistration()
+                            }
                         },
                         icon = null,
                         px = 80.dp,

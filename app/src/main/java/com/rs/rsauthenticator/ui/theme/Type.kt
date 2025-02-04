@@ -37,5 +37,6 @@ val Typography = Typography(
 
 
 val fontAwesome = FontFamily(
-    Font(R.font.fa_regular_400)
+    Font(R.font.fa_regular_400),
+    Font(R.font.fa_thin_100)
 )

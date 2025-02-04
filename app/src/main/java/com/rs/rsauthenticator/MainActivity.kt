@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 SideEffect {
                     window.statusBarColor = statusBarColor.toArgb()
                     val insetsController = WindowCompat.getInsetsController(window, view)
-                    insetsController.isAppearanceLightStatusBars = true
+                    insetsController.isAppearanceLightStatusBars = false
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

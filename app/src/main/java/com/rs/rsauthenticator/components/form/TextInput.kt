@@ -72,7 +72,7 @@ fun TextInput(
     // Animate border color
     val borderColor by animateColorAsState(
         targetValue = if (isFocused) Color(0xFFFFA69F) else Color.Transparent,
-        animationSpec = tween(durationMillis = 300), label = ""
+        animationSpec = tween(durationMillis = 300)
     )
 
     val borderWidth by animateDpAsState(

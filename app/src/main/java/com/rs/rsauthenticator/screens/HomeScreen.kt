@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +35,7 @@ var items = listOf(
     MenuItem("Home", "\uf015", "home"),                // Home Icon
     MenuItem("Registration", "\uf234", "registration"), // User Plus Icon
     MenuItem("Login", "\uf2f6", "login"),              // Sign In Icon
-    MenuItem("Login", "\uf2f6", "login"),              // Sign In Icon
     MenuItem("Forgot Password", "\uf084", "forgot_password"), // Key Icon
-    MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
-    MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
-    MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
     MenuItem("About", "\uf05a", "about"),             // Info Circle Icon
     MenuItem("Apps", "\uf3e0", "apps")               // Grid Layout / Apps Icon
 )
@@ -72,7 +69,7 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
 
             Column(
                 modifier = Modifier
-                    .padding(0.dp, 40.dp)
+                    .padding(0.dp, 20.dp, 0.dp, 40.dp)
             ) {
                 Image(
                     painter = rememberAsyncImagePainter("https://avatars.githubusercontent.com/u/99707905?v=4"),
@@ -105,7 +102,7 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
                         modifier = Modifier
                             .background(
                                 Brush.verticalGradient(
-                                    colors = listOf(Color(0xFFD0D0D0), Color(0xFF89A5CE))
+                                    colors = listOf(Color(0x36D3E9FF), Color(0x4BFFFFFF))
                                 ),
                                 shape = RoundedCornerShape(12.dp)
                             )
@@ -141,7 +138,11 @@ fun HomeScreen(applicationContext: Context, navController: NavHostController) {
             pb = 40.dp,
             text = "Rs Authenticator: v:0.0.1",
             fs = 10.sp,
-            color = Color.White
+            color = Color.White,
+
         )
+
+
+        Text("dfsdf")
     }
 }

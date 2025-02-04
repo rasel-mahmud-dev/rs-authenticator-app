@@ -1,7 +1,6 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,31 +22,63 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
-import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.ScreenHeader
+import com.rs.rsauthenticator.components.Toast
+import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
+import com.rs.rsauthenticator.http.services.ApiService
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(applicationContext: Context, navHostController: NavHostController) {
 
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
+    var email by remember { mutableStateOf(TextFieldValue("rasel@gmail.com")) }
+    var password by remember { mutableStateOf(TextFieldValue("12345")) }
 
+    var toastState by remember {
+        mutableStateOf(
+            ToastState(
+                isOpen = false,
+                isSuccess = false,
+                message = ""
+            )
+        )
+    }
+    val coroutineScope = rememberCoroutineScope()
+
+    suspend fun handleLogin() {
+        try {
+            val res = ApiService.login(email.text, password.text)
+            val userId = res?.data?.user?._id
+            if (!userId.isNullOrEmpty()) {
+                toastState = toastState.copy(
+                    isOpen = true,
+                    isSuccess = true,
+                    message = "Successfully logged user."
+                )
+                coroutineScope.launch {
+                    delay(5000)
+                    toastState = toastState.copy(isOpen = false)
+                }
+            }
+
+        } catch (ex: Exception) {
+            println(ex)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -68,6 +99,12 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
             },
             title = "Login",
             px = 40.dp
+        )
+
+
+        Toast(
+            modifier = Modifier,
+            toastState = toastState,
         )
 
         Column(
@@ -189,7 +226,12 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                             .padding(0.dp, 20.dp)
                             .align(Alignment.CenterHorizontally),
                         label = "Submit",
-                        onClick = {},
+                        onClick = {
+                            coroutineScope.launch {
+                                handleLogin()
+                            }
+
+                        },
                         icon = null,
                         px = 80.dp,
                         py = 14.dp,
