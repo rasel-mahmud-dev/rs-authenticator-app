@@ -9,13 +9,16 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -38,8 +42,8 @@ import androidx.navigation.NavHostController
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.rs.rsauthenticator.components.CustomText
+import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsIconButton
-
 
 
 @OptIn(ExperimentalGetImage::class)
@@ -53,7 +57,7 @@ fun processImageProxy(imageProxy: ImageProxy, onQrCodeScanned: (String) -> Unit)
             }
         }
         .addOnFailureListener {
-            Log.e("QRScanner", "Scanning failed: ${it.message}")
+//            Log.e("QRScanner", "Scanning failed: ${it.message}")
         }
         .addOnCompleteListener {
             imageProxy.close()
@@ -62,7 +66,11 @@ fun processImageProxy(imageProxy: ImageProxy, onQrCodeScanned: (String) -> Unit)
 
 
 @Composable
-fun ScanQRCodeScreen(navController: NavHostController, onQRCodeScanned: (String) -> Unit) {
+fun ScanQRCodeScreen(
+    navController: NavHostController,
+    onQRCodeScanned: (String) -> Unit,
+    onClose: () -> Unit
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
@@ -97,62 +105,80 @@ fun ScanQRCodeScreen(navController: NavHostController, onQRCodeScanned: (String)
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    RsColumn(Modifier.padding(16.dp, 0.dp)) {
 
-
-        Row(
-            modifier = Modifier
-                .zIndex(200F)
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        RsColumn(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            pb = 20.dp,
         ) {
-
-            RsIconButton(
-                modifier = Modifier,
-                onClick = {},
-                bgColor = Color(0xFFF44336),
-                w = 32.dp,
-                h = 32.dp
-            ) {
-                CustomText(icon = "\uf00d")
-            }
-
             CustomText(
                 textAlign = TextAlign.Center,
                 text = "Scan Code",
                 fontWeight = FontWeight.SemiBold
             )
+        }
 
-            RsIconButton(
-                modifier = Modifier.zIndex(200F),
-                onClick = {},
-                bgColor = Color(0xFFF44336),
-                w = 32.dp,
-                h = 32.dp
+
+        Box(modifier = Modifier) {
+            Row(
+                modifier = Modifier
+                    .zIndex(200F)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                CustomText(icon = "\ue0b8")
+
+                RsIconButton(
+                    modifier = Modifier,
+                    onClick = { onClose() },
+                    bgColor = Color(0xFFF44336),
+                    w = 32.dp,
+                    h = 32.dp
+                ) {
+                    CustomText(icon = "\uf00d")
+                }
+
+
+                RsIconButton(
+                    modifier = Modifier.zIndex(200F),
+                    onClick = {},
+                    bgColor = Color(0xFFF44336),
+                    w = 32.dp,
+                    h = 32.dp
+                ) {
+                    CustomText(icon = "\ue0b8")
+                }
+            }
+
+            RsColumn(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                h = 250.dp,
+            ) {
+
+                AndroidView(
+                    { previewView  },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp) // Restrict height inside bottom sheet
+                )
+
             }
         }
 
-        Column(
-            modifier = Modifier
-                .zIndex(200F)
-                .align(Alignment.BottomCenter)
-                .padding(10.dp)
+        RsColumn(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            py = 20.dp
         ) {
             CustomText(
                 fs = 14.sp,
-                textAlign = TextAlign.Center,
                 text = "Scanned by Rs authenticator.",
                 fontWeight = FontWeight.Normal,
                 color = Color(0xFFA6A6A6)
             )
-        }
-
-        Column(modifier = Modifier) {
-            AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
         }
     }
 }

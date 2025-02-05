@@ -1,17 +1,22 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -23,14 +28,23 @@ import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.HomeBottomNav
 import com.rs.rsauthenticator.components.PrimaryButton
+import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.SettingScreen
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
 
     var activeTab by remember { mutableStateOf("tokens") }
+
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    var scope = rememberCoroutineScope()
+
 
     LaunchedEffect(Unit) {
         activeTab = "tokens"
@@ -101,7 +115,7 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
 
                 RsColumn(Modifier.align(Alignment.BottomEnd)) {
                     PrimaryButton(
-                        onClick = {},
+                        onClick = { showBottomSheet = true },
                         modifier = Modifier.padding(3.dp),
                         label = "New Connection",
                         icon = ""
@@ -117,7 +131,45 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
             HomeBottomNav(activeTab = activeTab, onChangeTab = { activeTab = it })
         }
 
-    }
 
+        if (showBottomSheet) {
+            RsBottomSheet(
+                sheetState = sheetState,
+                onClose = { showBottomSheet = false },
+                backgroundColor = Color(0xFF252633),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp) // Ensure this height limits the content inside
+                ) {
+                    RequestCameraPermission(onPermissionGranted = {})
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(16.dp)) // Ensures proper clipping
+                    ) {
+
+                    ScanQRCodeScreen(navController,
+                        onQRCodeScanned = {
+                            Log.d("donw", "sssssssssssss")
+                            scope.launch {
+                                sheetState.hide()
+                                showBottomSheet = false
+                            }
+                        },
+                        onClose = {
+                            scope.launch {
+                                sheetState.hide()
+                                showBottomSheet = false
+                            }
+                        }
+                    )
+                }
+                }
+            }
+        }
+    }
 }
 

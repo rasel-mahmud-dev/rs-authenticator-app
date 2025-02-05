@@ -10,8 +10,26 @@ fun ProtectedRoute(
     navController: NavHostController,
     content: @Composable (() -> Unit)? = null,
 ) {
+    if (!isAuthenticated) {
+        LaunchedEffect(isAuthenticated) {
+            navController.navigate("login") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    } else {
+        content?.invoke()
+    }
+}
+
+
+@Composable
+fun AuthExcludeRoute(
+    isAuthenticated: Boolean,
+    navController: NavHostController,
+    content: @Composable (() -> Unit)? = null,
+) {
     if (isAuthenticated) {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(isAuthenticated) {
             navController.navigate("home") {
                 popUpTo("login") { inclusive = true }
             }

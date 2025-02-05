@@ -44,7 +44,7 @@ fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
 @Composable
 fun ConnectAppScreen(applicationContext: Context, navController: NavHostController) {
 
-    RequestCameraPermission(onPermissionGranted = {})
+
 
     var isScanned by remember { mutableStateOf(false) }
     var code by remember { mutableStateOf("") }
