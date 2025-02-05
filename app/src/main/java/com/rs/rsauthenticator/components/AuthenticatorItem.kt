@@ -51,7 +51,7 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
             if (remainingTime == 0f) {
                 val newOtp = generateTOTP(entry.secret)
                 otpCode = newOtp
-                remainingTime = 30f
+                remainingTime = 30f  // Reset to 30.0f when the OTP expires
 
                 scope.launch {
                     totpDatabaseHelper.updateTotpEntry(entry.id, newOtp, 30f)
