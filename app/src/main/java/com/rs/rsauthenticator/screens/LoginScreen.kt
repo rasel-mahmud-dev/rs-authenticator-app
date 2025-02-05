@@ -38,7 +38,6 @@ import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
-import com.rs.rsauthenticator.database.AuthDatabase
 import com.rs.rsauthenticator.http.services.ApiService
 import com.rs.rsauthenticator.state.Auth
 import com.rs.rsauthenticator.state.AuthState

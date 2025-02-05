@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rs.rsauthenticator.ui.theme.fontAwesome
@@ -24,6 +25,7 @@ fun PrimaryButton(
     label: String,
     icon: String?,
     px: Dp? = null,
+    iconSize: TextUnit =  20.sp,
     py: Dp? = null,
     radius: Dp? = null
 ) {
@@ -48,7 +50,7 @@ fun PrimaryButton(
                 modifier = Modifier,
                 text = icon,
                 fontFamily = fontAwesome,
-                fontSize = 20.sp,
+                fontSize = iconSize,
                 color = Color.White
             )
             Spacer(Modifier.width(8.dp))
