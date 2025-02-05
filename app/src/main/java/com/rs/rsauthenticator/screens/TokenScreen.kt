@@ -1,17 +1,37 @@
 package com.rs.rsauthenticator.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -93,28 +113,48 @@ fun TokenScreen(navController: NavHostController) {
                 }
 
             }
-
-//            RsRow {
-//                CustomText("sasdddddddddddddddddf")
-//            }
         }
 
         RsColumn(
             modifier = Modifier.fillMaxWidth(),
         ) {
             entries.forEach {
-                AuthenticatorItem(it)
+                SwipeItem(it.id) {
+                    AuthenticatorItem(it)
+                }
             }
         }
-
-
-//        LazyColumn(
-//            modifier = Modifier.fillMaxSize()
-//        ) {
-//            items(entries) { entry ->
-//
-//            }
-//        }
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeItem(id: String, content: @Composable RowScope.() -> Unit) {
+    val context = LocalContext.current
+    val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
+
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { direction ->
+            when (direction) {
+                SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> {
+                    AccountState.removeItem(dbHelper, id)
+                    Toast.makeText(context, "Account deleted", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                SwipeToDismissBoxValue.Settled -> false
+            }
+        },
+        positionalThreshold = { it * 0.25f }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        modifier = Modifier,
+        backgroundContent = {},
+        content = {
+            content()
+        }
+    )
+}

@@ -1,11 +1,9 @@
 package com.rs.rsauthenticator.state
 
-import android.content.Context
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
-import com.rs.rsauthenticator.screens.generateTOTP
+import com.rs.rsauthenticator.utils.generateTOTP
 
 object AccountState {
     private var _items by mutableStateOf<List<AuthenticatorEntry>>(emptyList())
@@ -19,14 +17,21 @@ object AccountState {
                 otpCode = generateTOTP(account.secret),
                 remainingTime = 30f, // getRemainingTime()
                 secret = account.secret,
-                id = account.accountName,
+                id = account.id,
                 logoUrl = account.logoUrl ?: ""
             )
         }
     }
 
     fun insertItem(dbHelper: TotpDatabaseHelper, entry: AuthenticatorEntry) {
-//        dbHelper.insertTotpEntry(entry)
+
+//        val newOtp = generateTOTP(entry.secret)
+//        dbHelper.insertTotpEntry(entry, newOtp, 30F)
         _items = _items + entry
+    }
+
+    fun removeItem(dbHelper: TotpDatabaseHelper, id: String) {
+        dbHelper.deleteTotpEntry(id)
+        _items = _items.filterNot { it.id == id }
     }
 }

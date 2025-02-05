@@ -25,7 +25,7 @@ fun HomeBottomNav(activeTab: String, onChangeTab: (t: String) -> Unit) {
 
         RsRow(
             modifier = Modifier.fillMaxWidth(),
-            py = 16.dp,
+            py = 8.dp,
             horizontalArrangement = Arrangement.Absolute.SpaceAround
         ) {
 
@@ -55,7 +55,7 @@ fun HomeBottomNav(activeTab: String, onChangeTab: (t: String) -> Unit) {
                         0xFF6B6B6B
                     ),
                     fontWeight = FontWeight.Medium,
-                    pt = 3.dp
+                    pt = 1.dp
                 )
 
             }
@@ -88,7 +88,7 @@ fun HomeBottomNav(activeTab: String, onChangeTab: (t: String) -> Unit) {
                         0xFF6B6B6B
                     ),
                     fontWeight = FontWeight.Medium,
-                    pt = 3.dp
+                    pt = 1.dp
                 )
 
             }

@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 import android.database.Cursor
+import android.util.Log
 import com.rs.rsauthenticator.dto.TotpUriData
-
 
 
 class TotpDatabaseHelper private constructor(context: Context) :
@@ -75,7 +75,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
     }
 
 
-    fun insertTotpEntry(totp: TotpUriData, newOtp: String, remainingTime: Float): Long {
+    fun insertTotpEntry(totp: TotpUriData, newOtp: String, remainingTime: Float): String {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
             put(COLUMN_ACCOUNT_NAME, totp.accountName)
@@ -88,7 +88,11 @@ class TotpDatabaseHelper private constructor(context: Context) :
             put(COLUMN_NEW_OTP, newOtp) // Save the new OTP
             put(COLUMN_REMAINING_TIME, remainingTime) // Save the remaining time
         }
-        return db.insert(TABLE_TOTP, null, contentValues)
+        val rowId = db.insert(TABLE_TOTP, null, contentValues)
+        if (rowId == -1L) {
+            Log.e("Database", "Error inserting row into $TABLE_TOTP")
+        }
+        return rowId.toString()
     }
 
     fun updateTotpEntry(id: String, newOtp: String, remainingTime: Float): Int {
@@ -118,8 +122,10 @@ class TotpDatabaseHelper private constructor(context: Context) :
                 val digits = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DIGITS))
                 val period = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERIOD))
                 val logoUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGO_URL))
-                val newOtp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NEW_OTP)) // Retrieve the new OTP
-                val remainingTime = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_REMAINING_TIME)) // Retrieve the remaining time
+                val newOtp =
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NEW_OTP)) // Retrieve the new OTP
+                val remainingTime =
+                    cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_REMAINING_TIME)) // Retrieve the remaining time
 
                 totpList.add(
                     TotpUriData(
@@ -143,8 +149,8 @@ class TotpDatabaseHelper private constructor(context: Context) :
         return totpList
     }
 
-    fun deleteTotpEntry(accountName: String) {
+    fun deleteTotpEntry(id: String) {
         val db = writableDatabase
-        db.delete(TABLE_TOTP, "$COLUMN_ACCOUNT_NAME = ?", arrayOf(accountName))
+        db.delete(TABLE_TOTP, "$COLUMN_ID = ?", arrayOf(id))
     }
 }

@@ -39,7 +39,7 @@ fun Toast(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .zIndex(100F),
+            .zIndex(1000F),
         contentAlignment = Alignment.BottomCenter
     ) {
         AnimatedVisibility(
@@ -49,7 +49,7 @@ fun Toast(
         ) {
             Row(
                 modifier = Modifier
-                    .zIndex(100F)
+                    .zIndex(1000F)
                     .fillMaxWidth()
                     .padding(16.dp, 0.dp)
                     .background(

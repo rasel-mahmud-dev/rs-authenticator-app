@@ -16,22 +16,17 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.SettingScreen
+import com.rs.rsauthenticator.components.Toast
+import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.state.AccountState
-
+import com.rs.rsauthenticator.utils.generateTOTP
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-
-fun generateTOTP(secret: String): String {
-
-
-//    val secret = "your-secret-key"
-//    val otp = Totp().generate(secret.toByteArray())
-
-    return (Math.random() * 1000).toString()
-}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +38,16 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var scannedCode by remember { mutableStateOf("otpauth://totp/RsAuth%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr:rasel@gmail.com?algorithm=SHA256&digits=6&issuer=RsAuth%7Chttps:%2F%2Fplay-lh.googleusercontent.com%2FDTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr&period=30&secret=V364VS7WUNHR4UJA3JEB4MVSNNFYSPYL") }
 
+    var toastState by remember {
+        mutableStateOf(
+            ToastState(
+                isOpen = false,
+                isSuccess = false,
+                message = ""
+            )
+        )
+    }
+
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -50,24 +55,55 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
     }
 
     fun handleAddApp() {
+
         val totpData = TotpUriData.fromUri(scannedCode)
         totpData?.let {
-            val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
-            val newOtp = generateTOTP(it.secret)
-            dbHelper.insertTotpEntry(it, newOtp, 30F)
-            AccountState.insertItem(
-                dbHelper, AuthenticatorEntry(
-                    id = it.id,
-                    issuer = it.issuer,
-                    remainingTime = 30F,
-                    logoUrl = it.logoUrl ?: "",
-                    accountName = it.accountName,
-                    secret = it.secret,
-                    otpCode = newOtp,
+
+            if (it.secret.isNotEmpty() && it.issuer.isNotEmpty()) {
+                val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
+
+                val newOtp = generateTOTP(it.secret)
+                val lastId = dbHelper.insertTotpEntry(it, newOtp, 30F)
+
+                AccountState.insertItem(
+                    dbHelper,
+                    AuthenticatorEntry(
+                        id = lastId,
+                        issuer = it.issuer,
+                        remainingTime = 30F,
+                        logoUrl = it.logoUrl ?: "",
+                        accountName = it.accountName,
+                        secret = it.secret,
+                        otpCode = newOtp,
+                    )
                 )
-            )
+
+
+                toastState = toastState.copy(
+                    isOpen = true,
+                    isSuccess = true,
+                    message = "Successfully account added."
+                )
+
+
+            } else {
+                toastState = toastState.copy(
+                    isOpen = true,
+                    isSuccess = false,
+                    message = "QR code unknown or invalid."
+                )
+            }
+
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(2000)
+                toastState = toastState.copy(
+                    isOpen = false,
+                )
+            }
+
         }
     }
+
 
     RsColumn(
         modifier = Modifier.fillMaxSize(),
@@ -80,6 +116,11 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                 .weight(1F)
                 .padding(10.dp, 0.dp),
         ) {
+
+
+            Toast(modifier = Modifier, toastState = toastState)
+
+
             if (activeTab == "tokens") {
 
                 TokenScreen(navController)
@@ -134,6 +175,7 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                 }
             }
         }
+
     }
 }
 

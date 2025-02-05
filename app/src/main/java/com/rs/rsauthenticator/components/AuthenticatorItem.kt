@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
-import com.rs.rsauthenticator.screens.generateTOTP
+import com.rs.rsauthenticator.utils.generateTOTP
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,12 +51,10 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
             if (remainingTime == 0f) {
                 val newOtp = generateTOTP(entry.secret)
                 otpCode = newOtp
-                remainingTime = 30f  // Reset to 30.0f when the OTP expires
-
+                remainingTime = 30f
                 scope.launch {
                     totpDatabaseHelper.updateTotpEntry(entry.id, newOtp, 30f)
                 }
-
             }
         }
     }
@@ -73,7 +71,7 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(0.dp, 6.dp)
-            .background(Color(0xF52F2F2F), shape = RoundedCornerShape(18.dp))
+            .background(Color(0xF51C1C1C), shape = RoundedCornerShape(18.dp))
     ) {
 
         RsColumn(modifier = Modifier.fillMaxWidth(), px = 16.dp, py = 16.dp) {
@@ -133,13 +131,23 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    CustomText(
+                    RsRow(
                         modifier = Modifier.weight(1f),
-                        color = Color.White,
-                        text = otpCode,
-                        fontWeight = FontWeight.Bold,
-                        fs = 18.sp,
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        CustomText(
+                            color = Color.White,
+                            text = otpCode.substring(0, 3),
+                            fontWeight = FontWeight.Light,
+                            fs = 30.sp,
+                        )
+                        CustomText(
+                            color = Color.White,
+                            text = otpCode.substring(3),
+                            fontWeight = FontWeight.Light,
+                            fs = 30.sp,
+                        )
+                    }
 
                     RsRow {
                         CustomText(
