@@ -19,9 +19,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +47,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsIconButton
+import com.rs.rsauthenticator.components.RsRow
 
 
 @OptIn(ExperimentalGetImage::class)
@@ -78,10 +82,13 @@ fun ScanQRCodeScreen(
 
     var scannedCode by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
+    var cameraSelector3 by remember { mutableIntStateOf(CameraSelector.LENS_FACING_BACK) }
+
+
+    LaunchedEffect(Unit, cameraSelector3) {
         val cameraProvider = cameraProviderFuture.get()
         val cameraSelector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+            .requireLensFacing(cameraSelector3)
             .build()
 
         val preview = Preview.Builder().build().also {
@@ -100,17 +107,15 @@ fun ScanQRCodeScreen(
                     }
                 }
             }
-
         cameraProvider.unbindAll()
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
     }
 
     RsColumn(Modifier.padding(16.dp, 0.dp)) {
-
         RsColumn(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            pb = 20.dp,
+            pb = 10.dp,
         ) {
             CustomText(
                 textAlign = TextAlign.Center,
@@ -119,27 +124,19 @@ fun ScanQRCodeScreen(
             )
         }
 
+        Box(modifier = Modifier.height(35.dp)) {}
+
 
         Box(modifier = Modifier) {
-            Row(
+
+            RsRow(
                 modifier = Modifier
-                    .zIndex(200F)
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                .zIndex(100F)
+                .align(Alignment.TopEnd),
+                px=16.dp,
+                py=16.dp,
+                horizontalArrangement = Arrangement.spacedBy(10.dp) // make it short using spaceX property
             ) {
-
-                RsIconButton(
-                    modifier = Modifier,
-                    onClick = { onClose() },
-                    bgColor = Color(0xFFF44336),
-                    w = 32.dp,
-                    h = 32.dp
-                ) {
-                    CustomText(icon = "\uf00d")
-                }
-
 
                 RsIconButton(
                     modifier = Modifier.zIndex(200F),
@@ -150,19 +147,37 @@ fun ScanQRCodeScreen(
                 ) {
                     CustomText(icon = "\ue0b8")
                 }
+
+                RsIconButton(
+                    modifier = Modifier.zIndex(200F),
+                    onClick = {
+                        if (cameraSelector3 == CameraSelector.LENS_FACING_FRONT) {
+                            cameraSelector3 = CameraSelector.LENS_FACING_BACK
+                        } else {
+                            cameraSelector3 = CameraSelector.LENS_FACING_FRONT
+                        }
+                    },
+                    bgColor = Color(0xFFF44336),
+                    w = 32.dp,
+                    h = 32.dp
+                ) {
+                    CustomText(icon = "\uf030")
+                }
+
             }
 
             RsColumn(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                h = 250.dp,
+                    .fillMaxWidth()
+                    .height(250.dp),
             ) {
 
+
                 AndroidView(
-                    { previewView  },
+                    { previewView },
                     modifier = Modifier
+                        .clip(shape = RoundedCornerShape(20.dp))
                         .fillMaxWidth()
-                        .height(180.dp) // Restrict height inside bottom sheet
                 )
 
             }

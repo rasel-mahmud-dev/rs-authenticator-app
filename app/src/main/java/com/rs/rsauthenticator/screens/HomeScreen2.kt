@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,6 +41,7 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
 
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
+    var scannedCode by remember { mutableStateOf("") }
 
     var scope = rememberCoroutineScope()
 
@@ -111,6 +111,22 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                             color = Color.White
                         )
                     }
+
+
+                    RsColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CustomText(
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier,
+                            text = scannedCode,
+                            fs = 16.sp,
+                            pt = 5.dp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White
+                        )
+                    }
                 }
 
                 RsColumn(Modifier.align(Alignment.BottomEnd)) {
@@ -138,22 +154,13 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                 onClose = { showBottomSheet = false },
                 backgroundColor = Color(0xFF252633),
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp) // Ensure this height limits the content inside
-                ) {
-                    RequestCameraPermission(onPermissionGranted = {})
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)) // Ensures proper clipping
-                    ) {
+                RsColumn {
+                    RequestCameraPermission(onPermissionGranted = {})
 
                     ScanQRCodeScreen(navController,
                         onQRCodeScanned = {
-                            Log.d("donw", "sssssssssssss")
+                            scannedCode = it
                             scope.launch {
                                 sheetState.hide()
                                 showBottomSheet = false
@@ -166,7 +173,6 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                             }
                         }
                     )
-                }
                 }
             }
         }

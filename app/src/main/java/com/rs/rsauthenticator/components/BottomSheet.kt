@@ -28,7 +28,7 @@ fun RsBottomSheet(
         onDismissRequest = { onClose() },
         sheetState = sheetState,
         containerColor = backgroundColor,
-        contentColor = contentColor,
+        contentColor = Color.Red,
         shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius) // Custom shape
     ) {
         RsRow(
