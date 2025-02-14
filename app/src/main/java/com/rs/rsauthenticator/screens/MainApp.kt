@@ -23,7 +23,7 @@ fun MainApp(applicationContext: Context) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101010))
+            .background(Color(0xFFFF0303))
     ) {
 
 //        MainSideBar(navController)
@@ -31,7 +31,7 @@ fun MainApp(applicationContext: Context) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF202020)),
+                .background(Color(0xFFFFFFFF)),
             contentAlignment = Alignment.Center
         ) {
 

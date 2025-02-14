@@ -19,7 +19,7 @@ fun HomeBottomNav(activeTab: String, onChangeTab: (t: String) -> Unit) {
     RsColumn(
         modifier = Modifier
             .fillMaxWidth(),
-        bgColor = Color(0xFF232328),
+        bgColor = Color(0xFFE7E7E7),
         verticalArrangement = Arrangement.Center
     ) {
 

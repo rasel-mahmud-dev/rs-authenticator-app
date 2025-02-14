@@ -24,14 +24,12 @@ fun AppNavigation(context: Context, navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = if (isAuthenticated) "home" else "login"
-//        startDestination = "home"
+//        startDestination = if (isAuthenticated) "home" else "login"
+        startDestination = "home"
     ) {
 
         composable("home") {
-            ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                HomeScreen2(context, navController)
-            }
+            HomeScreen2(context, navController)
         }
 
         composable("apps") {

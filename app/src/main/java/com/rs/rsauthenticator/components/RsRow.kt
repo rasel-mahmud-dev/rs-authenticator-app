@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 
-
 @Composable
 fun RsRow(
     modifier: Modifier = Modifier,
@@ -36,22 +35,25 @@ fun RsRow(
     spacing: Dp = 0.dp, // Extra param for spacing
     content: @Composable RowScope.() -> Unit
 ) {
-    val combinedModifier = modifier
-        .then(if (w != null) Modifier.width(w) else Modifier)
-        .then(if (h != null) Modifier.height(h) else Modifier)
-        .then(
-            if (py != null) Modifier.padding(vertical = py)
-            else Modifier.padding(top = pt ?: 0.dp, bottom = pb ?: 0.dp)
-        )
-        .then(
-            if (px != null) Modifier.padding(horizontal = px)
-            else Modifier.padding(start = pl ?: 0.dp, end = pr ?: 0.dp)
-        )
+    var finalModifier = modifier
         .background(bgColor, shape = RoundedCornerShape(radius ?: 0.dp))
-        .clickable(enabled = onClick != null) { onClick?.invoke() }
+
+    if (w != null) finalModifier = finalModifier.width(w)
+    if (h != null) finalModifier = finalModifier.height(h)
+
+    finalModifier = finalModifier.padding(
+        start = pl ?: px ?: 0.dp,
+        end = pr ?: px ?: 0.dp,
+        top = pt ?: py ?: 0.dp,
+        bottom = pb ?: py ?: 0.dp
+    )
+
+    if (onClick != null) {
+        finalModifier = finalModifier.clickable { onClick() }
+    }
 
     Row(
-        modifier = combinedModifier,
+        modifier = finalModifier,
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = verticalAlignment
     ) {

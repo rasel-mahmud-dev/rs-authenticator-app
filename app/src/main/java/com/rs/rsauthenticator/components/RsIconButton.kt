@@ -21,25 +21,43 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RsIconButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     px: Dp? = null,
+    pt: Dp? = null,
+    pb: Dp? = null,
+    pl: Dp? = null,
+    pr: Dp? = null,
+    py: Dp? = null,
     h: Dp? = null,
     w: Dp? = null,
-    py: Dp? = null,
     radius: Dp? = null,
-    bgColor: Color? = Color.Transparent,
+    bgColor: Color = Color.Transparent,
     content: @Composable (() -> Unit)? = null
 ) {
 
-    val buttonModifier = modifier
-        .then(if (w != null) Modifier.width(w) else Modifier)
-        .then(if (h != null) Modifier.height(h) else Modifier)
+    var finalModifier = modifier
+        .background(bgColor, shape = RoundedCornerShape(radius ?: 0.dp))
+
+    if (w != null) finalModifier = finalModifier.width(w)
+    if (h != null) finalModifier = finalModifier.height(h)
+
+    finalModifier = finalModifier.padding(
+        start = pl ?: px ?: 0.dp,
+        end = pr ?: px ?: 0.dp,
+        top = pt ?: py ?: 0.dp,
+        bottom = pb ?: py ?: 0.dp
+    )
+
+    if (onClick != null) {
+        finalModifier = finalModifier.clickable { onClick() }
+    }
+
+//    val buttonModifier = modifier
+//        .then(if (w != null) Modifier.width(w) else Modifier)
+//        .then(if (h != null) Modifier.height(h) else Modifier)
 
     Box(
-        modifier = buttonModifier
-            .clickable {
-                onClick()
-            }
+        modifier = finalModifier
             .background(
                 color = bgColor ?: Color.Transparent,
                 shape = RoundedCornerShape(radius ?: 16.dp)

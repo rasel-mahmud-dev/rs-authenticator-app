@@ -39,5 +39,9 @@ val Typography = Typography(
 val fontAwesome = FontFamily(
     Font(R.font.fa_regular_400),
     Font(R.font.fa_solid_900),
-    Font(R.font.fa_thin_100)
+    Font(R.font.fa_thin_100),
+    Font(R.font.fa_brands_400)
 )
+
+
+val faBrand = FontFamily(Font(R.font.fa_brands_400))

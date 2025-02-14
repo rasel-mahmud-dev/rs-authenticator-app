@@ -40,7 +40,7 @@ fun CustomText(
 
     var fontM = fontFamily
     if (icon != null) {
-        fontM = fontAwesome
+        fontM = fontFamily ?: fontAwesome
     } else if (fontFamily == null) {
         fontM = FontFamily.Default
     }
@@ -64,7 +64,7 @@ fun CustomText(
 
     Text(
         text = icon ?: text ?: "",
-        color = color ?: Color.White,
+        color = color ?: Color.DarkGray,
         fontFamily = fontM,
         textAlign = textAlign ?: TextAlign.Start,
         fontWeight = fontWeight,

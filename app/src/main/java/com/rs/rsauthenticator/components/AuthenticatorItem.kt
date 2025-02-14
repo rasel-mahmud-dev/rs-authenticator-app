@@ -71,7 +71,7 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(0.dp, 6.dp)
-            .background(Color(0xF51C1C1C), shape = RoundedCornerShape(18.dp))
+            .background(Color(0xFFF3F3F3), shape = RoundedCornerShape(18.dp))
     ) {
 
         RsColumn(modifier = Modifier.fillMaxWidth(), px = 16.dp, py = 16.dp) {
@@ -101,13 +101,14 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                                 text = entry.issuer,
                                 fontWeight = FontWeight.Bold,
                                 fs = 16.sp,
+                                color = Color.Black,
                                 pb = 2.dp
                             )
 
                             CustomText(
                                 text = "12 January 2024 12:12:12PM",
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF70717A),
+                                color = Color(0xFF919191),
                                 fs = 12.sp
                             )
 
@@ -136,13 +137,13 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CustomText(
-                            color = Color.White,
+                            color = Color(0xFF1A1A1A),
                             text = otpCode.substring(0, 3),
                             fontWeight = FontWeight.Light,
                             fs = 30.sp,
                         )
                         CustomText(
-                            color = Color.White,
+                            color = Color(0xFF1A1A1A),
                             text = otpCode.substring(3),
                             fontWeight = FontWeight.Light,
                             fs = 30.sp,
@@ -152,7 +153,7 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                     RsRow {
                         CustomText(
                             text = "$remainingTime Sec",
-                            color = Color(0xFFA2A2A2),
+                            color = Color(0xFF1A1A1A),
                             fs = 12.sp,
                             fontWeight = FontWeight.SemiBold
                         )
