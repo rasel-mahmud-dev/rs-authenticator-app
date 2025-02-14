@@ -1,5 +1,6 @@
 package com.rs.rsauthenticator.components
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
+import com.rs.rsauthenticator.utils.formatTimestamp
 import com.rs.rsauthenticator.utils.generateTOTP
 
 import kotlinx.coroutines.delay
@@ -39,39 +42,45 @@ import kotlinx.coroutines.launch
 @Composable
 fun AuthenticatorItem(entry: AuthenticatorEntry) {
 
-    var remainingTime by remember { mutableFloatStateOf(entry.remainingTime) }
+    var remainingTime by remember { mutableLongStateOf(entry.remainingTime) }
     var otpCode by remember { mutableStateOf(entry.otpCode) }
     val scope = rememberCoroutineScope()
     val totpDatabaseHelper = TotpDatabaseHelper.getInstance(LocalContext.current)
 
     LaunchedEffect(Unit) {
-        while (remainingTime > 0f) {
+        Log.d("Initial", entry.toString())
+        while (true) {
             delay(1000)
-            remainingTime = (remainingTime - 1F).coerceAtLeast(0f)
-            if (remainingTime == 0f) {
+
+            if (remainingTime - System.currentTimeMillis() <= -1) {
                 val newOtp = generateTOTP(entry.secret)
                 otpCode = newOtp
-                remainingTime = 30f
+                remainingTime = System.currentTimeMillis() + 30000
+
                 scope.launch {
-                    totpDatabaseHelper.updateTotpEntry(entry.id, newOtp, 30f)
+                    totpDatabaseHelper.updateTotpEntry(entry.id, newOtp, remainingTime)
                 }
+            } else {
+                remainingTime -= 1
+                totpDatabaseHelper.updateOtpRemainingTime(entry.id, remainingTime)
             }
         }
     }
 
     val animatedProgress = animateFloatAsState(
-        targetValue = remainingTime / 30f,
+        targetValue = ((remainingTime - System.currentTimeMillis()) / 30000f).coerceIn(0f, 1f),
         animationSpec = androidx.compose.animation.core.TweenSpec(
             durationMillis = 1000,
             easing = androidx.compose.animation.core.FastOutSlowInEasing
         ), label = ""
     ).value
 
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(0.dp, 6.dp)
-            .background(Color(0xFFF3F3F3), shape = RoundedCornerShape(18.dp))
+            .background(Color(0xFFF3F3F3), shape = RoundedCornerShape(16.dp))
     ) {
 
         RsColumn(modifier = Modifier.fillMaxWidth(), px = 16.dp, py = 16.dp) {
@@ -85,7 +94,6 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-
 
                         Image(
                             painter = rememberAsyncImagePainter(entry.logoUrl),
@@ -106,10 +114,10 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                             )
 
                             CustomText(
-                                text = "12 January 2024 12:12:12PM",
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF919191),
-                                fs = 12.sp
+                                text = formatTimestamp(entry.createdAt),
+                                fontWeight = FontWeight.Normal,
+                                color = Color(0xFF727272),
+                                fs = 13.sp
                             )
 
                         }
@@ -152,7 +160,7 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
 
                     RsRow {
                         CustomText(
-                            text = "$remainingTime Sec",
+                            text = "${getRemainingSecond(remainingTime)} Sec",
                             color = Color(0xFF1A1A1A),
                             fs = 12.sp,
                             fontWeight = FontWeight.SemiBold
@@ -162,4 +170,9 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
             }
         }
     }
+}
+
+fun getRemainingSecond(remainingTime: Long): Long {
+    val a = (remainingTime - System.currentTimeMillis()) / 1000
+    return   if(a <= -1) 0 else a
 }

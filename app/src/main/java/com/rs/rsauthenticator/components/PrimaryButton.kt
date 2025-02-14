@@ -29,7 +29,7 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     label: String? = "",
-    icon: String?,
+    icon: String? = "",
     px: Dp? = null,
     iconSpaceX: Dp? = null,
     iconSize: TextUnit = 20.sp,
@@ -74,6 +74,5 @@ fun PrimaryButton(
                 )
             }
         }
-
     }
 }

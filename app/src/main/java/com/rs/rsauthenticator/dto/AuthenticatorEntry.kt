@@ -7,5 +7,6 @@ data class AuthenticatorEntry(
     val accountName: String,
     val secret: String,
     val otpCode: String,
-    val remainingTime: Float // Countdown progress (0 to 1)
+    val remainingTime: Long,
+    val createdAt: Long
 )

@@ -15,7 +15,8 @@ data class TotpUriData(
     val period: Int,
     val logoUrl: String?,
     val newOtp: String?,
-    val remainingTime: Float?
+    val remainingTime: Float?,
+    val createdAt: Long
 ) {
     companion object {
         fun fromUri(uri: String): TotpUriData? {
@@ -51,7 +52,8 @@ data class TotpUriData(
                     period = params["period"]?.toInt() ?: 30,
                     logoUrl = logoUrl,
                     newOtp = "",
-                    remainingTime = 0f
+                    remainingTime = 0f,
+                    createdAt = System.currentTimeMillis()
                 )
             } catch (e: Exception) {
                 e.printStackTrace()

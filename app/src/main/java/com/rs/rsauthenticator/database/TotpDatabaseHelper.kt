@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
+import androidx.core.database.getLongOrNull
 import com.rs.rsauthenticator.dto.TotpUriData
 
 
@@ -28,6 +29,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
         private const val COLUMN_LOGO_URL = "logo_url"
         private const val COLUMN_NEW_OTP = "new_otp" // New column for OTP
         private const val COLUMN_REMAINING_TIME = "remaining_time" // New column for remaining time
+        private const val COLUMN_CREATED_AT = "created_at" // New column for remaining time
 
         @Volatile
         private var instance: TotpDatabaseHelper? = null
@@ -51,7 +53,8 @@ class TotpDatabaseHelper private constructor(context: Context) :
                 $COLUMN_PERIOD INTEGER NOT NULL,
                 $COLUMN_LOGO_URL TEXT,
                 $COLUMN_NEW_OTP TEXT,  -- New OTP column
-                $COLUMN_REMAINING_TIME REAL  -- Remaining time column
+                $COLUMN_REMAINING_TIME REAL,  -- Remaining time column
+                $COLUMN_CREATED_AT INTEGER 
             )
         """.trimIndent()
         db.execSQL(createTableQuery)
@@ -85,8 +88,9 @@ class TotpDatabaseHelper private constructor(context: Context) :
             put(COLUMN_DIGITS, totp.digits)
             put(COLUMN_PERIOD, totp.period)
             put(COLUMN_LOGO_URL, totp.logoUrl)
-            put(COLUMN_NEW_OTP, newOtp) // Save the new OTP
-            put(COLUMN_REMAINING_TIME, remainingTime) // Save the remaining time
+            put(COLUMN_NEW_OTP, newOtp)
+            put(COLUMN_REMAINING_TIME, remainingTime)
+            put(COLUMN_CREATED_AT, totp.createdAt)
         }
         val rowId = db.insert(TABLE_TOTP, null, contentValues)
         if (rowId == -1L) {
@@ -95,7 +99,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
         return rowId.toString()
     }
 
-    fun updateTotpEntry(id: String, newOtp: String, remainingTime: Float): Int {
+    fun updateTotpEntry(id: String, newOtp: String, remainingTime: Long): Int {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
             put(COLUMN_NEW_OTP, newOtp) // Update the OTP
@@ -105,6 +109,13 @@ class TotpDatabaseHelper private constructor(context: Context) :
         return db.update(TABLE_TOTP, contentValues, "$COLUMN_ID = ?", arrayOf(id))
     }
 
+    fun updateOtpRemainingTime(id: String, remainingTime: Long): Int {
+        val db = writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_REMAINING_TIME, remainingTime)
+        }
+        return db.update(TABLE_TOTP, contentValues, "$COLUMN_ID = ?", arrayOf(id))
+    }
 
     fun getAllTotpEntries(): List<TotpUriData> {
         val db = readableDatabase
@@ -121,6 +132,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
                 val algorithm = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ALGORITHM))
                 val digits = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DIGITS))
                 val period = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERIOD))
+                val createdAt = cursor.getLongOrNull(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT))
                 val logoUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGO_URL))
                 val newOtp =
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NEW_OTP)) // Retrieve the new OTP
@@ -140,7 +152,8 @@ class TotpDatabaseHelper private constructor(context: Context) :
                         period,
                         logoUrl,
                         newOtp,
-                        remainingTime
+                        remainingTime,
+                        createdAt = createdAt ?: 0
                     )
                 )
             } while (cursor.moveToNext())
@@ -148,6 +161,36 @@ class TotpDatabaseHelper private constructor(context: Context) :
         cursor.close()
         return totpList
     }
+
+    fun findOneBySecret(secret: String): TotpUriData? {
+        val db = readableDatabase
+        val selection = "$COLUMN_SECRET = ?"
+        val selectionArgs = arrayOf(secret)
+
+        val cursor: Cursor = db.query(TABLE_TOTP, null, selection, selectionArgs, null, null, null)
+
+        var totpEntry: TotpUriData? = null
+        if (cursor.moveToFirst()) {
+            val accountName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME))
+            val id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val issuer = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ISSUER))
+            val algorithm = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ALGORITHM))
+            val digits = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DIGITS))
+            val period = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERIOD))
+            val createdAt = cursor.getLongOrNull(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT)) ?: 0
+            val logoUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGO_URL))
+            val newOtp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NEW_OTP))
+            val remainingTime = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_REMAINING_TIME))
+
+            totpEntry = TotpUriData(
+                id, "otpauth", "totp", accountName, secret, issuer,
+                algorithm, digits, period, logoUrl, newOtp, remainingTime, createdAt
+            )
+        }
+        cursor.close()
+        return totpEntry
+    }
+
 
     fun deleteTotpEntry(id: String) {
         val db = writableDatabase

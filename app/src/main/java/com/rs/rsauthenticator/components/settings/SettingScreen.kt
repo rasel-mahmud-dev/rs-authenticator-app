@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.components.Settings
+package com.rs.rsauthenticator.components.settings
 
 
 import android.content.Context
@@ -13,20 +13,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.rs.rsauthenticator.R
 import com.rs.rsauthenticator.components.CustomText
-import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.ui.theme.faBrand
-import com.rs.rsauthenticator.ui.theme.fontAwesome
 
 data class Item(val label: String, val icon: String, val route: String)
 

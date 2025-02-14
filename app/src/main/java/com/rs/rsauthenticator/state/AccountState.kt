@@ -15,10 +15,11 @@ object AccountState {
                 issuer = account.issuer,
                 accountName = account.accountName,
                 otpCode = generateTOTP(account.secret),
-                remainingTime = 30f, // getRemainingTime()
+                remainingTime = account.remainingTime?.toLong() ?: 0, // getRemainingTime()
                 secret = account.secret,
                 id = account.id,
-                logoUrl = account.logoUrl ?: ""
+                logoUrl = account.logoUrl ?: "",
+                createdAt = account.createdAt
             )
         }
     }

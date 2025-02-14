@@ -10,9 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.HomeBottomNav
+import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
-import com.rs.rsauthenticator.components.Settings.SettingScreen
+import com.rs.rsauthenticator.components.settings.SettingScreen
 import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
@@ -29,6 +30,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
+
+    val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
+
 
     var activeTab by remember { mutableStateOf("tokens") }
     val sheetState = rememberModalBottomSheetState()
@@ -51,7 +55,12 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
         totpData?.let {
 
             if (it.secret.isNotEmpty() && it.issuer.isNotEmpty()) {
-                val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
+
+                val item = dbHelper.findOneBySecret(it.secret)
+                if (!item?.secret.isNullOrEmpty()) {
+                    return
+                }
+
 
                 val newOtp = generateTOTP(it.secret)
                 val lastId = dbHelper.insertTotpEntry(it, newOtp, 30F)
@@ -61,21 +70,20 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                     AuthenticatorEntry(
                         id = lastId,
                         issuer = it.issuer,
-                        remainingTime = 30F,
+                        remainingTime = System.currentTimeMillis() + 30 * 1000,
                         logoUrl = it.logoUrl ?: "",
                         accountName = it.accountName,
                         secret = it.secret,
                         otpCode = newOtp,
+                        createdAt = System.currentTimeMillis()
                     )
                 )
-
 
                 toastState = toastState.copy(
                     isOpen = true,
                     isSuccess = true,
                     message = "Successfully account added."
                 )
-
 
             } else {
                 toastState = toastState.copy(
@@ -123,20 +131,20 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
             }
         }
 
-
         RsColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomStart)
         ) {
             HomeBottomNav(activeTab = activeTab, onChangeTab = { activeTab = it })
+
         }
 
         if (showBottomSheet) {
             RsBottomSheet(
                 sheetState = sheetState,
                 onClose = { showBottomSheet = false },
-                backgroundColor = Color(0xFF252633),
+                backgroundColor = Color(0xFFFFFFFF),
             ) {
 
                 RsColumn {
