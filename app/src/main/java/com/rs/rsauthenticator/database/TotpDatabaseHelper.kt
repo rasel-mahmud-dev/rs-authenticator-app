@@ -17,7 +17,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "TotpDatabase.db"
-        private const val DATABASE_VERSION = 2 // Incremented version number
+        private const val DATABASE_VERSION = 3 // Incremented version number
 
         private const val TABLE_TOTP = "totp_entries"
         private const val COLUMN_ID = "id"
@@ -62,34 +62,57 @@ class TotpDatabaseHelper private constructor(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_STATE")
-        onCreate(db)
+        if (oldVersion < 2) {
+            // Add the new columns one at a time for version 2
+            val alterTableQuery1 = """
+        ALTER TABLE $TABLE_TOTP
+        ADD COLUMN $COLUMN_NEW_OTP TEXT
+        """.trimIndent()
+            db.execSQL(alterTableQuery1)
+
+            val alterTableQuery2 = """
+        ALTER TABLE $TABLE_TOTP
+        ADD COLUMN $COLUMN_REMAINING_TIME REAL
+        """.trimIndent()
+            db.execSQL(alterTableQuery2)
+        }
+
+        if (oldVersion < 3) {
+            // Add the new created_at column for version 3
+            val alterTableQuery3 = """
+        ALTER TABLE $TABLE_TOTP
+        ADD COLUMN $COLUMN_CREATED_AT INTEGER
+        """.trimIndent()
+            db.execSQL(alterTableQuery3)
+        }
     }
 
-    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_STATE") // Delete old data
-        onCreate(db) // Recreate the table
-    }
 
     fun insertTotpEntry(totp: TotpUriData, newOtp: String, remainingTime: Float): String {
-        val db = writableDatabase
-        val contentValues = ContentValues().apply {
-            put(COLUMN_ACCOUNT_NAME, totp.accountName)
-            put(COLUMN_SECRET, totp.secret)
-            put(COLUMN_ISSUER, totp.issuer)
-            put(COLUMN_ALGORITHM, totp.algorithm)
-            put(COLUMN_DIGITS, totp.digits)
-            put(COLUMN_PERIOD, totp.period)
-            put(COLUMN_LOGO_URL, totp.logoUrl)
-            put(COLUMN_NEW_OTP, newOtp)
-            put(COLUMN_REMAINING_TIME, remainingTime)
-            put(COLUMN_CREATED_AT, totp.createdAt)
+        try {
+            val db = writableDatabase
+            val contentValues = ContentValues().apply {
+                put(COLUMN_ACCOUNT_NAME, totp.accountName)
+                put(COLUMN_SECRET, totp.secret)
+                put(COLUMN_ISSUER, totp.issuer)
+                put(COLUMN_ALGORITHM, totp.algorithm)
+                put(COLUMN_DIGITS, totp.digits)
+                put(COLUMN_PERIOD, totp.period)
+                put(COLUMN_LOGO_URL, totp.logoUrl)
+                put(COLUMN_NEW_OTP, newOtp)
+                put(COLUMN_REMAINING_TIME, remainingTime)
+                put(COLUMN_CREATED_AT, System.currentTimeMillis())
+            }
+            val rowId = db.insert(TABLE_TOTP, null, contentValues)
+            if (rowId == -1L) {
+                Log.e("Database", "Error inserting row into $TABLE_TOTP")
+            }
+            return rowId.toString()
+        } catch (e: Exception) {
+            println("sdffffffffffffffffffff:::::::::::::::SDFSDFSDFSD:SD:F:SDF:S")
+            println(e)
+            return ""
         }
-        val rowId = db.insert(TABLE_TOTP, null, contentValues)
-        if (rowId == -1L) {
-            Log.e("Database", "Error inserting row into $TABLE_TOTP")
-        }
-        return rowId.toString()
     }
 
     fun updateTotpEntry(id: String, newOtp: String, remainingTime: Long): Int {
@@ -147,7 +170,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
                         logoUrl,
                         newOtp,
                         remainingTime,
-                        createdAt =   0
+                        createdAt = 0
                     )
                 )
             } while (cursor.moveToNext())

@@ -55,9 +55,9 @@ fun ScreenHeader(
             h = 40.dp,
             w = 40.dp,
         ) {
-            CustomText(icon = "\uf053", fs = 16.sp)
+            CustomText(icon = "\uf053", fs = 14.sp)
         }
 
-        CustomText(text = title, fontWeight = FontWeight.Medium, fs = 20.sp)
+        CustomText(text = title, fontWeight = FontWeight.Medium, fs = 16.sp)
     }
 }

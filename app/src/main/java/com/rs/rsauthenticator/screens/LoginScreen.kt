@@ -81,6 +81,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                         _id = res.data.user._id,
                         username = res.data.user.username,
                         token = res.data.session.token,
+                        avatar = res.data.user.avatar
                     )
                 )
                 navHostController.navigate("home")

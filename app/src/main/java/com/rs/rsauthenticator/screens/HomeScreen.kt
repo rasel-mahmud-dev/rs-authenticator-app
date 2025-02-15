@@ -1,6 +1,7 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -37,8 +38,8 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
     var activeTab by remember { mutableStateOf("tokens") }
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
-    var scannedCode by remember { mutableStateOf("otpauth://totp/RsAuth%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr:rasel@gmail.com?algorithm=SHA256&digits=6&issuer=RsAuth%7Chttps:%2F%2Fplay-lh.googleusercontent.com%2FDTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr&period=30&secret=V364VS7WUNHR4UJA3JEB4MVSNNFYSPYL") }
-
+//    var scannedCode by remember { mutableStateOf("otpauth://totp/RsAuth%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr:rasel@gmail.com?algorithm=SHA256&digits=6&issuer=RsAuth%7Chttps:%2F%2Fplay-lh.googleusercontent.com%2FDTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr&period=30&secret=V364VS7WUNHR4UJA3JEB4MVSNNFYSPYL") }
+    var scannedCode by remember { mutableStateOf("")}
     var toastState by remember {
         mutableStateOf(
             ToastState(
@@ -58,6 +59,11 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
 
                 val item = dbHelper.findOneBySecret(it.secret)
                 if (!item?.secret.isNullOrEmpty()) {
+                    toastState = toastState.copy(
+                        isOpen = true,
+                        isSuccess = true,
+                        message = "Already linked."
+                    )
                     return
                 }
 

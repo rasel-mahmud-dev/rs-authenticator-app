@@ -15,7 +15,7 @@ data class LoginApiResponse(
             val username: String,
             val email: String,
             val password: String,
-            val avatar: String,
+            val avatar: String?,
             val createdAt: String,
             val status: String,
             val deviceId: String

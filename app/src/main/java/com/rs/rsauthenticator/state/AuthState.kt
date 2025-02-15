@@ -11,6 +11,7 @@ data class Auth(
     val email: String,
     val _id: String,
     val username: String,
+    val avatar: String?,
     var token: String?,
 )
 

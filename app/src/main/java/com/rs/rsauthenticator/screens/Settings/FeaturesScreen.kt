@@ -1,20 +1,17 @@
-package com.rs.rsauthenticator
+package com.rs.rsauthenticator.screens.Settings
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,16 +20,12 @@ import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
-import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.ScreenHeader
-import com.rs.rsauthenticator.ui.theme.faBrand
+
 
 @Composable
-fun AboutScreen(applicationContext: Context, navHostController: NavHostController) {
-
-
-    RsColumn() {
-
+fun FeaturesScreen(applicationContext: Context, navHostController: NavHostController) {
+    RsColumn {
         ScreenHeader(title = "Back", navigate = {
             navHostController.popBackStack()
         })
@@ -46,26 +39,28 @@ fun AboutScreen(applicationContext: Context, navHostController: NavHostControlle
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             CustomText(
-                text = "About",
+                text = "Key Features.",
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 fs = 24.sp,
                 style = MaterialTheme.typography.headlineMedium
             )
 
-            Text(
-                text = "This application is designed to enhance user productivity by providing a clean and intuitive interface.\n\n" +
-                        "Explore its features and enjoy a seamless experience tailored to your needs.\n\n",
-                color = Color.Gray,
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            RsColumn(
+                pt = 20.dp,
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FeatureItem("Authentication (Login, Registration, Forgot Password).")
+                FeatureItem("App Security (Unlock/Lock with PIN, Biometrics).")
+                FeatureItem("Authenticator Code Generation (TOTP-based 2FA).")
+                FeatureItem("Database Preservation (Stores data securely with SQLite).")
+                FeatureItem("Camera QR Code Scanning (Scan QR codes to add 2FA accounts).")
+            }
 
-
-            PrimaryButton(modifier = Modifier
-                .clip(shape = CircleShape),
+            PrimaryButton(
+                modifier = Modifier.clip(shape = CircleShape),
                 label = "Project Details",
                 onClick = {
                     val intent = Intent(
@@ -76,4 +71,15 @@ fun AboutScreen(applicationContext: Context, navHostController: NavHostControlle
                 })
         }
     }
+}
+
+@Composable
+fun FeatureItem(text: String) {
+    CustomText(
+        pb = 10.dp,
+        text = text,
+        color = Color.DarkGray,
+        fs = 16.sp,
+        style = MaterialTheme.typography.bodyLarge
+    )
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.rs.rsauthenticator.R
 import com.rs.rsauthenticator.components.AuthenticatorItem
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
@@ -113,7 +114,7 @@ fun TokenScreen(
                     ) {
 
                         Image(
-                            painter = rememberAsyncImagePainter("https://rs-authenticator.vercel.app/boy.png"),
+                            painter = rememberAsyncImagePainter( auth?.avatar ?: R.drawable.avatar),
                             contentDescription = "Rs Authenticator Logo",
                             modifier = Modifier
                                 .size(60.dp)

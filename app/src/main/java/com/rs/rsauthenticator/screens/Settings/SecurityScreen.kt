@@ -1,7 +1,6 @@
 package com.rs.rsauthenticator.screens.Settings
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -99,7 +98,6 @@ fun SecurityScreen(applicationContext: Context, navHostController: NavHostContro
                             errorMessage = "PINs do not match, try again."
                         }
                     }
-
                 },
                 modifier = Modifier.fillMaxWidth(),
                 label = when {

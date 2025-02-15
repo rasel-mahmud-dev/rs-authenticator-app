@@ -48,7 +48,6 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
     val totpDatabaseHelper = TotpDatabaseHelper.getInstance(LocalContext.current)
 
     LaunchedEffect(Unit) {
-        Log.d("Initial", entry.toString())
         while (true) {
             delay(1000)
 

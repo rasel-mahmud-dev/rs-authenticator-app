@@ -1,14 +1,24 @@
 package com.rs.rsauthenticator.components
 
 
+import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +34,7 @@ import com.rs.rsauthenticator.screens.MainApp
 @Composable
 fun UnlockWrapperScreen(stateDatabaseHelper: StateDatabaseHelper, onUnlock: () -> Unit) {
     val context = LocalContext.current
-    var isUnlocked by remember { mutableStateOf(false) }
+    var isUnlocked by remember { mutableStateOf(true) }
     val storedPin by remember { mutableStateOf(stateDatabaseHelper.getPin()) }
 
     if (storedPin.isNullOrEmpty()) {
@@ -36,75 +46,100 @@ fun UnlockWrapperScreen(stateDatabaseHelper: StateDatabaseHelper, onUnlock: () -
     } else {
         UnlockScreen(onUnlock = {
             isUnlocked = true
-        }, storedPin = storedPin ?: "", context)
+        }, storedPin = storedPin ?: "")
     }
 }
 
+
+@SuppressLint("RememberReturnType")
 @Composable
-fun UnlockScreen(onUnlock: () -> Unit, storedPin: String, context: Context) {
+fun UnlockScreen(onUnlock: () -> Unit, storedPin: String) {
     var errorMessage by remember { mutableStateOf("") }
     var inputPin by remember { mutableStateOf(TextFieldValue("")) }
+    var shakeError by remember { mutableStateOf(false) }
 
-    RsColumn(
-        pt = 40.dp,
-        px = 16.dp,
+    val shakeAnimation = remember { Animatable(0f) }
+
+    LaunchedEffect(shakeError) {
+        if (shakeError) {
+            shakeAnimation.animateTo(
+                targetValue = 10f,
+                animationSpec = keyframes {
+                    durationMillis = 300
+                    0f at 0
+                    -10f at 50
+                    10f at 100
+                    -10f at 150
+                    10f at 200
+                    0f at 300
+                }
+            )
+            shakeError = false
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(20.dp),
+        contentAlignment = Alignment.Center
     ) {
-
-        RsColumn(
-            modifier = Modifier
-                .fillMaxWidth(),
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(x = shakeAnimation.value.dp)
         ) {
             CustomText(
                 icon = "\uf084",
-                color = Color.Black,
+                color = Color.Red,
                 fs = 70.sp,
             )
 
-            CustomText(
-                text = "Unlock Account",
-                color = Color.Black,
-                fs = 20.sp,
-                fontWeight = FontWeight.SemiBold
+            Text(
+                text = "Enter Your PIN",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            TextInput(
+                value = inputPin,
+                onChange = { inputPin = it },
+                label = "",
+                keyboardType = KeyboardType.NumberPassword,
+                placeholder = "Enter pin",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp)
+            )
+
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = 14.sp
+                )
+            }
+
+            PrimaryButton(
+                onClick = {
+                    if (inputPin.text == storedPin) {
+                        onUnlock()
+                    } else {
+                        errorMessage = "Incorrect PIN. Try again!"
+                        shakeError = true
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                label = "Unlock"
             )
         }
-
-
-        TextInput(
-            value = inputPin,
-            onChange = { inputPin = it },
-            label = "",
-            modifier = Modifier,
-            radius = 30.dp,
-            keyboardType = KeyboardType.Password,
-            placeholder = "Pin"
-//                label = { Text("Enter PIN") },
-//                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
-//                visualTransformation = PasswordVisualTransformation(),
-//                modifier = Modifier.fillMaxWidth()
-        )
-
-        errorMessage?.let {
-            Text(text = it, color = Color.Red, fontSize = 14.sp)
-        }
-
-        PrimaryButton(
-            onClick = {
-                if (inputPin.text == storedPin) {
-                    onUnlock()
-                } else {
-                    errorMessage = "Incorrect PIN.ff"
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = "Unlock"
-        )
     }
-
 }
