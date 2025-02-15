@@ -12,8 +12,8 @@ class AuthDatabase private constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "ApplicationState.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_NAME = "AuthState.db"
+        private const val DATABASE_VERSION = 2
 
         private const val TABLE_AUTH = "auth"
         private const val COLUMN_KEY = "key"

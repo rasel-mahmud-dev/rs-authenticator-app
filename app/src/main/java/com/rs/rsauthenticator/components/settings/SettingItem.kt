@@ -20,7 +20,9 @@ fun SettingItem(item: Item, navController: NavHostController) {
     RsRow(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {},
+            .clickable {
+                navController.navigate(item.route)
+            },
 
         py = 20.dp
     ) {

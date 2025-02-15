@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rs.rsauthenticator.ui.theme.Primary40
 import com.rs.rsauthenticator.ui.theme.fontAwesome
 
 
@@ -42,7 +43,7 @@ fun PrimaryButton(
         onClick = {
             onClick()
         },
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)),
+        colors = ButtonDefaults.buttonColors(containerColor =  Primary40),
         contentPadding = PaddingValues(
             start = px ?: 20.dp,
             top = py ?: 16.dp,

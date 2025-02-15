@@ -1,7 +1,6 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,13 +25,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(applicationContext: Context, navHostController: NavHostController) {
 
-    var email by remember { mutableStateOf(TextFieldValue("rasel@gmail.com")) }
+    var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
 
 
@@ -106,11 +106,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFEF4720), Color(0xFF89A5CE))
-                )
-            )
+
             .padding(16.dp)
 
     ) {
@@ -120,8 +116,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
             navigate = {
                 navHostController.navigate("home")
             },
-            title = "Login",
-            px = 40.dp
+            title = "Login"
         )
 
         Toast(modifier = Modifier, toastState = toastState)
@@ -158,11 +153,12 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                     ) {
-                        Text(
+                        CustomText(
                             text = "Login",
-                            color = Color.White,
-                            fontSize = 40.sp,
-                            style = MaterialTheme.typography.labelLarge
+                            color = Color.Black,
+                            fs = 28.sp,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
 
@@ -172,7 +168,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                     ) {
                         Text(
                             text = "Login your account.",
-                            color = Color(0xFFE0E0E0),
+                            color = Color.DarkGray,
                             fontSize = 16.sp,
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier
@@ -214,7 +210,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                         Column {
                             Text(
                                 text = "Don't have an  Account?",
-                                color = Color.White,
+                                color = Color.DarkGray,
                                 fontSize = 14.sp,
                             )
                             Text(
@@ -231,7 +227,7 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
 
                         Text(
                             text = "Forgot Password?",
-                            color = Color.White,
+                            color = Color.DarkGray,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .clickable {

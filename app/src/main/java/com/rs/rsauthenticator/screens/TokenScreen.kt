@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +41,7 @@ import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.state.AccountState
+import com.rs.rsauthenticator.state.AuthState
 
 
 @Composable
@@ -55,6 +54,8 @@ fun TokenScreen(
     val context = LocalContext.current
     val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
     val entries = AccountState.items
+
+    val auth = AuthState.auth
 
 
     LaunchedEffect(Unit) {
@@ -112,7 +113,7 @@ fun TokenScreen(
                     ) {
 
                         Image(
-                            painter = rememberAsyncImagePainter("https://avatars.githubusercontent.com/u/99707905?v=4"),
+                            painter = rememberAsyncImagePainter("https://rs-authenticator.vercel.app/boy.png"),
                             contentDescription = "Rs Authenticator Logo",
                             modifier = Modifier
                                 .size(60.dp)
@@ -123,7 +124,7 @@ fun TokenScreen(
                         RsColumn {
                             CustomText(
                                 modifier = Modifier,
-                                text = "Rs Authenticator",
+                                text = auth?.username ?: "Guest.",
                                 fs = 16.sp,
                                 pt = 5.dp,
                                 textAlign = TextAlign.Center,
@@ -132,14 +133,13 @@ fun TokenScreen(
                             )
                             CustomText(
                                 modifier = Modifier,
-                                text = "rasel.mahmud.dev@gmail.com",
+                                text = auth?.email ?: "guest@example.com",
                                 fs = 14.sp,
                                 pt = 5.dp,
                                 fontWeight = FontWeight.Normal,
                                 color = Color.Gray
                             )
                         }
-
                     }
 
                     RsRow {
@@ -147,10 +147,16 @@ fun TokenScreen(
                             modifier = Modifier
                                 .scale(0.8F)
                                 .zIndex(100F),
-                            iconSize = 20.sp,
+                            iconSize = 16.sp,
                             onClick = {
-                                navController.navigate("login")
+                                if (auth == null) {
+                                    navController.navigate("login")
+                                } else {
+                                    AuthState.clearAuthInfo(context)
+                                }
+
                             },
+                            label = if (auth == null) "Login" else "Logout",
                             icon = "\uf2f6"
                         )
                     }

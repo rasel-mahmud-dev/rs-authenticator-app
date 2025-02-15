@@ -141,7 +141,7 @@ fun AppsScreen(applicationContext: Context, navHostController: NavHostController
                 navHostController.navigate("home")
             },
             title = "Connected Apps",
-            px = 0.dp
+            gapX = 20.dp
         )
 
         Toast(modifier = Modifier, toastState = toastState)

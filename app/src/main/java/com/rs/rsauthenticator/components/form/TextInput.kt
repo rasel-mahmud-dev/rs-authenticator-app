@@ -3,7 +3,6 @@ package com.rs.rsauthenticator.components.form
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.rs.rsauthenticator.ui.theme.Primary40
 
 
 @Composable
@@ -46,14 +46,12 @@ fun TextInput(
     placeholder: String,
     label: String?,
     onChange: (TextFieldValue) -> Unit,
-    inputTextStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
+    inputTextStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
     placeholderTextStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
-        color = Color(
-            0xFFD3A8A3
-        )
+        color = Color(0xFFC5837B)
     ),
     labelTextStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
-        color = Color(0xFFFFFFFF)
+        color = Color(0xFF0A0A0A)
     ),
 ) {
 
@@ -62,12 +60,12 @@ fun TextInput(
 
     // Animate border color
     val borderColor by animateColorAsState(
-        targetValue = if (isFocused) Color(0xFFFFA69F) else Color.Transparent,
+        targetValue = if (isFocused) Primary40  else Color(0x61B7B7B7),
         animationSpec = tween(durationMillis = 300)
     )
 
     val borderWidth by animateDpAsState(
-        targetValue = if (isFocused) 1.dp else 0.dp,
+        targetValue = if (isFocused) 1.dp else 1.dp,
         animationSpec = tween(durationMillis = 500), label = ""
     )
 
@@ -87,7 +85,6 @@ fun TextInput(
                     borderColor,
                     shape = RoundedCornerShape(radius)
                 )
-                .background(Color(0x23FFEEEE), shape = RoundedCornerShape(radius))
                 .fillMaxWidth(),
         ) {
 
@@ -108,7 +105,7 @@ fun TextInput(
                     .onFocusChanged { focusState ->
                         isFocused = focusState.isFocused
                     },
-                cursorBrush = SolidColor(Color.White)
+                cursorBrush = SolidColor(Primary40)
             )
 
             if (value.text.isBlank()) {

@@ -5,15 +5,16 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 import android.database.Cursor
+import android.database.sqlite.SQLiteException
 
 class StateDatabaseHelper private constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "ApplicationState.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
-        private const val TABLE_STATE = "state"
+        const val TABLE_STATE = "state"
         private const val COLUMN_KEY = "key"
         private const val COLUMN_VALUE = "value"
 
@@ -21,6 +22,12 @@ class StateDatabaseHelper private constructor(context: Context) :
         private var instance: StateDatabaseHelper? = null
 
         fun getInstance(context: Context): StateDatabaseHelper {
+
+            val dbFile = context.getDatabasePath("ApplicationState.db")
+            println("Database path: ${dbFile.absolutePath}, Exists: ${dbFile.exists()}")
+
+
+
             return instance ?: synchronized(this) {
                 instance ?: StateDatabaseHelper(context.applicationContext).also { instance = it }
             }
@@ -32,13 +39,24 @@ class StateDatabaseHelper private constructor(context: Context) :
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        println("Creating database and state table...") // Debug log
         val createTableQuery = """
-            CREATE TABLE $TABLE_STATE (
-                $COLUMN_KEY TEXT PRIMARY KEY,
-                $COLUMN_VALUE TEXT
-            )
-        """.trimIndent()
-        db.execSQL(createTableQuery)
+        CREATE TABLE IF NOT EXISTS $TABLE_STATE (
+            $COLUMN_KEY TEXT PRIMARY KEY,
+            $COLUMN_VALUE TEXT
+        )
+    """.trimIndent()
+        try {
+            db.execSQL(createTableQuery)
+            println("Table $TABLE_STATE created successfully")
+        } catch (e: Exception) {
+            println("Error creating table: ${e.message}")
+        }
+    }
+
+    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_STATE") // Delete old data
+        onCreate(db) // Recreate the table
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -56,23 +74,36 @@ class StateDatabaseHelper private constructor(context: Context) :
     }
 
     fun getState(key: String): String? {
-        val db = readableDatabase
-        val cursor: Cursor = db.query(
-            TABLE_STATE,
-            arrayOf(COLUMN_VALUE),
-            "$COLUMN_KEY = ?",
-            arrayOf(key),
-            null,
-            null,
-            null
-        )
-        return if (cursor.moveToFirst()) {
-            cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_VALUE))
-        } else {
-            null
-        }.also {
-            cursor.close()
+        try {
+            val db = readableDatabase
+            val cursor: Cursor = db.query(
+                TABLE_STATE,
+                arrayOf(COLUMN_VALUE),
+                "$COLUMN_KEY = ?",
+                arrayOf(key),
+                null,
+                null,
+                null
+            )
+            return if (cursor.moveToFirst()) {
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_VALUE))
+            } else {
+                null
+            }.also {
+                cursor.close()
+            }
+        } catch (e: SQLiteException) {
+            println(e)
+            return ""
         }
+    }
+
+    fun getPin(): String? {
+        return this.getState("pin")
+    }
+
+    fun savePin(pin: String) {
+        this.saveState("pin", pin)
     }
 
     fun deleteState(key: String) {

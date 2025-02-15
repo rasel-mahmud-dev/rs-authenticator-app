@@ -52,7 +52,17 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
         while (true) {
             delay(1000)
 
-            if (remainingTime - System.currentTimeMillis() <= -1) {
+            val timeDff = remainingTime - System.currentTimeMillis()
+
+            if(timeDff > 30000){
+                val newOtp = generateTOTP(entry.secret)
+                otpCode = newOtp
+                remainingTime = System.currentTimeMillis() + 30000
+
+                scope.launch {
+                    totpDatabaseHelper.updateTotpEntry(entry.id, newOtp, remainingTime)
+                }
+            } else if ( timeDff <= -1) {
                 val newOtp = generateTOTP(entry.secret)
                 otpCode = newOtp
                 remainingTime = System.currentTimeMillis() + 30000
@@ -67,14 +77,15 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
         }
     }
 
-    val animatedProgress = animateFloatAsState(
-        targetValue = ((remainingTime - System.currentTimeMillis()) / 30000f).coerceIn(0f, 1f),
-        animationSpec = androidx.compose.animation.core.TweenSpec(
-            durationMillis = 1000,
-            easing = androidx.compose.animation.core.FastOutSlowInEasing
-        ), label = ""
-    ).value
+//    val animatedProgress = animateFloatAsState(
+//        targetValue = ((remainingTime - System.currentTimeMillis()) / 30000f).coerceIn(0f, 1f),
+//        animationSpec = androidx.compose.animation.core.TweenSpec(
+//            durationMillis = 1000,
+//            easing = androidx.compose.animation.core.FastOutSlowInEasing
+//        ), label = ""
+//    ).value
 
+    val targetValue = ((remainingTime - System.currentTimeMillis()) / 30000f).coerceIn(0f, 1f)
 
     Box(
         modifier = Modifier
@@ -119,18 +130,15 @@ fun AuthenticatorItem(entry: AuthenticatorEntry) {
                                 color = Color(0xFF727272),
                                 fs = 13.sp
                             )
-
                         }
                     }
 
                     RsColumn() {
                         GradientCircularProgressIndicator(
-                            progress = animatedProgress,
+                            progress = targetValue,
                             modifier = Modifier.size(40.dp),
                         )
-
                     }
-
                 }
             }
 

@@ -1,7 +1,6 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,8 +14,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -31,10 +30,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun RegistrationScreen(applicationContext: Context, navHostController: NavHostController) {
 
-    var email by remember { mutableStateOf(TextFieldValue("rasel.mahmud.dev@gmail.com")) }
+    var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
-    var phone by remember { mutableStateOf(TextFieldValue("01785513737")) }
-    var firstName by remember { mutableStateOf(TextFieldValue("Rasel")) }
+    var phone by remember { mutableStateOf(TextFieldValue("01799513737")) }
+    var firstName by remember { mutableStateOf(TextFieldValue("Test")) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -50,11 +49,6 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFEF4720), Color(0xFF89A5CE))
-                )
-            )
             .padding(16.dp)
 
 
@@ -99,9 +93,10 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                     ) {
                         Text(
                             text = "Create an account.",
-                            color = Color.White,
-                            fontSize = 40.sp,
-                            style = MaterialTheme.typography.labelLarge
+                            color = Color.Black,
+                            fontSize = 28.sp,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
@@ -111,7 +106,7 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                     ) {
                         Text(
                             text = "New account account.",
-                            color = Color(0xFFE0E0E0),
+                            color = Color.Gray,
                             fontSize = 16.sp,
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier
@@ -172,7 +167,7 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                         Column {
                             Text(
                                 text = "Already have an Account?",
-                                color = Color.White,
+                                color = Color.DarkGray,
                                 fontSize = 14.sp,
                             )
                             Text(

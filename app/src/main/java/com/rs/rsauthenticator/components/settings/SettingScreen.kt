@@ -26,13 +26,13 @@ data class Item(val label: String, val icon: String, val route: String)
 
 val items = listOf(
     Item("Home", "\uf015", "home"), // Home icon
-    Item("Profile", "\uf2bd", "profile"), // User icon
-    Item("Settings", "\uf013", "settings"), // Cog icon
-    Item("Backup", "\uf233", "backup"), // Cloud Upload icon
-    Item("Security", "\uf505", "security"), // Shield icon
-    Item("Trash", "\uf2ed", "trash"), // Trash bin icon
-    Item("About", "\uf05a", "about"), // Info circle icon
-    Item("Features", "\uf0eb", "features"), // Lightbulb icon
+    Item("Profile", "\uf2bd", "settings/profile"), // User icon
+//    Item("Settings", "\uf013", "settings/settings"), // Cog icon
+    Item("Backup", "\uf233", "settings/backup"), // Cloud Upload icon
+    Item("Security", "\uf505", "settings/security"), // Shield icon
+    Item("Trash", "\uf2ed", "settings/trash"), // Trash bin icon
+    Item("About", "\uf05a", "settings/about"), // Info circle icon
+    Item("Features", "\uf0eb", "settings/features"), // Lightbulb icon
 )
 
 @OptIn(ExperimentalLayoutApi::class)

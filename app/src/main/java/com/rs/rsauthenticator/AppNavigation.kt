@@ -14,6 +14,7 @@ import com.rs.rsauthenticator.screens.ForgotPasswordScreen
 import com.rs.rsauthenticator.screens.HomeScreen2
 import com.rs.rsauthenticator.screens.LoginScreen
 import com.rs.rsauthenticator.screens.RegistrationScreen
+import com.rs.rsauthenticator.screens.Settings.SecurityScreen
 import com.rs.rsauthenticator.state.AuthState
 
 
@@ -25,7 +26,8 @@ fun AppNavigation(context: Context, navController: NavHostController) {
     NavHost(
         navController = navController,
 //        startDestination = if (isAuthenticated) "home" else "login"
-        startDestination = "home"
+//        startDestination = "settings/about"
+        startDestination = "settings/security"
     ) {
 
         composable("home") {
@@ -42,17 +44,24 @@ fun AppNavigation(context: Context, navController: NavHostController) {
             ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
                 ConnectAppScreen(context, navController)
             }
-
-
         }
+
         composable("capture_qr") {
             ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
                 ConnectAppScreen(context, navController)
             }
         }
 
-        composable("about") {
+        composable("settings/about") {
             AboutScreen(context, navController)
+        }
+
+        composable("settings/security") {
+            SecurityScreen(context, navController)
+        }
+
+        composable("settings/trash") {
+            TrashScreen(context, navController)
         }
 
         composable("login") {

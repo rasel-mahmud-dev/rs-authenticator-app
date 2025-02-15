@@ -1,7 +1,6 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,8 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -35,11 +34,6 @@ fun ForgotPasswordScreen(applicationContext: Context, navHostController: NavHost
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFEF4720), Color(0xFF89A5CE))
-                )
-            )
             .padding(16.dp)
 
     ) {
@@ -50,7 +44,6 @@ fun ForgotPasswordScreen(applicationContext: Context, navHostController: NavHost
                 navHostController.navigate("home")
             },
             title = "Forgot Password.",
-            px = 40.dp
         )
 
 
@@ -88,22 +81,10 @@ fun ForgotPasswordScreen(applicationContext: Context, navHostController: NavHost
                     ) {
                         Text(
                             text = "Forgot password.",
-                            color = Color.White,
-                            fontSize = 40.sp,
+                            color = Color.Black,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.SemiBold,
                             style = MaterialTheme.typography.labelLarge
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        Text(
-                            text = "Login your account.",
-                            color = Color(0xFFE0E0E0),
-                            fontSize = 16.sp,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
                         )
                     }
 
@@ -121,15 +102,6 @@ fun ForgotPasswordScreen(applicationContext: Context, navHostController: NavHost
                     )
                     Spacer(Modifier.height(1.dp))
 
-                    TextInput(
-                        value = password,
-                        placeholder = "Your password",
-                        onChange = {
-                            password = it
-                        },
-                        label = "Password",
-                        keyboardType = KeyboardType.Password
-                    )
 
                     Row(
                         modifier = Modifier
@@ -140,35 +112,25 @@ fun ForgotPasswordScreen(applicationContext: Context, navHostController: NavHost
                     ) {
 
                         Column {
+
                             Text(
-                                text = "Don't have an  Account?",
-                                color = Color.White,
-                                fontSize = 14.sp,
-                            )
-                            Text(
-                                text = "Create Account",
+                                text = "Login here.",
                                 color = Color.Blue,
                                 fontSize = 14.sp,
                                 modifier = Modifier
-                                    .clickable { /* Handle Create Account */ }
+                                    .clickable {
+                                        navHostController.navigate("login")
+                                    }
                             )
 
                         }
-
-                        Text(
-                            text = "Forgot Password?",
-                            color = Color.Red,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .clickable { /* Handle Forgot Password */ }
-                        )
                     }
 
                     PrimaryButton(
                         modifier = Modifier
                             .padding(0.dp, 20.dp)
                             .align(Alignment.CenterHorizontally),
-                        label = "Login",
+                        label = "Request",
                         onClick = {},
                         icon = null,
                         px = 80.dp,
