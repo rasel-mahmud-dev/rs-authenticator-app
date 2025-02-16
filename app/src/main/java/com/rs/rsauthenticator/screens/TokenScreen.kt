@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,6 +46,7 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
+import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.state.AuthState
 import com.rs.rsauthenticator.utils.generateTOTP
@@ -60,14 +62,18 @@ fun TokenScreen(
 
     val context = LocalContext.current
     val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
-    val entries = AccountState.items
+    val entries =
+        remember { mutableStateListOf<AuthenticatorEntry>().apply { addAll(AccountState.items) } }
     var remainingTime by remember { mutableIntStateOf(LocalDateTime.now().second) }
     val auth = AuthState.auth
 
 
     LaunchedEffect(Unit) {
         AccountState.loadItems(dbHelper)
+        entries.clear()
+        entries.addAll(AccountState.items)
     }
+
 
 
     LaunchedEffect(Unit) {
@@ -76,12 +82,12 @@ fun TokenScreen(
             remainingTime = LocalDateTime.now().second
 
             if (remainingTime % 30 == 0) {
-                // rotate all code
-                Log.d("new tt", "aaa")
-                entries.forEach {
-                    val newOtp = generateTOTP(it.secret)
-                    dbHelper.updateTotpEntry(id = it.id, newOtp = newOtp)
-                }
+                val updatedEntries = entries.map { it.copy(otpCode = generateTOTP(it.secret)) }
+
+                updatedEntries.forEach { dbHelper.updateTotpEntry(id = it.id, newOtp = it.otpCode) }
+
+                entries.clear()
+                entries.addAll(updatedEntries)
             }
             Log.d("Timer", "Remaining Time: $remainingTime")
         }

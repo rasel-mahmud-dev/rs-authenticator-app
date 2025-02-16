@@ -29,7 +29,7 @@ import com.rs.rsauthenticator.utils.formatTimestamp
 
 @Composable
 fun AuthenticatorItem(entry: AuthenticatorEntry, remainingTime: Int) {
-    val progress = (remainingTime % 30) / 30f // Normalize between 0 and 1
+    val progress = (30 - remainingTime % 30) / 30f // Normalize between 0 and 1
 
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
