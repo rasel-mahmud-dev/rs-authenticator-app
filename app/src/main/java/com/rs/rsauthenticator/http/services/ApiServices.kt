@@ -1,12 +1,13 @@
 package com.rs.rsauthenticator.http.services
 
-import android.util.Log
+
 import com.rs.rsauthenticator.http.HttpClient
 import com.rs.rsauthenticator.http.model.request.LoginApiResponse
 import com.rs.rsauthenticator.http.model.request.RegistrationApiResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 
 object ApiService {
@@ -36,6 +37,7 @@ object ApiService {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("username" to username, "email" to email, "password" to password))
             }
+            println(response.bodyAsText())
             response.body<RegistrationApiResponse>()
         } catch (e: Exception) {
             e.printStackTrace()

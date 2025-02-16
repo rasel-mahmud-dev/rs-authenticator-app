@@ -48,8 +48,9 @@ import kotlinx.coroutines.launch
 fun LoginScreen(applicationContext: Context, navHostController: NavHostController) {
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
-    var password by remember { mutableStateOf(TextFieldValue("12345")) }
-
+    var password by remember { mutableStateOf(TextFieldValue("123456")) }
+    var loading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     var toastState by remember {
         mutableStateOf(
@@ -64,8 +65,11 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
 
     suspend fun handleLogin() {
         try {
+            errorMessage = ""
+            loading = true
             val res = ApiService.login(email.text, password.text)
-            val userId = res?.data?.user?._id
+
+            val userId = res?.data?.sessionId
             if (!userId.isNullOrEmpty()) {
                 toastState = toastState.copy(
                     isOpen = true,
@@ -74,31 +78,40 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                 )
 
 
+
                 AuthState.setAuthInfo(
                     applicationContext,
                     Auth(
-                        email = res.data.user.email,
-                        _id = res.data.user._id,
-                        username = res.data.user.username,
-                        token = res.data.session.token,
-                        avatar = res.data.user.avatar
+                        email = res.data.email,
+                        _id = res.data.id,
+                        username = res.data.username,
+                        token = res.data.token,
+                        avatar = res.data.avatar
                     )
                 )
                 navHostController.navigate("home")
+            } else {
+                errorMessage = res?.message ?: ""
+                toastState = toastState.copy(
+                    isOpen = true,
+                    isSuccess = false,
+                    message = errorMessage
+                )
             }
 
         } catch (ex: Exception) {
             println(ex)
-
+            errorMessage = ex.message ?: "An unexpected error occurred"
             toastState = toastState.copy(
                 isOpen = true,
                 isSuccess = false,
-                message = ex.message
+                message = errorMessage
             )
 
         } finally {
+            loading = false
             coroutineScope.launch {
-                delay(5000)
+                delay(2000)
                 toastState = toastState.copy(isOpen = false)
             }
         }
@@ -178,6 +191,17 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
 
                     Spacer(Modifier.height(20.dp))
 
+                    // Show error message if login fails
+                    errorMessage?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+
 
                     TextInput(
                         value = email,
@@ -241,12 +265,11 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                         modifier = Modifier
                             .padding(0.dp, 20.dp)
                             .align(Alignment.CenterHorizontally),
-                        label = "Submit",
+                        label = if (loading) "Logging in..." else "Submit",
                         onClick = {
-                            coroutineScope.launch {
-                                handleLogin()
+                            if (!loading) {
+                                coroutineScope.launch { handleLogin() }
                             }
-
                         },
                         icon = null,
                         px = 80.dp,

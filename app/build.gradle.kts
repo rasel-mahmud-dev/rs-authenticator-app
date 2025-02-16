@@ -94,6 +94,7 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.4.1")
     implementation("androidx.camera:camera-view:1.4.1")
 
-
+    implementation("org.jboss.aerogear:aerogear-otp-java:1.0.0")
+    implementation("commons-codec:commons-codec:1.15")
 
 }

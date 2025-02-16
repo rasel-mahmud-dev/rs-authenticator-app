@@ -1,5 +1,6 @@
 package com.rs.rsauthenticator.dto
 
+import com.rs.rsauthenticator.utils.extractOwnerAndSiteLogo
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -27,7 +28,6 @@ data class TotpUriData(
                 val matchResult = regex.find(decodedUri) ?: return null
 
                 val type = matchResult.groupValues[1]
-                val accountWithIssuer = matchResult.groupValues[2]
                 val queryParams = matchResult.groupValues[3]
 
                 val params = queryParams.split("&").associate {
@@ -36,21 +36,21 @@ data class TotpUriData(
                 }
 
 
-                val issuerParts = params["issuer"]?.split("|")
-                val issuer = issuerParts?.firstOrNull() ?: "Unknown"
-                val logoUrl = issuerParts?.getOrNull(1)
+                val issuer = params["issuer"]
+
+                val (ownerEmail, siteLogo) = extractOwnerAndSiteLogo(uri)
 
                 TotpUriData(
                     id = "",
                     protocol = "otpauth",
                     type = type,
-                    accountName = accountWithIssuer,
+                    accountName = ownerEmail,
                     secret = params["secret"] ?: "",
-                    issuer = issuer,
+                    issuer = issuer ?: "",
                     algorithm = params["algorithm"] ?: "SHA1",
                     digits = params["digits"]?.toInt() ?: 6,
                     period = params["period"]?.toInt() ?: 30,
-                    logoUrl = logoUrl,
+                    logoUrl = siteLogo,
                     newOtp = "",
                     remainingTime = 0f,
                     createdAt = System.currentTimeMillis()

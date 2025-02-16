@@ -6,7 +6,7 @@ data class AuthenticatorEntry(
     val logoUrl: String,
     val accountName: String,
     val secret: String,
-    val otpCode: String,
+    var otpCode: String,
     val remainingTime: Long,
     val createdAt: Long
 )

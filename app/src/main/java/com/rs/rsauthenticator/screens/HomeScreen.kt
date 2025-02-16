@@ -1,7 +1,6 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -11,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.HomeBottomNav
-import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.settings.SettingScreen
@@ -21,6 +19,7 @@ import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.state.AccountState
+import com.rs.rsauthenticator.utils.extractOwnerAndSiteLogo
 import com.rs.rsauthenticator.utils.generateTOTP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,8 +37,14 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
     var activeTab by remember { mutableStateOf("tokens") }
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
+
+//    otpauth://totp/rasel.mahmud.dev?secret=GEC7FRTCQRTFQIU6DNDZZWWB4A46FFBW&digits=6&issuer=Facebook
 //    var scannedCode by remember { mutableStateOf("otpauth://totp/RsAuth%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr:rasel@gmail.com?algorithm=SHA256&digits=6&issuer=RsAuth%7Chttps:%2F%2Fplay-lh.googleusercontent.com%2FDTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr&period=30&secret=V364VS7WUNHR4UJA3JEB4MVSNNFYSPYL") }
-    var scannedCode by remember { mutableStateOf("")}
+//    val a = "otpauth://totp/RsAuthenticatorWeb:test@gmail.com%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr?algorithm=SHA256&digits=6&issuer=RsAuthenticatorWeb&period=30&secret=EC7IJYYDQTEKIITXMVSJ7JJZJPKTMHYG"
+//    val a = "otpauth://totp/rasel.mahmud.dev?secret=GEC7FRTCQRTFQIU6DNDZZWWB4A46FFBW&digits=6&issuer=Facebook"
+
+
+    var scannedCode by remember { mutableStateOf("") }
     var toastState by remember {
         mutableStateOf(
             ToastState(
@@ -55,6 +60,7 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
         val totpData = TotpUriData.fromUri(scannedCode)
         totpData?.let {
 
+            println(scannedCode)
             if (it.secret.isNotEmpty() && it.issuer.isNotEmpty()) {
 
                 val item = dbHelper.findOneBySecret(it.secret)
@@ -105,7 +111,6 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
                     isOpen = false,
                 )
             }
-
         }
     }
 
@@ -127,10 +132,9 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
         ) {
 
             if (activeTab == "tokens") {
-                TokenScreen(navController, scannedCode, onShowBottomSheet = {
+                TokenScreen(navController, onShowBottomSheet = {
                     showBottomSheet = true
                 })
-
 
             } else {
                 SettingScreen(applicationContext, navController)

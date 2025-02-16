@@ -115,15 +115,15 @@ class TotpDatabaseHelper private constructor(context: Context) :
         }
     }
 
-    fun updateTotpEntry(id: String, newOtp: String, remainingTime: Long): Int {
+    fun updateTotpEntry(id: String, newOtp: String): Int {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
             put(COLUMN_NEW_OTP, newOtp) // Update the OTP
-            put(COLUMN_REMAINING_TIME, remainingTime) // Update the remaining time
         }
         // Update the row with the specific ID
         return db.update(TABLE_TOTP, contentValues, "$COLUMN_ID = ?", arrayOf(id))
     }
+
 
     fun updateOtpRemainingTime(id: String, remainingTime: Long): Int {
         val db = writableDatabase
@@ -148,8 +148,8 @@ class TotpDatabaseHelper private constructor(context: Context) :
                 val algorithm = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ALGORITHM))
                 val digits = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DIGITS))
                 val period = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERIOD))
-//                val createdAt =
-//                    cursor.getLongOrNull(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT))
+                val createdAt =
+                    cursor.getLongOrNull(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT))
                 val logoUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGO_URL))
                 val newOtp =
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NEW_OTP)) // Retrieve the new OTP
@@ -170,7 +170,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
                         logoUrl,
                         newOtp,
                         remainingTime,
-                        createdAt = 0
+                        createdAt = createdAt ?: 0
                     )
                 )
             } while (cursor.moveToNext())

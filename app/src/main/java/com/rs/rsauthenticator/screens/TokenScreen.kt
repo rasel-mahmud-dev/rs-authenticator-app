@@ -19,7 +19,11 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,24 +47,44 @@ import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.utils.generateTOTP
+import kotlinx.coroutines.delay
+import java.time.LocalDateTime
 
 
 @Composable
 fun TokenScreen(
     navController: NavHostController,
-    scannedCode: String,
     onShowBottomSheet: () -> Unit
 ) {
 
     val context = LocalContext.current
     val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
     val entries = AccountState.items
-
+    var remainingTime by remember { mutableIntStateOf(LocalDateTime.now().second) }
     val auth = AuthState.auth
 
 
     LaunchedEffect(Unit) {
         AccountState.loadItems(dbHelper)
+    }
+
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000L)
+            remainingTime = LocalDateTime.now().second
+
+            if (remainingTime % 30 == 0) {
+                // rotate all code
+                Log.d("new tt", "aaa")
+                entries.forEach {
+                    val newOtp = generateTOTP(it.secret)
+                    dbHelper.updateTotpEntry(id = it.id, newOtp = newOtp)
+                }
+            }
+            Log.d("Timer", "Remaining Time: $remainingTime")
+        }
     }
 
 
@@ -114,7 +138,7 @@ fun TokenScreen(
                     ) {
 
                         Image(
-                            painter = rememberAsyncImagePainter( auth?.avatar ?: R.drawable.avatar),
+                            painter = rememberAsyncImagePainter(auth?.avatar ?: R.drawable.avatar),
                             contentDescription = "Rs Authenticator Logo",
                             modifier = Modifier
                                 .size(60.dp)
@@ -169,7 +193,7 @@ fun TokenScreen(
             ) {
                 entries.forEach {
                     SwipeItem(it.id) {
-                        AuthenticatorItem(it)
+                        AuthenticatorItem(it, remainingTime)
                     }
                 }
             }

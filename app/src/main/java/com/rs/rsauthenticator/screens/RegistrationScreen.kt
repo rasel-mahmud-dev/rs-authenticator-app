@@ -34,13 +34,26 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
     var phone by remember { mutableStateOf(TextFieldValue("01799513737")) }
     var firstName by remember { mutableStateOf(TextFieldValue("Test")) }
+    var loading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
 
     suspend fun handleRegistration() {
         try {
+            loading = false
+            errorMessage = ""
             val res = ApiService.register(firstName.text, email.text, password.text)
             println(res)
+//            val userId = res?.data?.sessionId
+//            if (!userId.isNullOrEmpty()) {
+//                toastState = toastState.copy(
+//                    isOpen = true,
+//                    isSuccess = true,
+//                    message = "Successfully logged user."
+//                )
+//
+//            }
         } catch (ex: Exception) {
             println(ex)
         }
