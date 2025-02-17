@@ -30,6 +30,8 @@ fun HomeLayout(navHostController: NavHostController, content: @Composable () -> 
         }
     }
 
+    println(currentRoute)
+
     Box(modifier = Modifier.fillMaxSize()) {
         content.invoke()
         RsColumn(
