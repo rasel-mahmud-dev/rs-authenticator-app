@@ -35,7 +35,8 @@ fun PrimaryButton(
     iconSpaceX: Dp? = null,
     iconSize: TextUnit = 20.sp,
     py: Dp? = null,
-    radius: Dp? = null
+    radius: Dp? = null,
+    bgColor: Color? = null
 ) {
 
     Button(
@@ -43,7 +44,7 @@ fun PrimaryButton(
         onClick = {
             onClick()
         },
-        colors = ButtonDefaults.buttonColors(containerColor =  Primary40),
+        colors = ButtonDefaults.buttonColors(containerColor =  bgColor ?: Primary40),
         contentPadding = PaddingValues(
             start = px ?: 20.dp,
             top = py ?: 16.dp,

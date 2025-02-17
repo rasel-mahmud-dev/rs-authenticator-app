@@ -34,6 +34,8 @@ import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.state.AccountState
+import com.rs.rsauthenticator.ui.theme.Primary40
+import com.rs.rsauthenticator.ui.theme.Purple40
 import com.rs.rsauthenticator.utils.BackupManager
 import com.rs.rsauthenticator.utils.generateTOTP
 import getInputStreamFromUri
@@ -149,7 +151,6 @@ fun BackupRestore(applicationContext: Context, navHostController: NavHostControl
     fun handleRestore() {
         pickFileLauncher.launch("application/json")
     }
-
     Scaffold(
         topBar = {
             ScreenHeader(
@@ -168,7 +169,6 @@ fun BackupRestore(applicationContext: Context, navHostController: NavHostControl
 
                 Toast(modifier = Modifier, toastState = toastState)
 
-
                 RsColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -186,7 +186,6 @@ fun BackupRestore(applicationContext: Context, navHostController: NavHostControl
                         style = MaterialTheme.typography.headlineLarge
                     )
 
-                    // Description
                     CustomText(
                         text = "Easily backup and restore your data. Deleted items will appear here, and you can restore them within 30 days before they are permanently deleted.",
                         color = Color.Gray,
@@ -203,14 +202,19 @@ fun BackupRestore(applicationContext: Context, navHostController: NavHostControl
                     ) {
                         PrimaryButton(
                             onClick = { handleRestore() },
-                            modifier = Modifier.weight(1F),
-                            label = "Import Backup"
+                            modifier = Modifier
+                                .weight(1F),
+                            label = "Import",
+                            icon = "\uf56f"
                         )
 
                         PrimaryButton(
+                            bgColor = Purple40,
                             onClick = { handleBackup() },
-                            modifier = Modifier.weight(1F),
-                            label = "Export Backup"
+                            modifier = Modifier
+                                .weight(1F),
+                            label = "Export",
+                            icon = "\uf56e"
                         )
                     }
                 }
