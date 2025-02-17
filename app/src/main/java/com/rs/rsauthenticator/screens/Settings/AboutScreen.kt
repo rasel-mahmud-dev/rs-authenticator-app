@@ -31,49 +31,51 @@ import com.rs.rsauthenticator.ui.theme.faBrand
 fun AboutScreen(applicationContext: Context, navHostController: NavHostController) {
 
 
-    RsColumn() {
+    Scaffold(
+        topBar = {
+            ScreenHeader(
+                title = "About",
+                navigate = { navHostController.popBackStack() }
+            )
+        },
+        content = { padding ->
 
-        ScreenHeader(title = "Back", navigate = {
-            navHostController.popBackStack()
+            RsColumn(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                CustomText(
+                    text = "About",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fs = 24.sp,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                Text(
+                    text = "This application is designed to enhance user productivity by providing a clean and intuitive interface.\n\n" +
+                            "Explore its features and enjoy a seamless experience tailored to your needs.\n\n",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+
+                PrimaryButton(modifier = Modifier
+                    .clip(shape = CircleShape),
+                    label = "Project Details",
+                    onClick = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://github.com/rasel-mahmud-dev/rs-authenticator-app")
+                        )
+                        applicationContext.startActivity(intent)
+                    })
+            }
         })
-
-        RsColumn(
-            pt = 40.dp,
-            px = 16.dp,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            CustomText(
-                text = "About",
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                fs = 24.sp,
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Text(
-                text = "This application is designed to enhance user productivity by providing a clean and intuitive interface.\n\n" +
-                        "Explore its features and enjoy a seamless experience tailored to your needs.\n\n",
-                color = Color.Gray,
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-
-            PrimaryButton(modifier = Modifier
-                .clip(shape = CircleShape),
-                label = "Project Details",
-                onClick = {
-                    val intent = Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("https://github.com/rasel-mahmud-dev/rs-authenticator-app")
-                    )
-                    applicationContext.startActivity(intent)
-                })
-        }
-    }
 }

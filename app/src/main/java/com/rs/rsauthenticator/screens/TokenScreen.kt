@@ -86,7 +86,7 @@ fun TokenScreen(
                     )
                 }
             }
-            Log.d("Timer", "Remaining Time: $remainingTime")
+//            Log.d("Timer", "Remaining Time: $remainingTime")
         }
     }
 
