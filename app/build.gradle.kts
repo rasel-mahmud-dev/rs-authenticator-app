@@ -98,4 +98,8 @@ dependencies {
     implementation("org.jboss.aerogear:aerogear-otp-java:1.0.0")
     implementation("commons-codec:commons-codec:1.15")
 
+
+    implementation("com.google.accompanist:accompanist-pager:0.36.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
+
 }

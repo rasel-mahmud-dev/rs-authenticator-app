@@ -10,16 +10,19 @@ import com.rs.rsauthenticator.components.AuthExcludeRoute
 import com.rs.rsauthenticator.components.ProtectedRoute
 import com.rs.rsauthenticator.components.settings.SettingScreen
 import com.rs.rsauthenticator.layout.HomeLayout
+import com.rs.rsauthenticator.screens.AboutScreen
 import com.rs.rsauthenticator.screens.AppsScreen
 import com.rs.rsauthenticator.screens.ConnectAppScreen
 import com.rs.rsauthenticator.screens.ForgotPasswordScreen
 import com.rs.rsauthenticator.screens.HomeScreen2
 import com.rs.rsauthenticator.screens.LoginScreen
 import com.rs.rsauthenticator.screens.RegistrationScreen
-import com.rs.rsauthenticator.screens.Settings.BackupRestore
-import com.rs.rsauthenticator.screens.Settings.FeaturesScreen
-import com.rs.rsauthenticator.screens.Settings.ProfileScreen
-import com.rs.rsauthenticator.screens.Settings.SecurityScreen
+import com.rs.rsauthenticator.screens.BackupRestore
+import com.rs.rsauthenticator.screens.FeaturesScreen
+import com.rs.rsauthenticator.screens.ProfileScreen
+import com.rs.rsauthenticator.screens.SecurityScreen
+import com.rs.rsauthenticator.screens.TourScreen
+import com.rs.rsauthenticator.screens.TrashScreen
 import com.rs.rsauthenticator.state.AuthState
 
 
@@ -31,7 +34,7 @@ fun AppNavigation(context: Context, navController: NavHostController) {
     NavHost(
         navController = navController,
 //        startDestination = if (isAuthenticated) "home" else "login"
-        startDestination = "home"
+        startDestination = "tour"
 //        startDestination = "settings/about"
 //        startDestination = "settings/security"
     ) {
@@ -108,16 +111,9 @@ fun AppNavigation(context: Context, navController: NavHostController) {
             }
         }
 
-        composable("appDetails/{appName}") { backStackEntry ->
-            val appName = backStackEntry.arguments?.getString("appName")
-            if (isAuthenticated) {
-//                AppDetailsScreen(appName ?: "Unknown")
-            } else {
-                // If not authenticated, navigate to login screen
-                navController.navigate("login") {
-                    popUpTo("appDetails") { inclusive = true }
-                }
-            }
+        composable("tour") {
+            TourScreen(context, navController)
         }
+
     }
 }

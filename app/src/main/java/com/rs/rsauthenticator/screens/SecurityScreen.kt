@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.screens.Settings
+package com.rs.rsauthenticator.screens
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement

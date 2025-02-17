@@ -75,10 +75,14 @@ fun TokenScreen(
             remainingTime = LocalDateTime.now().second
 
             if (remainingTime % 30 == 0) {
-                AccountState.updateAll(AccountState.items.map { it.copy(otpCode = generateTOTP(
-                    it.secret,
-                    it.algorithm
-                )) })
+                AccountState.updateAll(AccountState.items.map {
+                    it.copy(
+                        otpCode = generateTOTP(
+                            it.secret,
+                            it.algorithm
+                        )
+                    )
+                })
                 AccountState.items.forEach {
                     dbHelper.updateTotpEntry(
                         id = it.id,
@@ -100,7 +104,7 @@ fun TokenScreen(
         RsColumn(
             Modifier
                 .zIndex(100F)
-                .align(Alignment.BottomEnd), py = 80.dp, px = 10.dp
+                .align(Alignment.BottomEnd), py = 100.dp, px = 10.dp
         ) {
             PrimaryButton(
                 onClick = {

@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.layout
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -7,11 +7,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
 import androidx.navigation.compose.rememberNavController
 import com.rs.rsauthenticator.AppNavigation
-import com.rs.rsauthenticator.components.MainSideBar
 
 
 @Composable

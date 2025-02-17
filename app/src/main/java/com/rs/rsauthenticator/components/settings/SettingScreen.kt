@@ -37,6 +37,7 @@ val items = listOf(
     Item("Trash", "\uf2ed", "settings/trash"), // Trash bin icon
     Item("About", "\uf05a", "settings/about"), // Info circle icon
     Item("Features", "\uf0eb", "settings/features"), // Lightbulb icon
+    Item("Guide(Tour)", "\uf0eb", "tour"), // Lightbulb icon
 )
 
 @OptIn(ExperimentalLayoutApi::class)
