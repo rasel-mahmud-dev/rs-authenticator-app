@@ -23,8 +23,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.ScreenHeader
+import com.rs.rsauthenticator.components.Toast
+import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
 import com.rs.rsauthenticator.http.services.ApiService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,6 +40,16 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+    var toastState by remember {
+        mutableStateOf(
+            ToastState(
+                isOpen = false,
+                isSuccess = false,
+                message = ""
+            )
+        )
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     suspend fun handleRegistration() {
@@ -45,17 +58,37 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
             errorMessage = ""
             val res = ApiService.register(firstName.text, email.text, password.text)
             println(res)
-//            val userId = res?.data?.sessionId
-//            if (!userId.isNullOrEmpty()) {
-//                toastState = toastState.copy(
-//                    isOpen = true,
-//                    isSuccess = true,
-//                    message = "Successfully logged user."
-//                )
-//
-//            }
+            val userId = res?.data?.id
+            if (!userId.isNullOrEmpty()) {
+                toastState = toastState.copy(
+                    isOpen = true,
+                    isSuccess = true,
+                    message = "Successfully registered user."
+                )
+
+                navHostController.navigate("login")
+            } else {
+                errorMessage = res?.message ?: ""
+                toastState = toastState.copy(
+                    isOpen = true,
+                    isSuccess = false,
+                    message = errorMessage
+                )
+            }
         } catch (ex: Exception) {
-            println(ex)
+            errorMessage = ex.message ?: "An unexpected error occurred"
+            toastState = toastState.copy(
+                isOpen = true,
+                isSuccess = false,
+                message = errorMessage
+            )
+
+        } finally {
+            loading = false
+            coroutineScope.launch {
+                delay(2000)
+                toastState = toastState.copy(isOpen = false)
+            }
         }
     }
 
@@ -74,6 +107,7 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
             title = "Registration"
         )
 
+        Toast(modifier = Modifier, toastState = toastState)
 
         Column(
             modifier = Modifier
@@ -127,6 +161,16 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                     }
 
                     Spacer(Modifier.height(20.dp))
+                    // Show error message if login fails
+                    errorMessage?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
 
                     TextInput(
                         value = firstName,
@@ -199,10 +243,10 @@ fun RegistrationScreen(applicationContext: Context, navHostController: NavHostCo
                         modifier = Modifier
                             .padding(0.dp, 20.dp)
                             .align(Alignment.CenterHorizontally),
-                        label = "Submit",
+                        label = if (loading) "Creating account..." else "Submit",
                         onClick = {
-                            coroutineScope.launch {
-                                handleRegistration()
+                            if (!loading) {
+                                coroutineScope.launch { handleRegistration() }
                             }
                         },
                         icon = null,

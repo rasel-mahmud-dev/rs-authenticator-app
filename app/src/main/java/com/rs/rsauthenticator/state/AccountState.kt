@@ -14,18 +14,22 @@ object AccountState {
             AuthenticatorEntry(
                 issuer = account.issuer,
                 accountName = account.accountName,
-                otpCode = generateTOTP(account.secret),
+                otpCode = generateTOTP(account.secret, account.algorithm),
                 remainingTime = account.remainingTime?.toLong() ?: 0, // getRemainingTime()
                 secret = account.secret,
                 id = account.id,
                 logoUrl = account.logoUrl ?: "",
-                createdAt = account.createdAt
+                createdAt = account.createdAt,
+                algorithm = account.algorithm
             )
         }
     }
 
-    fun insertItem(dbHelper: TotpDatabaseHelper, entry: AuthenticatorEntry) {
+    fun updateAll(items: List<AuthenticatorEntry>) {
+        _items = items
+    }
 
+    fun insertItem(entry: AuthenticatorEntry) {
 //        val newOtp = generateTOTP(entry.secret)
 //        dbHelper.insertTotpEntry(entry, newOtp, 30F)
         _items = _items + entry

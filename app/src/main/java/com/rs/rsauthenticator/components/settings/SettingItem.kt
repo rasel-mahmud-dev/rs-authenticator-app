@@ -14,7 +14,6 @@ import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsRow
 
-
 @Composable
 fun SettingItem(item: Item, navController: NavHostController) {
     RsRow(

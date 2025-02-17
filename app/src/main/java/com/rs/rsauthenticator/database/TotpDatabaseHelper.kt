@@ -212,6 +212,7 @@ class TotpDatabaseHelper private constructor(context: Context) :
 
     fun deleteTotpEntry(id: String) {
         val db = writableDatabase
-        db.delete(TABLE_TOTP, "$COLUMN_ID = ?", arrayOf(id))
+        val res = db.delete(TABLE_TOTP, "$COLUMN_ID = ?", arrayOf(id))
+        println(res)
     }
 }

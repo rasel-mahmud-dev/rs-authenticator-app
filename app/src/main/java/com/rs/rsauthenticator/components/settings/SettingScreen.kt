@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.CustomText
-import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.ui.theme.faBrand
@@ -43,9 +42,6 @@ val items = listOf(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SettingScreen(applicationContext: Context, navController: NavHostController) {
-    var showBottomSheet by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-
     Box(
         modifier = Modifier
             .fillMaxSize()

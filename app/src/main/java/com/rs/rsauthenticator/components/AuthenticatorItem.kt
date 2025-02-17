@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.R
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
+import com.rs.rsauthenticator.ui.theme.faBrand
 import com.rs.rsauthenticator.utils.formatTimestamp
+import com.rs.rsauthenticator.utils.iconsMapping
 
 
 @Composable
@@ -35,6 +37,8 @@ fun AuthenticatorItem(entry: AuthenticatorEntry, remainingTime: Int) {
         targetValue = progress,
         animationSpec = tween(durationMillis = 1000) // Smooth transition
     )
+
+    val icon = iconsMapping.entries.find { entry.issuer.contains(it.key, ignoreCase = true) }?.value
 
 
     Box(
@@ -56,14 +60,18 @@ fun AuthenticatorItem(entry: AuthenticatorEntry, remainingTime: Int) {
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
 
-                        Image(
-                            painter = rememberAsyncImagePainter(if (entry.logoUrl == "") R.drawable.site else entry.logoUrl),
-                            contentDescription = "Rs",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop,
-                        )
+                        if (icon != null) {
+                            CustomText(icon = icon, fs = 35.sp, fontFamily = faBrand)
+                        } else {
+                            Image(
+                                painter = rememberAsyncImagePainter(if (entry.logoUrl == "") R.drawable.site else entry.logoUrl),
+                                contentDescription = "Rs",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
 
                         RsColumn {
                             CustomText(

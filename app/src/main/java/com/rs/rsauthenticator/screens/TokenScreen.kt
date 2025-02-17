@@ -3,8 +3,10 @@ package com.rs.rsauthenticator.screens
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
@@ -21,8 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,7 +47,6 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
-import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.state.AuthState
 import com.rs.rsauthenticator.utils.generateTOTP
@@ -62,19 +62,12 @@ fun TokenScreen(
 
     val context = LocalContext.current
     val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
-    val entries =
-        remember { mutableStateListOf<AuthenticatorEntry>().apply { addAll(AccountState.items) } }
     var remainingTime by remember { mutableIntStateOf(LocalDateTime.now().second) }
     val auth = AuthState.auth
 
-
     LaunchedEffect(Unit) {
         AccountState.loadItems(dbHelper)
-        entries.clear()
-        entries.addAll(AccountState.items)
     }
-
-
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -82,12 +75,16 @@ fun TokenScreen(
             remainingTime = LocalDateTime.now().second
 
             if (remainingTime % 30 == 0) {
-                val updatedEntries = entries.map { it.copy(otpCode = generateTOTP(it.secret)) }
-
-                updatedEntries.forEach { dbHelper.updateTotpEntry(id = it.id, newOtp = it.otpCode) }
-
-                entries.clear()
-                entries.addAll(updatedEntries)
+                AccountState.updateAll(AccountState.items.map { it.copy(otpCode = generateTOTP(
+                    it.secret,
+                    it.algorithm
+                )) })
+                AccountState.items.forEach {
+                    dbHelper.updateTotpEntry(
+                        id = it.id,
+                        newOtp = it.otpCode
+                    )
+                }
             }
             Log.d("Timer", "Remaining Time: $remainingTime")
         }
@@ -112,7 +109,7 @@ fun TokenScreen(
                 modifier = Modifier
                     .zIndex(100F)
                     .padding(3.dp),
-                label = if (entries.isEmpty()) "New Connection" else "",
+                label = if (AccountState.items.isEmpty()) "New Connection" else "",
                 iconSize = 18.sp,
                 icon = "\u002b",
             )
@@ -139,12 +136,20 @@ fun TokenScreen(
                 ) {
 
                     RsRow(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(shape = RoundedCornerShape(12.dp))
+                            .clickable {
+                                navController.navigate("settings/profile")
+                            },
+
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+
+                        ) {
 
                         Image(
-                            painter = rememberAsyncImagePainter(auth?.avatar ?: R.drawable.avatar),
+                            painter = rememberAsyncImagePainter(if (auth?.avatar.isNullOrEmpty()) R.drawable.avatar else auth?.avatar),
                             contentDescription = "Rs Authenticator Logo",
                             modifier = Modifier
                                 .size(60.dp)
@@ -152,7 +157,7 @@ fun TokenScreen(
                             contentScale = ContentScale.Crop,
                         )
 
-                        RsColumn {
+                        Column {
                             CustomText(
                                 modifier = Modifier,
                                 text = auth?.username ?: "Guest.",
@@ -197,7 +202,7 @@ fun TokenScreen(
             RsColumn(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                entries.forEach {
+                AccountState.items.forEach {
                     SwipeItem(it.id) {
                         AuthenticatorItem(it, remainingTime)
                     }

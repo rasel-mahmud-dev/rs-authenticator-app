@@ -37,7 +37,6 @@ object ApiService {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("username" to username, "email" to email, "password" to password))
             }
-            println(response.bodyAsText())
             response.body<RegistrationApiResponse>()
         } catch (e: Exception) {
             e.printStackTrace()

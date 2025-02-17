@@ -40,6 +40,10 @@ data class TotpUriData(
 
                 val (ownerEmail, siteLogo) = extractOwnerAndSiteLogo(uri)
 
+                val algorithm = params["algorithm"] ?: "SHA1"
+
+                println(algorithm)
+
                 TotpUriData(
                     id = "",
                     protocol = "otpauth",
@@ -47,7 +51,7 @@ data class TotpUriData(
                     accountName = ownerEmail,
                     secret = params["secret"] ?: "",
                     issuer = issuer ?: "",
-                    algorithm = params["algorithm"] ?: "SHA1",
+                    algorithm = algorithm,
                     digits = params["digits"]?.toInt() ?: 6,
                     period = params["period"]?.toInt() ?: 30,
                     logoUrl = siteLogo,

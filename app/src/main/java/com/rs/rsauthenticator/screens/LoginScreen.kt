@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun LoginScreen(applicationContext: Context, navHostController: NavHostController) {
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
-    var password by remember { mutableStateOf(TextFieldValue("123456")) }
+    var password by remember { mutableStateOf(TextFieldValue("12345")) }
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
@@ -76,8 +76,6 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                     isSuccess = true,
                     message = "Successfully logged user."
                 )
-
-
 
                 AuthState.setAuthInfo(
                     applicationContext,

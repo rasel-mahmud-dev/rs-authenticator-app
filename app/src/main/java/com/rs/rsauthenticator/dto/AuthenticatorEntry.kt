@@ -8,5 +8,6 @@ data class AuthenticatorEntry(
     val secret: String,
     var otpCode: String,
     val remainingTime: Long,
+    val algorithm: String,
     val createdAt: Long
 )
