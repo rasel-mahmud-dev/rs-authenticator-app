@@ -5,14 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import com.rs.rsauthenticator.components.HomeBottomNav
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
-import com.rs.rsauthenticator.components.settings.SettingScreen
 import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
@@ -31,9 +28,6 @@ import kotlinx.coroutines.launch
 fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
 
     val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
-
-
-    var activeTab by remember { mutableStateOf("tokens") }
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -114,37 +108,18 @@ fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
 
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        activeTab = "tokens"
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         Toast(modifier = Modifier, toastState = toastState)
 
-
         RsColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            if (activeTab == "tokens") {
-                TokenScreen(navController, onShowBottomSheet = {
-                    showBottomSheet = true
-                })
-
-            } else {
-                SettingScreen(applicationContext, navController)
-            }
-        }
-
-        RsColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomStart)
-        ) {
-            HomeBottomNav(activeTab = activeTab, onChangeTab = { activeTab = it })
-
+            TokenScreen(navController, onShowBottomSheet = {
+                showBottomSheet = true
+            })
         }
 
         if (showBottomSheet) {

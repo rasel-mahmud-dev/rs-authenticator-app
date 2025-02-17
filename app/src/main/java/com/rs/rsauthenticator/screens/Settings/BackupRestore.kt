@@ -34,7 +34,6 @@ import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.state.AccountState
-import com.rs.rsauthenticator.ui.theme.Primary40
 import com.rs.rsauthenticator.ui.theme.Purple40
 import com.rs.rsauthenticator.utils.BackupManager
 import com.rs.rsauthenticator.utils.generateTOTP

@@ -31,17 +31,17 @@ fun HomeBottomNav(activeTab: String, onChangeTab: (t: String) -> Unit) {
 
             RsColumn(horizontalAlignment = Alignment.CenterHorizontally) {
                 RsIconButton(
-                    onClick = { onChangeTab("tokens") },
+                    onClick = { onChangeTab("home") },
                     modifier = Modifier
                         .padding(0.dp)
                         .width(70.dp)
                         .height(35.dp),
                     radius = 60.dp,
-                    bgColor = if (activeTab === "tokens") Color(0x32F44336) else Color.Transparent
+                    bgColor = if (activeTab === "home") Color(0x32F44336) else Color.Transparent
                 ) {
                     CustomText(
                         icon = "\uf015",
-                        color = if (activeTab === "tokens") Color(0xFFF44336) else Color(
+                        color = if (activeTab === "home") Color(0xFFF44336) else Color(
                             0xFF6B6B6B
                         ),
                         fontWeight = FontWeight.Bold,
@@ -51,7 +51,7 @@ fun HomeBottomNav(activeTab: String, onChangeTab: (t: String) -> Unit) {
                 CustomText(
                     text = "Tokens",
                     fs = 13.sp,
-                    color = if (activeTab === "tokens") Color(0xFFF44336) else Color(
+                    color = if (activeTab === "home") Color(0xFFF44336) else Color(
                         0xFF6B6B6B
                     ),
                     fontWeight = FontWeight.Medium,

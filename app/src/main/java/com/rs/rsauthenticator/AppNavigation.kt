@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rs.rsauthenticator.components.AuthExcludeRoute
 import com.rs.rsauthenticator.components.ProtectedRoute
+import com.rs.rsauthenticator.components.settings.SettingScreen
+import com.rs.rsauthenticator.layout.HomeLayout
 import com.rs.rsauthenticator.screens.AppsScreen
 import com.rs.rsauthenticator.screens.ConnectAppScreen
 import com.rs.rsauthenticator.screens.ForgotPasswordScreen
@@ -35,7 +37,15 @@ fun AppNavigation(context: Context, navController: NavHostController) {
     ) {
 
         composable("home") {
-            HomeScreen2(context, navController)
+            HomeLayout(navController) {
+                HomeScreen2(context, navController)
+            }
+        }
+
+        composable("settings") {
+            HomeLayout(navController) {
+                SettingScreen(context, navController)
+            }
         }
 
         composable("apps") {
