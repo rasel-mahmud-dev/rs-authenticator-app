@@ -113,6 +113,10 @@ class AppStateDbHelper private constructor(context: Context) :
         this.saveState("pin_enabled", "1")
     }
 
+    fun setPinEnabled(isEnabled: Boolean) {
+        this.saveState("pin_enabled", if (isEnabled) "1" else "0")
+    }
+
     fun deleteState(key: String) {
         val db = writableDatabase
         db.delete(TABLE_STATE, "$COLUMN_KEY = ?", arrayOf(key))

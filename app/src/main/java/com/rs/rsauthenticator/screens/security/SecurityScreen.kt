@@ -36,6 +36,7 @@ import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.database.AppStateDbHelper
+import com.rs.rsauthenticator.ui.theme.AppColors
 import com.rs.rsauthenticator.ui.theme.Primary40
 
 
@@ -53,13 +54,7 @@ fun SecurityScreen(navHostController: NavHostController) {
     val context = LocalContext.current
     val db = AppStateDbHelper.getInstance(context)
 
-    var pin by remember { mutableStateOf(TextFieldValue("")) }
-    var confirmPin by remember { mutableStateOf(TextFieldValue("")) }
-    var savedPin by remember { mutableStateOf(db.getPin()) }
-    var step by remember { mutableIntStateOf(1) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    var isPinEnabled by rememberSaveable { mutableStateOf(false) }
+    var isPinEnabled by rememberSaveable { mutableStateOf(db.isPinEnabled()) }
 
     val securityItems = listOf(
         SecurityItem(
@@ -78,39 +73,33 @@ fun SecurityScreen(navHostController: NavHostController) {
         )
     )
 
+    Scaffold(
+        topBar = {
+            ScreenHeader(
+                title = "Security",
+                navigate = { navHostController.popBackStack() }
+            )
+        },
+        content = { padding ->
 
-        Scaffold(
-            topBar = {
-                ScreenHeader(
-                    title = "Security",
-                    navigate = { navHostController.popBackStack() }
-                )
-            },
-            content = { padding ->
 
-            RsColumn(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                CustomText(
-                    text = when {
-                        step == 1 -> "Set Your PIN"
-                        else -> "Confirm Your PIN"
-                    },
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fs = 24.sp,
-                    style = MaterialTheme.typography.headlineMedium
-                )
+            RsColumn(modifier = Modifier.padding(padding)) {
+
+                RsColumn(pb = 5.dp, pt = 30.dp, pl = 16.dp) {
+                    CustomText(
+                        text = "APPLICATION LOCK",
+                        fs = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = AppColors.Dark10
+                    )
+                }
 
                 securityItems.forEach { item ->
                     SecurityItemRow(item, navHostController) { newState ->
                         if (item.title == "Pin Lock") {
+                            db.setPinEnabled(false)
                             isPinEnabled = newState
+
                         }
                     }
                 }
@@ -134,7 +123,7 @@ fun SecurityItemRow(
                     navHostController.navigate(item.routePath)
                 }
             }
-            .padding(vertical = 12.dp, horizontal = 12.dp),
+            .padding(vertical = 12.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {

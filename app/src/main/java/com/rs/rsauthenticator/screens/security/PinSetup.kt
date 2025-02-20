@@ -32,6 +32,7 @@ import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.components.ScreenHeader
+import com.rs.rsauthenticator.components.unlock.PinKeyboard
 import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.ui.theme.AppColors
 import com.rs.rsauthenticator.ui.theme.faSolid
@@ -39,13 +40,12 @@ import com.rs.rsauthenticator.ui.theme.faSolid
 
 @Composable
 fun PinSetupScreen(navHostController: NavHostController) {
-    var pin by remember { mutableStateOf("") }
     val maxPinLength = 4
 
     val context = LocalContext.current
     val db = AppStateDbHelper.getInstance(context)
 
-    fun handleSetupPin() {
+    fun handleSetupPin(pin: String) {
         db.savePin(pin)
         navHostController.navigate("settings/security")
     }
@@ -75,76 +75,11 @@ fun PinSetupScreen(navHostController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            RsRow(
-                modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                repeat(maxPinLength) { index ->
-                    Box(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .border(
-                                1.dp,
-                                if (index < pin.length) AppColors.Primary10 else Color.Gray,
-                                RoundedCornerShape(12.dp)
-                            ), contentAlignment = Alignment.Center
-                    ) {
-                        if (index < pin.length) {
-                            CustomText(
-                                icon = "\uf621",
-                                color = AppColors.Primary40,
-                                fontFamily = faSolid,
-                                fs = 14.sp
-                            )
-                        }
-                    }
-                }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            CustomText(
-                text = "Enter PIN", color = AppColors.Dark5, fs = 16.sp
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            val keys = listOf(
-                listOf("1", "2", "3"),
-                listOf("4", "5", "6"),
-                listOf("7", "8", "9"),
-                listOf("", "0", "clear")
-            )
-
-            keys.forEach { row ->
-                Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                    row.forEach { key ->
-
-                        Box(modifier = Modifier
-                            .size(80.dp)
-                            .clickable {
-                                when {
-                                    key == "clear" && pin.isNotEmpty() -> pin = pin.dropLast(1)
-                                    key != "clear" && pin.length < maxPinLength -> pin += key
-                                }
-
-                                if (pin.length == 4) {
-                                    handleSetupPin()
-                                }
-                            }
-                            .background(Color.Transparent),
-                            contentAlignment = Alignment.Center) {
-
-                            CustomText(
-                                icon = if (key == "clear") "\uf55a" else key,
-                                fs = 24.sp,
-                                color = AppColors.Dark10,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-
-                    }
-                }
+            PinKeyboard {
+                handleSetupPin(it)
             }
         }
     })
