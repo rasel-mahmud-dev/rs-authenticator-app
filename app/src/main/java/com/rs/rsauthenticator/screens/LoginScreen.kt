@@ -1,6 +1,7 @@
 package com.rs.rsauthenticator.screens
 
 import android.content.Context
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
+import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.ToastState
@@ -41,11 +45,17 @@ import com.rs.rsauthenticator.components.form.TextInput
 import com.rs.rsauthenticator.http.services.ApiService
 import com.rs.rsauthenticator.state.Auth
 import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.ui.theme.Primary40
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(applicationContext: Context, navHostController: NavHostController) {
+fun LoginScreen(navHostController: NavHostController) {
+
+
+    val applicationContext = LocalContext.current
+
+
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
@@ -138,142 +148,138 @@ fun LoginScreen(applicationContext: Context, navHostController: NavHostControlle
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-
-            Card(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-//                    .padding(horizontal = 16.dp),
-//                shape = RoundedCornerShape(16.dp),
-//                colors = CardDefaults.cardColors(containerColor = Color(0x16FFFFFF))
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
-                )
+                    .padding(8.dp)
+                    .padding(0.dp, 40.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
+
                 Column(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .padding(0.dp, 40.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    CustomText(
+                        text = "Login",
+                        color = Color.Black,
+                        fs = 28.sp,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Login your account.",
+                        color = Color.DarkGray,
+                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                    )
+                }
+
+                Spacer(Modifier.height(20.dp))
+
+                errorMessage?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
+                TextInput(
+                    value = email,
+                    placeholder = "Enter email.",
+                    onChange = {
+                        email = it
+                    },
+                    label = "Email",
+                    keyboardType = KeyboardType.Email
+                )
+                Spacer(Modifier.height(1.dp))
+
+                TextInput(
+                    value = password,
+                    placeholder = "Your password",
+                    onChange = {
+                        password = it
+                    },
+                    label = "Password",
+                    keyboardType = KeyboardType.Password
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
                 ) {
 
-
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        CustomText(
-                            text = "Login",
-                            color = Color.Black,
-                            fs = 28.sp,
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                    ) {
+                    Column {
                         Text(
-                            text = "Login your account.",
+                            text = "Don't have an  Account?",
                             color = Color.DarkGray,
-                            fontSize = 16.sp,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
-                        )
-                    }
-
-                    Spacer(Modifier.height(20.dp))
-
-                    // Show error message if login fails
-                    errorMessage?.let {
-                        Text(
-                            text = it,
-                            color = Color.Red,
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(top = 8.dp)
                         )
-                    }
-
-
-
-                    TextInput(
-                        value = email,
-                        placeholder = "Enter email.",
-                        onChange = {
-                            email = it
-                        },
-                        label = "Email",
-                        keyboardType = KeyboardType.Email
-                    )
-                    Spacer(Modifier.height(1.dp))
-
-                    TextInput(
-                        value = password,
-                        placeholder = "Your password",
-                        onChange = {
-                            password = it
-                        },
-                        label = "Password",
-                        keyboardType = KeyboardType.Password
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
-                    ) {
-
-                        Column {
-                            Text(
-                                text = "Don't have an  Account?",
-                                color = Color.DarkGray,
-                                fontSize = 14.sp,
-                            )
-                            Text(
-                                text = "Create Account",
-                                color = Color.Blue,
-                                fontSize = 14.sp,
-                                modifier = Modifier
-                                    .clickable {
-                                        navHostController.navigate("registration")
-                                    }
-                            )
-
-                        }
-
                         Text(
-                            text = "Forgot Password?",
-                            color = Color.DarkGray,
+                            text = "Create Account",
+                            color = Color.Blue,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .clickable {
-                                    navHostController.navigate("forgot_password")
+                                    navHostController.navigate("registration")
                                 }
                         )
+
                     }
 
-                    PrimaryButton(
+                    Text(
+                        text = "Forgot Password?",
+                        color = Color.DarkGray,
+                        fontSize = 14.sp,
                         modifier = Modifier
-                            .padding(0.dp, 20.dp)
-                            .align(Alignment.CenterHorizontally),
-                        label = if (loading) "Logging in..." else "Submit",
-                        onClick = {
-                            if (!loading) {
-                                coroutineScope.launch { handleLogin() }
+                            .clickable {
+                                navHostController.navigate("forgot_password")
                             }
-                        },
-                        icon = null,
-                        px = 80.dp,
-                        py = 14.dp,
                     )
                 }
+
+                PrimaryButton(
+                    modifier = Modifier
+                        .padding(0.dp, 20.dp)
+                        .align(Alignment.CenterHorizontally),
+                    label = if (loading) "Logging in..." else "Submit",
+                    onClick = {
+                        if (!loading) {
+                            coroutineScope.launch { handleLogin() }
+                        }
+                    },
+                    icon = null,
+                    px = 80.dp,
+                    py = 14.dp,
+                )
+            }
+
+            RsColumn(
+                modifier = Modifier
+                    .border(1.dp, Primary40, shape = RoundedCornerShape(10.dp))
+                    .padding(16.dp)
+            ) {
+                CustomText(
+                    fs = 14.sp,
+                    color = Color.Gray,
+                    text = "Currently, login and registration are optional. It only shows your profile in the app. It will call the server to log in, and registered users will be stored there."
+                )
             }
         }
     }

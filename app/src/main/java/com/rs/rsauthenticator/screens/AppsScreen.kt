@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,9 @@ import kotlinx.coroutines.launch
 data class AppItem(val name: String, val description: String?, val logo: String?)
 
 @Composable
-fun AppsScreen(applicationContext: Context, navHostController: NavHostController) {
+fun AppsScreen(navHostController: NavHostController) {
+
+    val applicationContext = LocalContext.current
 
     val items by remember {
         mutableStateOf(

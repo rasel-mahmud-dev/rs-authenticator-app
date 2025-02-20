@@ -1,6 +1,5 @@
 package com.rs.rsauthenticator.screens
 
-import android.util.Log
 import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -9,18 +8,12 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -138,15 +131,16 @@ fun ScanQRCodeScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp) // make it short using spaceX property
             ) {
 
-                RsIconButton(
-                    modifier = Modifier.zIndex(200F),
-                    onClick = {},
-                    bgColor = Color(0xFFF44336),
-                    w = 32.dp,
-                    h = 32.dp
-                ) {
-                    CustomText(icon = "\ue0b8")
-                }
+//                RsIconButton(
+//                    modifier = Modifier.zIndex(200F),
+//                    onClick = {},
+//                    bgColor = Color(0xFFF44336),
+//                    w = 32.dp,
+//                    h = 32.dp,
+//                    radius = 40.dp
+//                ) {
+//                    CustomText(icon = "\ue0b8", color = Color.White)
+//                }
 
                 RsIconButton(
                     modifier = Modifier.zIndex(200F),
@@ -159,9 +153,10 @@ fun ScanQRCodeScreen(
                     },
                     bgColor = Color(0xFFF44336),
                     w = 32.dp,
-                    h = 32.dp
+                    h = 32.dp,
+                    radius = 40.dp
                 ) {
-                    CustomText(icon = "\uf030")
+                    CustomText(icon = "\uf030", color = Color.White)
                 }
 
             }

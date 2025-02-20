@@ -7,6 +7,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
@@ -25,7 +26,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen2(applicationContext: Context, navController: NavHostController) {
+fun HomeScreen2(navController: NavHostController) {
+
+    val applicationContext = LocalContext.current
 
     val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
     val sheetState = rememberModalBottomSheetState()

@@ -3,14 +3,11 @@ package com.rs.rsauthenticator.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 
-import android.content.Context
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +25,7 @@ import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
+import com.rs.rsauthenticator.state.SharePref
 import kotlin.math.abs
 
 
@@ -38,37 +36,39 @@ data class CarouselItem(
     val imageRes: Int
 )
 
-@Composable
-fun TourScreen(context: Context, navController: NavHostController) {
-
-
-    val images = listOf(
-        CarouselItem(
-            id = 1,
-            title = "Secure Your Accounts",
-            description = "Enhance your online security by using two-factor authentication to protect your accounts from unauthorized access.",
-            imageRes = R.drawable.failure
-        ),
-        CarouselItem(
-            id = 2,
-            title = "Easy Backup & Restore",
-            description = "Easily backup and restore your authentication data so you never lose access to your accounts.",
-            imageRes = R.drawable.log_in
-        ),
-        CarouselItem(
-            id = 3,
-            title = "Scan & Authenticate",
-            description = "Quickly scan QR codes to add new authentication tokens with ease.",
-            imageRes = R.drawable.failure
-        ),
-        CarouselItem(
-            id = 4,
-            title = "Stay in Control",
-            description = "Manage your accounts efficiently with a simple and user-friendly interface.",
-            imageRes = R.drawable.log_in
-        )
+val images = listOf(
+    CarouselItem(
+        id = 1,
+        title = "Secure Your Accounts",
+        description = "Enhance your online security by using two-factor authentication to protect your accounts from unauthorized access.",
+        imageRes = R.drawable.failure
+    ),
+    CarouselItem(
+        id = 2,
+        title = "Easy Backup & Restore",
+        description = "Easily backup and restore your authentication data so you never lose access to your accounts.",
+        imageRes = R.drawable.log_in
+    ),
+    CarouselItem(
+        id = 3,
+        title = "Scan & Authenticate",
+        description = "Quickly scan QR codes to add new authentication tokens with ease.",
+        imageRes = R.drawable.failure
+    ),
+    CarouselItem(
+        id = 4,
+        title = "Stay in Control",
+        description = "Manage your accounts efficiently with a simple and user-friendly interface.",
+        imageRes = R.drawable.log_in
     )
+)
 
+@Composable
+fun TourScreen(navController: NavHostController) {
+
+    val applicationContext = LocalContext.current
+
+    val sharePref = SharePref.getInstance(applicationContext)
 
     val pagerState = rememberPagerState(initialPage = 0) { 2 }
 
@@ -147,12 +147,13 @@ fun TourScreen(context: Context, navController: NavHostController) {
                 PrimaryButton(
                     onClick = {
                         if (pagerState.currentPage == pagerState.pageCount - 1) {
+                            sharePref.setAppInitialized(true)
                             navController.navigate("home")
                         } else {
                             pagerState.requestScrollToPage(pagerState.currentPage + 1)
                         }
                     },
-                    label = if (pagerState.currentPage == pagerState.pageCount - 1) "Go Home" else "Next"
+                    label = if (pagerState.currentPage == pagerState.pageCount - 1) "Completed" else "Next"
                 )
 
             }
@@ -168,5 +169,5 @@ fun TourScreen(context: Context, navController: NavHostController) {
 @Composable
 fun PreviewTourScreen() {
     val navController = NavHostController(context = LocalContext.current)
-    TourScreen(context = LocalContext.current, navController = navController)
+    TourScreen(navController = navController)
 }

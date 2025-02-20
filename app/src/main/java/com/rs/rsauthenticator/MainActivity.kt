@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.rs.rsauthenticator.components.UnlockWrapperScreen
-import com.rs.rsauthenticator.database.StateDatabaseHelper
+import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.state.AuthState
 import com.rs.rsauthenticator.ui.theme.RsAuthenticatorTheme
 
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         AuthState.initialize(this)
-        StateDatabaseHelper.getInstance(this)
+        AppStateDbHelper.getInstance(this)
 
         setContent {
             RsAuthenticatorTheme {
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
                         UnlockWrapperScreen(
-                            StateDatabaseHelper.getInstance(applicationContext),
+                            AppStateDbHelper.getInstance(applicationContext),
                             onUnlock = {}
                         )
                     }

@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rs.rsauthenticator.components.AuthExcludeRoute
 import com.rs.rsauthenticator.components.ProtectedRoute
+import com.rs.rsauthenticator.components.security.PinSetupScreen
 import com.rs.rsauthenticator.components.settings.SettingScreen
 import com.rs.rsauthenticator.layout.HomeLayout
 import com.rs.rsauthenticator.screens.AboutScreen
@@ -24,6 +25,7 @@ import com.rs.rsauthenticator.screens.SecurityScreen
 import com.rs.rsauthenticator.screens.TourScreen
 import com.rs.rsauthenticator.screens.TrashScreen
 import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.state.SharePref
 
 
 @Composable
@@ -31,88 +33,95 @@ fun AppNavigation(context: Context, navController: NavHostController) {
 
     val isAuthenticated = AuthState.auth != null
 
+    val sharePref = SharePref.getInstance(context)
+    val isInit = sharePref.isAppInitialized()
+
     NavHost(
         navController = navController,
 //        startDestination = if (isAuthenticated) "home" else "login"
-        startDestination = "tour"
-//        startDestination = "settings/about"
 //        startDestination = "settings/security"
+        startDestination = "settings/security/setpin"
+//        startDestination = if (!isInit) "tour" else "home"
     ) {
 
         composable("home") {
             HomeLayout(navController) {
-                HomeScreen2(context, navController)
+                HomeScreen2(navController)
             }
         }
 
         composable("settings") {
             HomeLayout(navController) {
-                SettingScreen(context, navController)
+                SettingScreen(navController)
             }
         }
 
         composable("apps") {
             ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                AppsScreen(context, navController)
+                AppsScreen(navController)
             }
         }
 
         composable("connect_app") {
             ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                ConnectAppScreen(context, navController)
+                ConnectAppScreen(navController)
             }
         }
 
         composable("capture_qr") {
             ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                ConnectAppScreen(context, navController)
+                ConnectAppScreen(navController)
             }
         }
 
         composable("settings/about") {
-            AboutScreen(context, navController)
+            AboutScreen(navController)
         }
 
         composable("settings/features") {
-            FeaturesScreen(context, navController)
+            FeaturesScreen(navController)
         }
 
         composable("settings/profile") {
-            ProfileScreen(context, navController)
+            ProfileScreen(navController)
         }
 
         composable("settings/security") {
-            SecurityScreen(context, navController)
+            SecurityScreen(navController)
+        }
+
+        composable("settings/security/setpin") {
+            PinSetupScreen(navController)
         }
 
         composable("settings/trash") {
-            TrashScreen(context, navController)
+            TrashScreen(navController)
         }
 
         composable("settings/backup-restore") {
-            BackupRestore(context, navController)
+            BackupRestore(navController)
         }
 
         composable("login") {
             AuthExcludeRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                LoginScreen(context, navController)
+                LoginScreen(navController)
             }
         }
 
         composable("registration") {
             AuthExcludeRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                RegistrationScreen(context, navController)
+                RegistrationScreen(navController)
             }
         }
 
         composable("forgot_password") {
             AuthExcludeRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                ForgotPasswordScreen(context, navController)
+                ForgotPasswordScreen(navController)
             }
         }
 
         composable("tour") {
-            TourScreen(context, navController)
+            TourScreen(navController)
         }
 
     }

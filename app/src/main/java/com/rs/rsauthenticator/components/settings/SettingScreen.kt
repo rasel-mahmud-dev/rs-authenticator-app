@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +43,8 @@ val items = listOf(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SettingScreen(applicationContext: Context, navController: NavHostController) {
+fun SettingScreen( navController: NavHostController) {
+    val applicationContext = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()

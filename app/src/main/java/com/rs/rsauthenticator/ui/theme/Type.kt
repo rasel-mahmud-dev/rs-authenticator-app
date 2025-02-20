@@ -45,3 +45,4 @@ val fontAwesome = FontFamily(
 
 
 val faBrand = FontFamily(Font(R.font.fa_brands_400))
+val faSolid = FontFamily(Font(R.font.fa_solid_900))

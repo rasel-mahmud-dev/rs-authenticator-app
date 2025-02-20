@@ -7,7 +7,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 
-class StateDatabaseHelper private constructor(context: Context) :
+class AppStateDbHelper private constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -19,9 +19,9 @@ class StateDatabaseHelper private constructor(context: Context) :
         private const val COLUMN_VALUE = "value"
 
         @Volatile
-        private var instance: StateDatabaseHelper? = null
+        private var instance: AppStateDbHelper? = null
 
-        fun getInstance(context: Context): StateDatabaseHelper {
+        fun getInstance(context: Context): AppStateDbHelper {
 
             val dbFile = context.getDatabasePath("ApplicationState.db")
             println("Database path: ${dbFile.absolutePath}, Exists: ${dbFile.exists()}")
@@ -29,7 +29,7 @@ class StateDatabaseHelper private constructor(context: Context) :
 
 
             return instance ?: synchronized(this) {
-                instance ?: StateDatabaseHelper(context.applicationContext).also { instance = it }
+                instance ?: AppStateDbHelper(context.applicationContext).also { instance = it }
             }
         }
     }

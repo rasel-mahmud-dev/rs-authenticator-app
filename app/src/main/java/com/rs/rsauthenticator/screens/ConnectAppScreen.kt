@@ -42,9 +42,9 @@ fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
 
 
 @Composable
-fun ConnectAppScreen(applicationContext: Context, navController: NavHostController) {
+fun ConnectAppScreen(navController: NavHostController) {
 
-
+    val applicationContext = LocalContext.current
 
     var isScanned by remember { mutableStateOf(false) }
     var code by remember { mutableStateOf("") }

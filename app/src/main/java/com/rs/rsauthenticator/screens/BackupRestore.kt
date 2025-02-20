@@ -44,7 +44,12 @@ import java.io.InputStreamReader
 
 
 @Composable
-fun BackupRestore(applicationContext: Context, navHostController: NavHostController) {
+fun BackupRestore(navHostController: NavHostController) {
+
+
+    val applicationContext = LocalContext.current
+
+
 
     val context = LocalContext.current
     val backupManager = BackupManager(context)

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,9 +23,11 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.ScreenHeader
 
-@Composable
-fun AboutScreen(applicationContext: Context, navHostController: NavHostController) {
 
+@Composable
+fun AboutScreen(navHostController: NavHostController) {
+
+    val applicationContext = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -45,7 +48,7 @@ fun AboutScreen(applicationContext: Context, navHostController: NavHostControlle
             ) {
 
                 CustomText(
-                    text = "About",
+                    text = "RsAuthenticator",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     fs = 24.sp,
@@ -53,16 +56,35 @@ fun AboutScreen(applicationContext: Context, navHostController: NavHostControlle
                 )
 
                 Text(
-                    text = "This application is designed to enhance user productivity by providing a clean and intuitive interface.\n\n" +
-                            "Explore its features and enjoy a seamless experience tailored to your needs.\n\n",
+                    text = "RsAuthenticator is a secure authenticator app developed using Kotlin Jetpack Compose. " +
+                            "It ensures 100% secure authentication without requiring internet access.\n\n" +
+                            "The app follows best practices with reusable Jetpack Compose components, SQLite database " +
+                            "integration, multiple layouts, a single activity architecture, and `NavHostController` for seamless navigation.",
                     color = Color.Gray,
                     fontSize = 16.sp,
                     style = MaterialTheme.typography.bodyLarge
                 )
 
+                CustomText(
+                    text = "Key Features",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fs = 20.sp,
+                    style = MaterialTheme.typography.titleLarge
+                )
 
-                PrimaryButton(modifier = Modifier
-                    .clip(shape = CircleShape),
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FeatureItem("Offline Backup & Restore", "Easily back up and restore using JSON format.")
+                    FeatureItem("Data Security", "Your authentication data remains safe and private.")
+                    FeatureItem("Simplicity", "A seamless user experience with an intuitive interface.")
+                    FeatureItem("Elegant Design", "A modern and visually appealing UI.")
+                }
+
+                PrimaryButton(
+                    modifier = Modifier.clip(shape = CircleShape),
                     label = "Project Details",
                     onClick = {
                         val intent = Intent(
@@ -70,7 +92,28 @@ fun AboutScreen(applicationContext: Context, navHostController: NavHostControlle
                             Uri.parse("https://github.com/rasel-mahmud-dev/rs-authenticator-app")
                         )
                         applicationContext.startActivity(intent)
-                    })
+                    }
+                )
             }
         })
+}
+
+@Composable
+fun FeatureItem(title: String, description: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = "• $title",
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
+        Text(
+            text = description,
+            color = Color.Gray,
+            fontSize = 16.sp
+        )
+    }
 }

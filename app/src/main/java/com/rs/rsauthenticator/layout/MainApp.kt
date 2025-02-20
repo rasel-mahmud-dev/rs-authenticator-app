@@ -15,7 +15,6 @@ import com.rs.rsauthenticator.AppNavigation
 @Composable
 fun MainApp(applicationContext: Context) {
 
-
     val navController = rememberNavController()
 
     Row(
@@ -23,9 +22,6 @@ fun MainApp(applicationContext: Context) {
             .fillMaxSize()
             .background(Color(0xFFFF0303))
     ) {
-
-//        MainSideBar(navController)
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -36,69 +32,6 @@ fun MainApp(applicationContext: Context) {
             AppNavigation(applicationContext, navController)
         }
     }
-
-//    Column(
-//        modifier = Modifier
-//            .padding(16.dp)
-//            .background(Color(0xFF171717))
-//    ) {
-//
-//        TextField(
-//            value = ipv4Address,
-//            onValueChange = { ipv4Address = it },
-//            label = { Text("Enter IPv4 Address") },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 8.dp),
-//            singleLine = true
-//        )
-//
-//
-//
-//        Button(onClick = {
-//            sendMouseClickEvent()
-//        }) {
-//            Text("Add")
-//        }
-//
-//
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize(),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Button(onClick = {
-//                startConnectionFromServer()
-//            }) {
-//                Icon(
-//                    imageVector = Icons.Default.PlayArrow,
-//                    contentDescription = "Start Icon",
-//                    modifier = Modifier.size(24.dp)
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text("Start")
-//            }
-//        }
-//
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize(),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Button(onClick = {
-//                disconnectFromServer()
-//            }) {
-//                Icon(
-//                    imageVector = Icons.Default.PlayArrow,
-//                    contentDescription = "Start Icon",
-//                    modifier = Modifier.size(24.dp)
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text("Stop")
-//            }
-//        }
-
-//    }
 }
 
 

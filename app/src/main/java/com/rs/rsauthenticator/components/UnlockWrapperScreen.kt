@@ -21,15 +21,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rs.rsauthenticator.components.form.TextInput
-import com.rs.rsauthenticator.database.StateDatabaseHelper
+import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.layout.MainApp
 
 
 @Composable
-fun UnlockWrapperScreen(stateDatabaseHelper: StateDatabaseHelper, onUnlock: () -> Unit) {
+fun UnlockWrapperScreen(appStateDbHelper: AppStateDbHelper, onUnlock: () -> Unit) {
     val context = LocalContext.current
     var isUnlocked by remember { mutableStateOf(true) }
-    val storedPin by remember { mutableStateOf(stateDatabaseHelper.getPin()) }
+    val storedPin by remember { mutableStateOf(appStateDbHelper.getPin()) }
 
     if (storedPin.isNullOrEmpty()) {
         isUnlocked = true

@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -31,7 +32,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegistrationScreen(applicationContext: Context, navHostController: NavHostController) {
+fun RegistrationScreen(navHostController: NavHostController) {
+
+    val applicationContext = LocalContext.current
+
+
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }

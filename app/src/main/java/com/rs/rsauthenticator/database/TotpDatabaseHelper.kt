@@ -8,7 +8,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
 import androidx.core.database.getLongOrNull
-import com.rs.rsauthenticator.database.StateDatabaseHelper.Companion.TABLE_STATE
+import com.rs.rsauthenticator.database.AppStateDbHelper.Companion.TABLE_STATE
 import com.rs.rsauthenticator.dto.TotpUriData
 
 
