@@ -11,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.state.AppState
+import com.rs.rsauthenticator.ui.providers.ToastProvider
 import com.rs.rsauthenticator.ui.theme.AppColors
 import com.rs.rsauthenticator.ui.theme.RsAuthenticatorTheme
 
@@ -53,10 +55,14 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
-                        LockUnlockWrapperScreen(
-                            AppStateDbHelper.getInstance(applicationContext),
-                        )
+
+                        ToastProvider {
+                            LockUnlockWrapperScreen(
+                                AppStateDbHelper.getInstance(applicationContext),
+                            )
+                        }
                     }
+
                 }
             }
         }
@@ -79,7 +85,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startInactivityTimer() {
-        lockHandler.postDelayed(lockRunnable, 5 * 1000)
+        lockHandler.postDelayed(lockRunnable, 30 * 1000)
     }
 }
 

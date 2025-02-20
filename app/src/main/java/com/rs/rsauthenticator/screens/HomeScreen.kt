@@ -8,16 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
-import com.rs.rsauthenticator.components.Toast
-import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.screens.TotpOtp.TokenScreen
 import com.rs.rsauthenticator.screens.scanQR.ScanQRCodeScreen
 import com.rs.rsauthenticator.state.AccountState
+import com.rs.rsauthenticator.ui.providers.LocalToastController
 import com.rs.rsauthenticator.utils.generateTOTP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,16 +41,11 @@ fun HomeScreen2(navController: NavHostController) {
 //    val a = "otpauth://totp/rasel.mahmud.dev?secret=GEC7FRTCQRTFQIU6DNDZZWWB4A46FFBW&digits=6&issuer=Facebook"
 //    val a = "otpauth://totp/GitHub:rasel-mahmud-dev?secret=PUXJCCF4ULPYDI4U&issuer=GitHub"
 
+    val a =
+        "otpauth://totp/RsAuthenticatorWeb2:test@gmail.com%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr?algorithm=SHA256&digits=6&issuer=RsAuthenticatorWeb2&period=30&secret=6VMGGTYH2ZLNRT23WKS4GVEPSTMOTDTK"
     var scannedCode by remember { mutableStateOf("") }
-    var toastState by remember {
-        mutableStateOf(
-            ToastState(
-                isOpen = false,
-                isSuccess = false,
-                message = ""
-            )
-        )
-    }
+
+    val toastController = LocalToastController.current
 
 
     fun handleAddApp(scannedCode: String) {
@@ -62,11 +57,7 @@ fun HomeScreen2(navController: NavHostController) {
 
                 val item = dbHelper.findOneBySecret(it.secret)
                 if (!item?.secret.isNullOrEmpty()) {
-                    toastState = toastState.copy(
-                        isOpen = true,
-                        isSuccess = true,
-                        message = "Already linked."
-                    )
+                    toastController.showToast(message = "Already linked.", isSuccess = true, 1000)
                 } else {
                     val newOtp = generateTOTP(it.secret, it.algorithm)
                     val lastId = dbHelper.insertTotpEntry(it, newOtp, 0F)
@@ -84,26 +75,16 @@ fun HomeScreen2(navController: NavHostController) {
                             createdAt = System.currentTimeMillis()
                         )
                     )
-
-                    toastState = toastState.copy(
-                        isOpen = true,
-                        isSuccess = true,
-                        message = "Successfully account added."
+                    toastController.showToast(
+                        message = "Successfully account added.",
+                        isSuccess = true
                     )
                 }
 
             } else {
-                toastState = toastState.copy(
-                    isOpen = true,
-                    isSuccess = false,
-                    message = "QR code unknown or invalid."
-                )
-            }
-
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(2000)
-                toastState = toastState.copy(
-                    isOpen = false,
+                toastController.showToast(
+                    message = "QR code unknown or invalid.",
+                    isSuccess = false
                 )
             }
         }
@@ -112,11 +93,7 @@ fun HomeScreen2(navController: NavHostController) {
 
     val scope = rememberCoroutineScope()
 
-
     Box(modifier = Modifier.fillMaxSize()) {
-
-        Toast(modifier = Modifier, toastState = toastState)
-
         RsColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween

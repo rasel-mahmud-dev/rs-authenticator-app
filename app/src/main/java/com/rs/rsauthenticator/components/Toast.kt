@@ -23,9 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-
-
-data class ToastState(var isOpen: Boolean, var isSuccess: Boolean, var message: String?)
+import com.rs.rsauthenticator.ui.providers.ToastState
+import com.rs.rsauthenticator.ui.theme.AppColors
 
 
 @Composable
@@ -34,12 +33,8 @@ fun Toast(
     toastState: ToastState
 ) {
 
-    Log.d("sdfsd", toastState.toString())
-
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .zIndex(1000F),
+        modifier = modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
         AnimatedVisibility(
@@ -51,7 +46,6 @@ fun Toast(
                 modifier = Modifier
                     .zIndex(1000F)
                     .fillMaxWidth()
-                    .padding(16.dp, 0.dp)
                     .background(
                         if (toastState.isSuccess) {
                             Color(0xFF3682F4)
@@ -59,7 +53,7 @@ fun Toast(
                             Color(0xFFAB2323)
                         }, shape = RoundedCornerShape(12.dp)
                     )
-                    .padding(10.dp, 6.dp),
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 

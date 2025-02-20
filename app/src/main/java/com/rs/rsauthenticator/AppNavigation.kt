@@ -41,8 +41,8 @@ fun AppNavigation(navController: NavHostController) {
 //        startDestination = if (isAuthenticated) "home" else "login"
 //        startDestination = "settings/security"
 //        startDestination = "connect_app"
-//        startDestination = "settings/security/setpin"
-        startDestination = if (!isInit) "tour" else "home"
+        startDestination = "registration"
+//        startDestination = if (!isInit) "tour" else "home"
     ) {
 
         composable("home") {

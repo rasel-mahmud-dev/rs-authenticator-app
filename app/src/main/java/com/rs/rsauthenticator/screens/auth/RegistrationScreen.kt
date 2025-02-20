@@ -14,28 +14,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
+import com.rs.rsauthenticator.components.RsColumn
+import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.components.ScreenHeader
-import com.rs.rsauthenticator.components.Toast
-import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
 import com.rs.rsauthenticator.http.services.ApiService
-import kotlinx.coroutines.delay
+import com.rs.rsauthenticator.ui.providers.LocalToastController
+import com.rs.rsauthenticator.ui.theme.AppColors
 import kotlinx.coroutines.launch
 
 @Composable
 fun RegistrationScreen(navHostController: NavHostController) {
-
-    val applicationContext = LocalContext.current
-
-
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
@@ -43,17 +40,7 @@ fun RegistrationScreen(navHostController: NavHostController) {
     var firstName by remember { mutableStateOf(TextFieldValue("Test")) }
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
-    var toastState by remember {
-        mutableStateOf(
-            ToastState(
-                isOpen = false,
-                isSuccess = false,
-                message = ""
-            )
-        )
-    }
-
+    val toastController = LocalToastController.current
     val coroutineScope = rememberCoroutineScope()
 
     suspend fun handleRegistration() {
@@ -64,76 +51,55 @@ fun RegistrationScreen(navHostController: NavHostController) {
             println(res)
             val userId = res?.data?.id
             if (!userId.isNullOrEmpty()) {
-                toastState = toastState.copy(
-                    isOpen = true,
-                    isSuccess = true,
-                    message = "Successfully registered user."
+                toastController.showToast(
+                    message = "Successfully registered user.",
+                    isSuccess = false,
+                    timeout = 3000
                 )
 
                 navHostController.navigate("login")
             } else {
                 errorMessage = res?.message ?: ""
-                toastState = toastState.copy(
-                    isOpen = true,
+                toastController.showToast(
+                    message = errorMessage,
                     isSuccess = false,
-                    message = errorMessage
+                    timeout = 3000
                 )
             }
         } catch (ex: Exception) {
             errorMessage = ex.message ?: "An unexpected error occurred"
-            toastState = toastState.copy(
-                isOpen = true,
+            toastController.showToast(
+                message = errorMessage,
                 isSuccess = false,
-                message = errorMessage
+                timeout = 3000
             )
 
         } finally {
             loading = false
-            coroutineScope.launch {
-                delay(2000)
-                toastState = toastState.copy(isOpen = false)
-            }
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-
-
-    ) {
-
-        ScreenHeader(
-            navigate = {
-                navHostController.navigate("home")
-            },
-            title = "Registration"
-        )
-
-        Toast(modifier = Modifier, toastState = toastState)
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-
-            Card(
+    Scaffold(
+        topBar = {
+            ScreenHeader(
+                title = "Registration",
+                navigate = { navHostController.popBackStack() }
+            )
+        },
+        content = { padding ->
+            RsColumn(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
-                )
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(padding)
+                    .padding(vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
+
+                RsColumn(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .padding(0.dp, 40.dp),
+                        .padding(16.dp, 20.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 
@@ -144,34 +110,31 @@ fun RegistrationScreen(navHostController: NavHostController) {
                     ) {
                         Text(
                             text = "Create an account.",
-                            color = Color.Black,
+                            color = AppColors.Dark40,
                             fontSize = 28.sp,
-                            style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold
                         )
                     }
 
-                    Column(
+                    RsColumn(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                     ) {
-                        Text(
+                        CustomText(
                             text = "New account account.",
-                            color = Color.Gray,
-                            fontSize = 16.sp,
-                            style = MaterialTheme.typography.bodyLarge,
+                            color = AppColors.Dark10,
+                            fs = 16.sp,
                             modifier = Modifier
                         )
                     }
 
-                    Spacer(Modifier.height(20.dp))
-                    // Show error message if login fails
+
                     errorMessage?.let {
-                        Text(
+                        CustomText(
                             text = it,
                             color = Color.Red,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(top = 8.dp)
+                            fs = 14.sp,
+                            pt = 8.dp
                         )
                     }
 
@@ -217,24 +180,24 @@ fun RegistrationScreen(navHostController: NavHostController) {
                     )
 
 
-                    Row(
+                    RsRow(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
+                            .fillMaxWidth(),
+                        pt = 8.dp,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Top
                     ) {
 
                         Column {
-                            Text(
+                            CustomText(
                                 text = "Already have an Account?",
                                 color = Color.DarkGray,
-                                fontSize = 14.sp,
+                                fs = 14.sp,
                             )
-                            Text(
+                            CustomText(
                                 text = "Login here",
                                 color = Color.Blue,
-                                fontSize = 14.sp,
+                                fs = 14.sp,
                                 modifier = Modifier
                                     .clickable {
                                         navHostController.navigate("login")
@@ -260,5 +223,5 @@ fun RegistrationScreen(navHostController: NavHostController) {
                 }
             }
         }
-    }
+    )
 }

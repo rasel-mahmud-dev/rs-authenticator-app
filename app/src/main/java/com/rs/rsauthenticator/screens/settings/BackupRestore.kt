@@ -28,11 +28,11 @@ import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
-import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.state.AccountState
+import com.rs.rsauthenticator.ui.providers.ToastState
 import com.rs.rsauthenticator.ui.theme.Purple40
 import com.rs.rsauthenticator.utils.BackupManager
 import com.rs.rsauthenticator.utils.generateTOTP

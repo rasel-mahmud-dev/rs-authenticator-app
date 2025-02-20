@@ -49,7 +49,7 @@ fun SecurityScreen(navHostController: NavHostController) {
             "Pin Lock",
             "Unlock the app with a 6-digit PIN. To use a PIN, your device must have a screen lock.",
             "switch",
-            AppState.isLocked,
+            AppState.isAppLockEnabled,
             ""
         ),
         SecurityItem(
@@ -86,6 +86,7 @@ fun SecurityScreen(navHostController: NavHostController) {
                     SecurityItemRow(item, navHostController) { newState ->
                         if (item.title == "Pin Lock") {
                             AppState.updateLockState(newState)
+                            AppState.changeAppLockEnabled(newState)
                             db.setPinEnabled(newState)
                         }
                     }

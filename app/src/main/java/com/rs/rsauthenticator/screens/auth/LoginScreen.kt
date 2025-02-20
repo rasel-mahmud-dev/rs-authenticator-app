@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,11 +38,12 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.Toast
-import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
 import com.rs.rsauthenticator.http.services.ApiService
 import com.rs.rsauthenticator.state.Auth
 import com.rs.rsauthenticator.state.AppState
+import com.rs.rsauthenticator.ui.providers.LocalToastController
+import com.rs.rsauthenticator.ui.providers.ToastState
 import com.rs.rsauthenticator.ui.theme.Primary40
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,23 +53,13 @@ fun LoginScreen(navHostController: NavHostController) {
 
 
     val applicationContext = LocalContext.current
-
-
+    val toastController = LocalToastController.current
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
     var password by remember { mutableStateOf(TextFieldValue("12345")) }
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    var toastState by remember {
-        mutableStateOf(
-            ToastState(
-                isOpen = false,
-                isSuccess = false,
-                message = ""
-            )
-        )
-    }
     val coroutineScope = rememberCoroutineScope()
 
     suspend fun handleLogin() {
@@ -78,10 +70,9 @@ fun LoginScreen(navHostController: NavHostController) {
 
             val userId = res?.data?.sessionId
             if (!userId.isNullOrEmpty()) {
-                toastState = toastState.copy(
-                    isOpen = true,
-                    isSuccess = true,
-                    message = "Successfully logged user."
+                toastController.showToast(
+                    message = "Successfully logged user.",
+                    isSuccess = true
                 )
 
                 AppState.setAuthInfo(
@@ -97,187 +88,174 @@ fun LoginScreen(navHostController: NavHostController) {
                 navHostController.navigate("home")
             } else {
                 errorMessage = res?.message ?: ""
-                toastState = toastState.copy(
-                    isOpen = true,
+                toastController.showToast(
+                    message = errorMessage,
                     isSuccess = false,
-                    message = errorMessage
+                    timeout = 3000
                 )
             }
 
         } catch (ex: Exception) {
-            println(ex)
             errorMessage = ex.message ?: "An unexpected error occurred"
-            toastState = toastState.copy(
-                isOpen = true,
+            toastController.showToast(
+                message = errorMessage,
                 isSuccess = false,
-                message = errorMessage
+                timeout = 3000
             )
 
         } finally {
             loading = false
-            coroutineScope.launch {
-                delay(2000)
-                toastState = toastState.copy(isOpen = false)
-            }
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-
-            .padding(16.dp)
-
-    ) {
-
-
-        ScreenHeader(
-            navigate = {
-                navHostController.navigate("home")
-            },
-            title = "Login"
-        )
-
-        Toast(modifier = Modifier, toastState = toastState)
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            Column(
+    Scaffold(
+        topBar = {
+            ScreenHeader(
+                title = "Login",
+                navigate = { navHostController.popBackStack() }
+            )
+        },
+        content = { padding ->
+            Box(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .padding(0.dp, 40.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .fillMaxSize()
+                    .padding(padding)
+
             ) {
 
 
-                Column(
+                RsColumn(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    CustomText(
-                        text = "Login",
-                        color = Color.Black,
-                        fs = 28.sp,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
 
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        text = "Login your account.",
-                        color = Color.DarkGray,
-                        fontSize = 16.sp,
-                        style = MaterialTheme.typography.bodyLarge,
+                    RsColumn(
                         modifier = Modifier
-                    )
-                }
+                            .padding(0.dp, 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
 
-                Spacer(Modifier.height(20.dp))
+                        RsColumn(
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            CustomText(
+                                text = "Login",
+                                color = Color.Black,
+                                fs = 28.sp,
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
 
-                errorMessage?.let {
-                    Text(
-                        text = it,
-                        color = Color.Red,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
+                        RsColumn(
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            CustomText(
+                                text = "Login your account.",
+                                color = Color.DarkGray,
+                                fs = 16.sp,
+                                modifier = Modifier
+                            )
+                        }
 
-                TextInput(
-                    value = email,
-                    placeholder = "Enter email.",
-                    onChange = {
-                        email = it
-                    },
-                    label = "Email",
-                    keyboardType = KeyboardType.Email
-                )
-                Spacer(Modifier.height(1.dp))
+                        errorMessage?.let {
+                            CustomText(
+                                text = it,
+                                color = Color.Red,
+                                fs = 14.sp,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
 
-                TextInput(
-                    value = password,
-                    placeholder = "Your password",
-                    onChange = {
-                        password = it
-                    },
-                    label = "Password",
-                    keyboardType = KeyboardType.Password
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
-                ) {
-
-                    Column {
-                        Text(
-                            text = "Don't have an  Account?",
-                            color = Color.DarkGray,
-                            fontSize = 14.sp,
+                        TextInput(
+                            value = email,
+                            placeholder = "Enter email.",
+                            onChange = {
+                                email = it
+                            },
+                            label = "Email",
+                            keyboardType = KeyboardType.Email
                         )
-                        Text(
-                            text = "Create Account",
-                            color = Color.Blue,
-                            fontSize = 14.sp,
+                        Spacer(Modifier.height(1.dp))
+
+                        TextInput(
+                            value = password,
+                            placeholder = "Your password",
+                            onChange = {
+                                password = it
+                            },
+                            label = "Password",
+                            keyboardType = KeyboardType.Password
+                        )
+
+                        Row(
                             modifier = Modifier
-                                .clickable {
-                                    navHostController.navigate("registration")
-                                }
-                        )
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Top
+                        ) {
 
+                            RsColumn {
+                                CustomText(
+                                    text = "Don't have an  Account?",
+                                    color = Color.DarkGray,
+                                    fs = 14.sp,
+                                )
+                                CustomText(
+                                    text = "Create Account",
+                                    color = Color.Blue,
+                                    fs = 14.sp,
+                                    modifier = Modifier
+                                        .clickable {
+                                            navHostController.navigate("registration")
+                                        }
+                                )
+
+                            }
+
+                            CustomText(
+                                text = "Forgot Password?",
+                                color = Color.DarkGray,
+                                fs = 14.sp,
+                                modifier = Modifier
+                                    .clickable {
+                                        navHostController.navigate("forgot_password")
+                                    }
+                            )
+                        }
+
+                        PrimaryButton(
+                            modifier = Modifier
+                                .padding(0.dp, 20.dp)
+                                .align(Alignment.CenterHorizontally),
+                            label = if (loading) "Logging in..." else "Submit",
+                            onClick = {
+                                if (!loading) {
+                                    coroutineScope.launch { handleLogin() }
+                                }
+                            },
+                            icon = null,
+                            px = 80.dp,
+                            py = 14.dp,
+                        )
                     }
 
-                    Text(
-                        text = "Forgot Password?",
-                        color = Color.DarkGray,
-                        fontSize = 14.sp,
+                    RsColumn(
                         modifier = Modifier
-                            .clickable {
-                                navHostController.navigate("forgot_password")
-                            }
-                    )
+                            .border(1.dp, Primary40, shape = RoundedCornerShape(10.dp))
+                            .padding(16.dp)
+                    ) {
+                        CustomText(
+                            fs = 14.sp,
+                            color = Color.Gray,
+                            text = "Currently, login and registration are optional. It only shows your profile in the app. It will call the server to log in, and registered users will be stored there."
+                        )
+                    }
                 }
-
-                PrimaryButton(
-                    modifier = Modifier
-                        .padding(0.dp, 20.dp)
-                        .align(Alignment.CenterHorizontally),
-                    label = if (loading) "Logging in..." else "Submit",
-                    onClick = {
-                        if (!loading) {
-                            coroutineScope.launch { handleLogin() }
-                        }
-                    },
-                    icon = null,
-                    px = 80.dp,
-                    py = 14.dp,
-                )
             }
-
-            RsColumn(
-                modifier = Modifier
-                    .border(1.dp, Primary40, shape = RoundedCornerShape(10.dp))
-                    .padding(16.dp)
-            ) {
-                CustomText(
-                    fs = 14.sp,
-                    color = Color.Gray,
-                    text = "Currently, login and registration are optional. It only shows your profile in the app. It will call the server to log in, and registered users will be stored there."
-                )
-            }
-        }
-    }
+        })
 }

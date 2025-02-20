@@ -21,11 +21,13 @@ object AppState {
         private set
 
     var isLocked by mutableStateOf(true)
+    var isAppLockEnabled by mutableStateOf(true)
 
     fun initialize(context: Context) {
         val appStateDbHelper = AppStateDbHelper.getInstance(context)
         auth = appStateDbHelper.getAuth()
         isLocked = appStateDbHelper.isPinEnabled()
+        isAppLockEnabled = isLocked
     }
 
     fun setAuthInfo(context: Context, newAuth: Auth?) {
@@ -38,9 +40,12 @@ object AppState {
         AppStateDbHelper.getInstance(context).clearAuth()
     }
 
-
     fun updateLockState(_isLocked: Boolean) {
         isLocked = _isLocked
+    }
+
+    fun changeAppLockEnabled(_isAppLockEnabled: Boolean) {
+        isAppLockEnabled = _isAppLockEnabled
     }
 
     fun getToken(): String? {
