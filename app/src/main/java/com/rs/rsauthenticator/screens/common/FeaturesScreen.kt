@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.common
 
 import android.content.Intent
 import android.net.Uri

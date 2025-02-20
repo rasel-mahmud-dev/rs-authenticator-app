@@ -52,6 +52,62 @@ RS Authenticator is a secure and feature-rich authentication application that al
 - **Authentication:** Server
 - **Navigation:** Jetpack Navigation
 - **UI Components:** Material 3 + Custom components.
+
+## Project structures
+
+
+screens
+AboutScreen.kt
+AppsScreen.kt
+BackupRestore.kt
+ConnectAppScreen.kt
+FeaturesScreen.kt
+ForgotPasswordScreen.kt
+HomeScreen.kt
+LoginScreen.kt
+ProfileScreen.kt
+RegistrationScreen.kt
+ScanQRCodeScreen.kt
+SecurityScreen.kt
+TokenScreen.kt
+TourScreen.kt
+TrashScreen.kt
+
+
+
+components
+form
+security
+settings
+AuthenticatorItem.kt
+BottomSheet.kt
+CustomText.kt
+GradientCircularProgressIndicator.kt
+HomeBottomNav.kt
+MainSidebar.kt
+PrimaryButton.kt
+ProtectedRoute.kt
+RsColumn.kt
+RsIconButton.kt
+RsRow.kt
+ScreenHeader.kt
+Toast.kt
+UnlockWrapperScreen.kt
+
+rsauthenticator
+apis
+components
+database
+dto
+http
+layout
+screens
+state
+theme
+utils
+AppNavigation.kt
+MainActivity
+here my jetpack compose screen and component
  
 
 ## 📞 Contact

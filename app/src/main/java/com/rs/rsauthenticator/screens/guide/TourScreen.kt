@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.guide
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable

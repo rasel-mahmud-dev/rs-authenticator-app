@@ -1,6 +1,5 @@
 package com.rs.rsauthenticator.screens
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -16,6 +15,8 @@ import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.dto.TotpUriData
+import com.rs.rsauthenticator.screens.TotpOtp.TokenScreen
+import com.rs.rsauthenticator.screens.scanQR.ScanQRCodeScreen
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.utils.generateTOTP
 import kotlinx.coroutines.CoroutineScope

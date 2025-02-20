@@ -1,6 +1,5 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.settings
 
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

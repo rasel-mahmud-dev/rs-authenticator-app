@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.rs.rsauthenticator.database.AuthDatabase
+import com.rs.rsauthenticator.database.AppStateDbHelper
 
 
 data class Auth(
@@ -21,17 +21,17 @@ object AuthState {
         private set
 
     fun initialize(context: Context) {
-        auth = AuthDatabase.getInstance(context).getAuth()
+        auth = AppStateDbHelper.getInstance(context).getAuth()
     }
 
     fun setAuthInfo(context: Context, newAuth: Auth?) {
         auth = newAuth
-        AuthDatabase.getInstance(context).saveAuth(newAuth!!)
+        AppStateDbHelper.getInstance(context).saveAuth(newAuth!!)
     }
 
     fun clearAuthInfo(context: Context) {
         auth = null
-        AuthDatabase.getInstance(context).clearAuth()
+        AppStateDbHelper.getInstance(context).clearAuth()
     }
 
     fun getToken(): String? {

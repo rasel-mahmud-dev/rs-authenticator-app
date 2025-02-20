@@ -1,6 +1,5 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.common
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.*
@@ -94,6 +93,10 @@ fun AboutScreen(navHostController: NavHostController) {
                         applicationContext.startActivity(intent)
                     }
                 )
+
+
+                Text(text = "Version 1.0.0")
+
             }
         })
 }

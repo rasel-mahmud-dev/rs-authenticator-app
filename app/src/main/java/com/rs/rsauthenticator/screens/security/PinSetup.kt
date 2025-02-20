@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.components.security
+package com.rs.rsauthenticator.screens.security
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +47,7 @@ fun PinSetupScreen(navHostController: NavHostController) {
 
     fun handleSetupPin() {
         db.savePin(pin)
+        navHostController.navigate("settings/security")
     }
 
     Scaffold(topBar = {
@@ -85,14 +84,17 @@ fun PinSetupScreen(navHostController: NavHostController) {
                         modifier = Modifier
                             .size(50.dp)
                             .border(
-                                2.dp,
+                                1.dp,
                                 if (index < pin.length) AppColors.Primary10 else Color.Gray,
-                                RoundedCornerShape(8.dp)
+                                RoundedCornerShape(12.dp)
                             ), contentAlignment = Alignment.Center
                     ) {
                         if (index < pin.length) {
                             CustomText(
-                                text = "●", color = AppColors.Primary40, fs = 24.sp
+                                icon = "\uf621",
+                                color = AppColors.Primary40,
+                                fontFamily = faSolid,
+                                fs = 14.sp
                             )
                         }
                     }
@@ -155,3 +157,4 @@ fun PreviewPinSetupScreen() {
     val navController = NavHostController(context = LocalContext.current)
     PinSetupScreen(navController)
 }
+

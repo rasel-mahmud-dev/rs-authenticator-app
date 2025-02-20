@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
+import com.google.gson.Gson
+import com.rs.rsauthenticator.state.Auth
 
 class AppStateDbHelper private constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -35,11 +37,11 @@ class AppStateDbHelper private constructor(context: Context) :
     }
 
     init {
-        writableDatabase // Ensures database is created on initialization
+        writableDatabase
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        println("Creating database and state table...") // Debug log
+        println("Creating database and state table...")
         val createTableQuery = """
         CREATE TABLE IF NOT EXISTS $TABLE_STATE (
             $COLUMN_KEY TEXT PRIMARY KEY,
@@ -102,12 +104,41 @@ class AppStateDbHelper private constructor(context: Context) :
         return this.getState("pin")
     }
 
+    fun isPinEnabled(): Boolean {
+        return this.getState("pin_enabled") == "1"
+    }
+
     fun savePin(pin: String) {
         this.saveState("pin", pin)
+        this.saveState("pin_enabled", "1")
     }
 
     fun deleteState(key: String) {
         val db = writableDatabase
         db.delete(TABLE_STATE, "$COLUMN_KEY = ?", arrayOf(key))
+    }
+
+
+    fun saveAuth(auth: Auth) {
+        val authStateKey = "auth"
+        val db = writableDatabase
+        val gson = Gson()
+        val authJson = gson.toJson(auth)
+
+        val contentValues = ContentValues().apply {
+            put(COLUMN_KEY, authStateKey)
+            put(authStateKey, authJson)
+        }
+        db.insertWithOnConflict(TABLE_STATE, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    fun getAuth(): Auth? {
+        val authJson = getState("auth") ?: return null
+        return Gson().fromJson(authJson, Auth::class.java)
+    }
+
+    fun clearAuth() {
+        val db = writableDatabase
+        db.delete(TABLE_STATE, "$COLUMN_KEY = ?", arrayOf("auth"))
     }
 }

@@ -1,4 +1,4 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.scanQR
 
 import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector

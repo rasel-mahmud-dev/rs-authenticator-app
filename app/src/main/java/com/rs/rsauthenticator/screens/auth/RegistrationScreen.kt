@@ -1,6 +1,5 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.auth
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState

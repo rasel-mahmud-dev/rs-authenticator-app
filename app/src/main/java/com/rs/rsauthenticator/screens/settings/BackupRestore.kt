@@ -1,7 +1,6 @@
-package com.rs.rsauthenticator.screens
+package com.rs.rsauthenticator.screens.settings
 
 
-import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
