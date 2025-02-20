@@ -40,7 +40,6 @@ import com.rs.rsauthenticator.ui.theme.faSolid
 
 @Composable
 fun PinSetupScreen(navHostController: NavHostController) {
-    val maxPinLength = 4
 
     val context = LocalContext.current
     val db = AppStateDbHelper.getInstance(context)
@@ -54,7 +53,7 @@ fun PinSetupScreen(navHostController: NavHostController) {
         ScreenHeader(title = "Setup Pin", navigate = { navHostController.popBackStack() })
     }, content = { padding ->
         Column(
-            modifier = Modifier
+            modifier = Modifier.padding(padding)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -74,9 +73,6 @@ fun PinSetupScreen(navHostController: NavHostController) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-
-
 
             PinKeyboard {
                 handleSetupPin(it)

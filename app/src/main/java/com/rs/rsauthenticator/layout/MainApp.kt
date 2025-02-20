@@ -13,7 +13,7 @@ import com.rs.rsauthenticator.AppNavigation
 
 
 @Composable
-fun MainApp(applicationContext: Context) {
+fun MainApp() {
 
     val navController = rememberNavController()
 
@@ -29,7 +29,7 @@ fun MainApp(applicationContext: Context) {
             contentAlignment = Alignment.Center
         ) {
 
-            AppNavigation(applicationContext, navController)
+            AppNavigation(navController)
         }
     }
 }

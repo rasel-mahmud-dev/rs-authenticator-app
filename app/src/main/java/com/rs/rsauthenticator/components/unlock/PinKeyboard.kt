@@ -40,7 +40,7 @@ fun PinKeyboard(onFillUp: (pin: String) -> Unit) {
 
 
     RsColumn(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -91,7 +91,7 @@ fun PinKeyboard(onFillUp: (pin: String) -> Unit) {
                 row.forEach { key ->
 
                     Box(modifier = Modifier
-                        .size(80.dp)
+                        .size(100.dp, 50.dp)
                         .clickable {
                             when {
                                 key == "clear" && pin.isNotEmpty() -> pin = pin.dropLast(1)

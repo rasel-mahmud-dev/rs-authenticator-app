@@ -3,6 +3,7 @@ package com.rs.rsauthenticator
 import android.content.Context
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,11 +29,11 @@ import com.rs.rsauthenticator.state.SharePref
 
 
 @Composable
-fun AppNavigation(context: Context, navController: NavHostController) {
+fun AppNavigation(navController: NavHostController) {
 
     val isAuthenticated = AuthState.auth != null
 
-    val sharePref = SharePref.getInstance(context)
+    val sharePref = SharePref.getInstance(LocalContext.current)
     val isInit = sharePref.isAppInitialized()
 
     NavHost(
@@ -40,8 +41,8 @@ fun AppNavigation(context: Context, navController: NavHostController) {
 //        startDestination = if (isAuthenticated) "home" else "login"
 //        startDestination = "settings/security"
 //        startDestination = "connect_app"
-        startDestination = "settings/security/setpin"
-//        startDestination = if (!isInit) "tour" else "home"
+//        startDestination = "settings/security/setpin"
+        startDestination = if (!isInit) "tour" else "home"
     ) {
 
         composable("home") {
