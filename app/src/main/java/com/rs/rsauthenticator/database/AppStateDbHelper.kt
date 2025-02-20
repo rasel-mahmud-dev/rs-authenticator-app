@@ -113,7 +113,7 @@ class AppStateDbHelper private constructor(context: Context) :
         this.saveState("pin_enabled", "1")
     }
 
-    fun setPinEnabled(isEnabled: Boolean) {
+        fun setPinEnabled(isEnabled: Boolean) {
         this.saveState("pin_enabled", if (isEnabled) "1" else "0")
     }
 

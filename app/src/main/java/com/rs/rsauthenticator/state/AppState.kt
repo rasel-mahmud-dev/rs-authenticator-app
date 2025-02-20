@@ -9,19 +9,23 @@ import com.rs.rsauthenticator.database.AppStateDbHelper
 
 data class Auth(
     val email: String,
-    val _id: String,
+    val id: String,
     val username: String,
     val avatar: String?,
     var token: String?,
 )
 
-object AuthState {
+object AppState {
 
     var auth by mutableStateOf<Auth?>(null)
         private set
 
+    var isLocked by mutableStateOf(true)
+
     fun initialize(context: Context) {
-        auth = AppStateDbHelper.getInstance(context).getAuth()
+        val appStateDbHelper = AppStateDbHelper.getInstance(context)
+        auth = appStateDbHelper.getAuth()
+        isLocked = appStateDbHelper.isPinEnabled()
     }
 
     fun setAuthInfo(context: Context, newAuth: Auth?) {
@@ -32,6 +36,11 @@ object AuthState {
     fun clearAuthInfo(context: Context) {
         auth = null
         AppStateDbHelper.getInstance(context).clearAuth()
+    }
+
+
+    fun updateLockState(_isLocked: Boolean) {
+        isLocked = _isLocked
     }
 
     fun getToken(): String? {

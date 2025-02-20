@@ -41,7 +41,7 @@ import com.rs.rsauthenticator.components.ToastState
 import com.rs.rsauthenticator.components.form.TextInput
 import com.rs.rsauthenticator.http.services.ApiService
 import com.rs.rsauthenticator.state.Auth
-import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.state.AppState
 import com.rs.rsauthenticator.ui.theme.Primary40
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -84,11 +84,11 @@ fun LoginScreen(navHostController: NavHostController) {
                     message = "Successfully logged user."
                 )
 
-                AuthState.setAuthInfo(
+                AppState.setAuthInfo(
                     applicationContext,
                     Auth(
                         email = res.data.email,
-                        _id = res.data.id,
+                        id = res.data.id,
                         username = res.data.username,
                         token = res.data.token,
                         avatar = res.data.avatar

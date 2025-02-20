@@ -1,6 +1,6 @@
 package com.rs.rsauthenticator.http
 import com.rs.rsauthenticator.apis.BASE_URL
-import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.state.AppState
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.DefaultRequest
@@ -18,7 +18,7 @@ val HttpClient = HttpClient(CIO) {
     }
 
     install(DefaultRequest) {
-        val token = AuthState.auth?.token ?: ""
+        val token = AppState.auth?.token ?: ""
         if (!headers.contains("No-Authentication")) {
             header(HttpHeaders.Authorization, "Bearer $token")
         }

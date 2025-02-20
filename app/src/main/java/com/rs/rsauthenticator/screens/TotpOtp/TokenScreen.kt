@@ -47,7 +47,7 @@ import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
 import com.rs.rsauthenticator.state.AccountState
-import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.state.AppState
 import com.rs.rsauthenticator.utils.generateTOTP
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
@@ -62,7 +62,7 @@ fun TokenScreen(
     val context = LocalContext.current
     val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
     var remainingTime by remember { mutableIntStateOf(LocalDateTime.now().second) }
-    val auth = AuthState.auth
+    val auth = AppState.auth
 
     LaunchedEffect(Unit) {
         AccountState.loadItems(dbHelper)
@@ -191,7 +191,7 @@ fun TokenScreen(
                                 if (auth == null) {
                                     navController.navigate("login")
                                 } else {
-                                    AuthState.clearAuthInfo(context)
+                                    AppState.clearAuthInfo(context)
                                 }
 
                             },

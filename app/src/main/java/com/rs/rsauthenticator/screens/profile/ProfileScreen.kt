@@ -22,7 +22,7 @@ import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.ScreenHeader
-import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.state.AppState
 
 
 @Composable
@@ -31,7 +31,7 @@ fun ProfileScreen(navHostController: NavHostController) {
     val applicationContext = LocalContext.current
 
 
-    val auth = AuthState.auth
+    val auth = AppState.auth
 
     Scaffold(
         topBar = {
@@ -93,7 +93,7 @@ fun ProfileScreen(navHostController: NavHostController) {
                         RsColumn(pt = 20.dp) {
                             if (auth != null) {
                                 PrimaryButton(onClick = {
-                                    AuthState.clearAuthInfo(applicationContext)
+                                    AppState.clearAuthInfo(applicationContext)
                                 }, label = "Logout")
                             } else {
                                 PrimaryButton(onClick = {

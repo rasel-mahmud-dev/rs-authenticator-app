@@ -24,14 +24,14 @@ import com.rs.rsauthenticator.screens.profile.ProfileScreen
 import com.rs.rsauthenticator.screens.security.SecurityScreen
 import com.rs.rsauthenticator.screens.guide.TourScreen
 import com.rs.rsauthenticator.screens.settings.TrashScreen
-import com.rs.rsauthenticator.state.AuthState
+import com.rs.rsauthenticator.state.AppState
 import com.rs.rsauthenticator.state.SharePref
 
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
 
-    val isAuthenticated = AuthState.auth != null
+    val isAuthenticated = AppState.auth != null
 
     val sharePref = SharePref.getInstance(LocalContext.current)
     val isInit = sharePref.isAppInitialized()
