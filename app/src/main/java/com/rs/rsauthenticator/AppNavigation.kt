@@ -1,7 +1,5 @@
 package com.rs.rsauthenticator
 
-import android.content.Context
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -10,7 +8,7 @@ import androidx.navigation.compose.composable
 import com.rs.rsauthenticator.components.AuthExcludeRoute
 import com.rs.rsauthenticator.components.ProtectedRoute
 import com.rs.rsauthenticator.screens.security.PinSetupScreen
-import com.rs.rsauthenticator.components.settings.SettingScreen
+import com.rs.rsauthenticator.screens.settings.SettingScreen
 import com.rs.rsauthenticator.layout.HomeLayout
 import com.rs.rsauthenticator.screens.common.AboutScreen
 import com.rs.rsauthenticator.screens.ConnectAppScreen
@@ -41,7 +39,7 @@ fun AppNavigation(navController: NavHostController) {
 //        startDestination = if (isAuthenticated) "home" else "login"
 //        startDestination = "settings/security"
 //        startDestination = "connect_app"
-        startDestination = "registration"
+        startDestination = "login"
 //        startDestination = if (!isInit) "tour" else "home"
     ) {
 

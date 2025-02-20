@@ -31,12 +31,6 @@ fun RsBottomSheet(
         contentColor = Color.Red,
         shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius) // Custom shape
     ) {
-        RsRow(
-            modifier = Modifier
-                .background(handlerColor)
-                .height(dragHandleHeight)
-        ) {}
-
         content()
     }
 }

@@ -131,7 +131,7 @@ class AppStateDbHelper private constructor(context: Context) :
 
         val contentValues = ContentValues().apply {
             put(COLUMN_KEY, authStateKey)
-            put(authStateKey, authJson)
+            put(COLUMN_VALUE, authJson)
         }
         db.insertWithOnConflict(TABLE_STATE, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE)
     }

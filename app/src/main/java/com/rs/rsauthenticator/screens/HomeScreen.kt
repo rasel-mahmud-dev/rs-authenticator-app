@@ -39,10 +39,9 @@ fun HomeScreen2(navController: NavHostController) {
 //    var scannedCode by remember { mutableStateOf("otpauth://totp/RsAuth%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr:rasel@gmail.com?algorithm=SHA256&digits=6&issuer=RsAuth%7Chttps:%2F%2Fplay-lh.googleusercontent.com%2FDTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr&period=30&secret=V364VS7WUNHR4UJA3JEB4MVSNNFYSPYL") }
 //    val a = "otpauth://totp/RsAuthenticatorWeb:test@gmail.com%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr?algorithm=SHA256&digits=6&issuer=RsAuthenticatorWeb&period=30&secret=EC7IJYYDQTEKIITXMVSJ7JJZJPKTMHYG"
 //    val a = "otpauth://totp/rasel.mahmud.dev?secret=GEC7FRTCQRTFQIU6DNDZZWWB4A46FFBW&digits=6&issuer=Facebook"
-//    val a = "otpauth://totp/GitHub:rasel-mahmud-dev?secret=PUXJCCF4ULPYDI4U&issuer=GitHub"
+    val a = "otpauth://totp/GitHub:rasel-mahmud-dev?secret=PUXJCCF4ULPYDI4U&issuer=GitHub"
+//    val a = "otpauth://totp/RsAuthenticatorWeb2:test@gmail.com%7Chttps://play-lh.googleuse rcontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr?algorithm=SHA256&digits=6&issuer=RsAuthenticatorWeb2&period=30&secret=6VMGGTYH2ZLNRT23WKS4GVEPSTMOTDTK"
 
-    val a =
-        "otpauth://totp/RsAuthenticatorWeb2:test@gmail.com%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr?algorithm=SHA256&digits=6&issuer=RsAuthenticatorWeb2&period=30&secret=6VMGGTYH2ZLNRT23WKS4GVEPSTMOTDTK"
     var scannedCode by remember { mutableStateOf("") }
 
     val toastController = LocalToastController.current
@@ -57,7 +56,7 @@ fun HomeScreen2(navController: NavHostController) {
 
                 val item = dbHelper.findOneBySecret(it.secret)
                 if (!item?.secret.isNullOrEmpty()) {
-                    toastController.showToast(message = "Already linked.", isSuccess = true, 1000)
+                    toastController.showToast(message = "Already linked.", isSuccess = true)
                 } else {
                     val newOtp = generateTOTP(it.secret, it.algorithm)
                     val lastId = dbHelper.insertTotpEntry(it, newOtp, 0F)
@@ -66,7 +65,7 @@ fun HomeScreen2(navController: NavHostController) {
                         AuthenticatorEntry(
                             id = lastId,
                             issuer = it.issuer,
-                            remainingTime = System.currentTimeMillis() + 30 * 1000,
+                            remainingTime = 0,
                             logoUrl = it.logoUrl ?: "",
                             accountName = it.accountName,
                             secret = it.secret,
@@ -90,7 +89,7 @@ fun HomeScreen2(navController: NavHostController) {
         }
     }
 
-
+    
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -99,6 +98,7 @@ fun HomeScreen2(navController: NavHostController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             TokenScreen(navController, onShowBottomSheet = {
+                handleAddApp(a)
                 showBottomSheet = true
             })
         }

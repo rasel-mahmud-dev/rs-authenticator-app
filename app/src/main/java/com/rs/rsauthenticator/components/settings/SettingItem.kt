@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsRow
+import com.rs.rsauthenticator.screens.settings.Item
 
 @Composable
 fun SettingItem(item: Item, navController: NavHostController) {

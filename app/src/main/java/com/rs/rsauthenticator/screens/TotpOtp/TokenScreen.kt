@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -18,11 +20,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,29 +44,40 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.rs.rsauthenticator.R
-import com.rs.rsauthenticator.components.AuthenticatorItem
+import com.rs.rsauthenticator.components.Authenticator.AuthenticatorItem
+import com.rs.rsauthenticator.components.Authenticator.AuthenticatorItemDetail
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
+import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.database.TotpDatabaseHelper
+import com.rs.rsauthenticator.dto.AuthenticatorEntry
+import com.rs.rsauthenticator.screens.RequestCameraPermission
+import com.rs.rsauthenticator.screens.scanQR.ScanQRCodeScreen
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.state.AppState
 import com.rs.rsauthenticator.utils.generateTOTP
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TokenScreen(
     navController: NavHostController,
-    onShowBottomSheet: () -> Unit
+    onShowBottomSheet: (type: String) -> Unit
 ) {
 
     val context = LocalContext.current
     val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
     var remainingTime by remember { mutableIntStateOf(LocalDateTime.now().second) }
     val auth = AppState.auth
+
+    val sheetState = rememberModalBottomSheetState()
+
+    var detailEntry by remember { mutableStateOf<AuthenticatorEntry?>(null) }
 
     LaunchedEffect(Unit) {
         AccountState.loadItems(dbHelper)
@@ -97,21 +112,21 @@ fun TokenScreen(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp, 0.dp),
+            .padding(16.dp),
     ) {
 
         RsColumn(
             Modifier
                 .zIndex(100F)
-                .align(Alignment.BottomEnd), py = 100.dp, px = 10.dp
+                .align(Alignment.BottomEnd),
+            py = 100.dp,
         ) {
             PrimaryButton(
                 onClick = {
-                    onShowBottomSheet()
+                    onShowBottomSheet("scan")
                 },
                 modifier = Modifier
-                    .zIndex(100F)
-                    .padding(3.dp),
+                    .zIndex(100F),
                 label = if (AccountState.items.isEmpty()) "New Connection" else "",
                 iconSize = 18.sp,
                 icon = "\u002b",
@@ -185,8 +200,10 @@ fun TokenScreen(
                         PrimaryButton(
                             modifier = Modifier
                                 .scale(0.8F)
-                                .zIndex(100F),
-                            iconSize = 16.sp,
+                                .zIndex(100F)
+                                .offset(x = 16.dp),
+                            iconSize = 18.sp,
+                            fs = 18.sp,
                             onClick = {
                                 if (auth == null) {
                                     navController.navigate("login")
@@ -196,7 +213,7 @@ fun TokenScreen(
 
                             },
                             label = if (auth == null) "Login" else "Logout",
-                            icon = "\uf2f6"
+                            icon = "\uf2f6",
                         )
                     }
                 }
@@ -207,9 +224,22 @@ fun TokenScreen(
             ) {
                 AccountState.items.forEach {
                     SwipeItem(it.id) {
-                        AuthenticatorItem(it, remainingTime)
+                        AuthenticatorItem(it, remainingTime, onClick = {
+                            detailEntry = it
+                        })
                     }
                 }
+            }
+        }
+
+        if (detailEntry != null) {
+            RsBottomSheet(
+                modifier = Modifier.height(400.dp),
+                sheetState = sheetState,
+                onClose = { detailEntry = null },
+                backgroundColor = Color(0xFFFFFFFF),
+            ) {
+                AuthenticatorItemDetail(entry = detailEntry!!)
             }
         }
     }

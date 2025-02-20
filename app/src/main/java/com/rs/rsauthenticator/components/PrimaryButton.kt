@@ -36,6 +36,7 @@ fun PrimaryButton(
     iconSize: TextUnit = 20.sp,
     py: Dp? = null,
     radius: Dp? = null,
+    fs:  TextUnit? = null,
     bgColor: Color? = null
 ) {
 
@@ -70,6 +71,7 @@ fun PrimaryButton(
 
             if (label?.isNotEmpty() == true) {
                 Text(
+                    fontSize = fs ?: 16.sp,
                     text = label,
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge

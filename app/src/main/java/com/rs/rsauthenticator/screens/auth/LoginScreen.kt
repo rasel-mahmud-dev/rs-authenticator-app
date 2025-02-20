@@ -56,7 +56,7 @@ fun LoginScreen(navHostController: NavHostController) {
     val toastController = LocalToastController.current
 
     var email by remember { mutableStateOf(TextFieldValue("test@gmail.com")) }
-    var password by remember { mutableStateOf(TextFieldValue("12345")) }
+    var password by remember { mutableStateOf(TextFieldValue("123456")) }
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
@@ -72,7 +72,8 @@ fun LoginScreen(navHostController: NavHostController) {
             if (!userId.isNullOrEmpty()) {
                 toastController.showToast(
                     message = "Successfully logged user.",
-                    isSuccess = true
+                    isSuccess = true,
+                    timeout = 3000
                 )
 
                 AppState.setAuthInfo(

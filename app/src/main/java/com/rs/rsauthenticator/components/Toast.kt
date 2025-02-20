@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.rs.rsauthenticator.ui.providers.ToastState
-import com.rs.rsauthenticator.ui.theme.AppColors
 
 
 @Composable
@@ -54,6 +52,7 @@ fun Toast(
                         }, shape = RoundedCornerShape(12.dp)
                     )
                     .padding(16.dp),
+
                 verticalAlignment = Alignment.CenterVertically
             ) {
 

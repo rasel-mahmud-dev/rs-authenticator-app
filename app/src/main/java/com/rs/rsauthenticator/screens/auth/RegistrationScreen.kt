@@ -45,10 +45,9 @@ fun RegistrationScreen(navHostController: NavHostController) {
 
     suspend fun handleRegistration() {
         try {
-            loading = false
             errorMessage = ""
+            loading = true
             val res = ApiService.register(firstName.text, email.text, password.text)
-            println(res)
             val userId = res?.data?.id
             if (!userId.isNullOrEmpty()) {
                 toastController.showToast(
@@ -63,7 +62,7 @@ fun RegistrationScreen(navHostController: NavHostController) {
                 toastController.showToast(
                     message = errorMessage,
                     isSuccess = false,
-                    timeout = 3000
+                    timeout = 2000
                 )
             }
         } catch (ex: Exception) {

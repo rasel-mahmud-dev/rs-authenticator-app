@@ -2,13 +2,10 @@ package com.rs.rsauthenticator.ui.providers
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.rs.rsauthenticator.components.Toast
@@ -18,7 +15,8 @@ data class ToastState(
     var isOpen: Boolean = false,
     val isSuccess: Boolean = false,
     val message: String = "",
-    val timeout: Long? = 1000
+    val timeout: Long? = 1000,
+    val yOffset: Dp = 0.dp
 )
 
 
@@ -32,10 +30,8 @@ class ToastController {
     fun showToast(message: String, isSuccess: Boolean = true, timeout: Long? = null) {
         toastQueue.add(
             ToastState(
-                isOpen = true,
-                isSuccess = isSuccess,
-                message = message,
-                timeout = timeout
+                isOpen = true, isSuccess = isSuccess, message = message, timeout,
+                yOffset = -(toastQueue.size * 100).dp
             )
         )
 
@@ -47,6 +43,7 @@ class ToastController {
     fun hideToast() {
         if (toastQueue.isNotEmpty()) {
             toastQueue.removeAt(0)
+
             if (toastQueue.isNotEmpty()) {
                 toastState = toastQueue[toastQueue.size - 1]
             } else {
@@ -77,7 +74,8 @@ fun ToastProvider(content: @Composable () -> Unit) {
             Toast(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .zIndex(1000000F),
+                    .zIndex(1000F),
+//                    .offset(0.dp, toastController.toastState.yOffset),
                 toastState = toastController.toastState
             )
             content()

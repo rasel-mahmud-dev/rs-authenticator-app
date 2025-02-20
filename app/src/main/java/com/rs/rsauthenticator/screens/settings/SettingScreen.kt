@@ -1,8 +1,7 @@
-package com.rs.rsauthenticator.components.settings
+package com.rs.rsauthenticator.screens.settings
 
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -25,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsIconButton
 import com.rs.rsauthenticator.components.RsRow
+import com.rs.rsauthenticator.components.settings.SettingItem
 import com.rs.rsauthenticator.ui.theme.faBrand
 
 data class Item(val label: String, val icon: String, val route: String)
