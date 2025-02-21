@@ -15,7 +15,7 @@ data class AuthenticatorEntry(
     val digits: Int,
     val period: Int,
     val logoUrl: String?,
-    val newOtp: String,
+    var newOtp: String,
     val remainingTime: Float?,
     val createdAt: Long
 ) {

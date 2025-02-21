@@ -38,8 +38,8 @@ fun AppNavigation(navController: NavHostController) {
 //        startDestination = if (isAuthenticated) "home" else "login"
 //        startDestination = "settings/security"
 //        startDestination = "connect_app"
-//        startDestination = "settings/backup-restore"
-        startDestination = if (!isInit) "tour" else "home"
+        startDestination = "settings/about"
+//        startDestination = if (!isInit) "tour" else "home"
     ) {
 
         composable("home") {

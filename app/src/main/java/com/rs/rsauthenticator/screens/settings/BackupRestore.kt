@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
@@ -29,7 +30,6 @@ import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
-import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.ui.providers.LocalToastController
 import com.rs.rsauthenticator.ui.theme.Purple40
 import com.rs.rsauthenticator.utils.BackupManager
@@ -49,85 +49,83 @@ fun BackupRestore(navHostController: NavHostController) {
 
     val dbHelper = AppStateDbHelper.getInstance(applicationContext)
 
+    fun restoreItems(items: List<AuthenticatorEntry>) {
+        if (items.isEmpty()) {
+            toastController.showToast(
+                message = "Error: No entries to restore.",
+                isSuccess = false,
+                timeout = 3000
+            )
+            return
+        }
+        try {
+            backupManager.restore(items, dbHelper)
+            toastController.showToast(
+                message = "Restored Entries.",
+                isSuccess = true,
+                timeout = 3000
+            )
+            navHostController.navigate("home")
+        } catch (ex: Exception){
+            toastController.showToast(
+                message = "Unexpected error: ${ex.message}",
+                isSuccess = false,
+                timeout = 3000
+            )
+            ex.printStackTrace()
+        }
+    }
+
+
     val pickFileLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                val inputStream = getInputStreamFromUri(context, uri)
-                inputStream?.let {
-                    val inputStreamReader = InputStreamReader(inputStream)
-                    val gson = Gson()
-
-                    val type = object : TypeToken<List<AuthenticatorEntry>>() {}.type
-                    val restoredEntries: List<AuthenticatorEntry> =
-                        gson.fromJson(inputStreamReader, type)
-
-                    restoredEntries.forEach {
-                        val item = dbHelper.findOneBySecret(it.secret)
-                        if (!item?.secret.isNullOrEmpty()) {
-
-                            toastController.showToast(
-                                message = "Already linked ${it.accountName} on ${it.issuer}.",
-                                isSuccess = true,
-                                timeout = 3000
-                            )
-
-                        } else {
-
-                            val newOtp = generateTOTP(it.secret, it.algorithm)
-
-//                            val lastId = dbHelper.insertTotpEntry(
-//                                TotpUriData(
-//                                    id = it.id,
-//                                    protocol = "otpauth",
-//                                    type = "",
-//                                    accountName = it.accountName,
-//                                    secret = it.secret,
-//                                    issuer = it.issuer,
-//                                    algorithm = it.algorithm,
-//                                    digits = 6,
-//                                    period = 30,
-//                                    logoUrl = it.logoUrl,
-//                                    newOtp = "",
-//                                    remainingTime = 0F,
-//                                    createdAt = it.createdAt
-//                                ), newOtp, 0F
-//                            )
-
-//                            AccountState.insertItem(
-//                                AuthenticatorEntry(
-//                                    id = lastId,
-//                                    issuer = it.issuer,
-//                                    remainingTime = System.currentTimeMillis() + 30 * 1000,
-//                                    logoUrl = it.logoUrl ?: "",
-//                                    accountName = it.accountName,
-//                                    secret = it.secret,
-//                                    otpCode = newOtp,
-//                                    algorithm = it.algorithm,
-//                                    createdAt = System.currentTimeMillis()
-//                                )
-//                            )
-                        }
-                    }
-
-                    toastController.showToast(
-                        message = "Restored Entries.",
-                        isSuccess = true,
-                        timeout = 3000
-                    )
-                    navHostController.navigate("home")
+            try {
+                if (uri == null) {
+                    toastController.showToast("Error: No file selected", false)
+                    return@rememberLauncherForActivityResult
                 }
 
-            } ?: run {
-                println("Error opening file or file is empty")
+                val inputStream = getInputStreamFromUri(context, uri)
+                if (inputStream == null) {
+                    toastController.showToast("Error: Unable to open file", false)
+                    return@rememberLauncherForActivityResult
+                }
+
+                val inputStreamReader = InputStreamReader(inputStream)
+                val gson = Gson()
+                val type = object : TypeToken<List<AuthenticatorEntry>>() {}.type
+
+                val restoredEntries: List<AuthenticatorEntry> = try {
+                    gson.fromJson(inputStreamReader, type) ?: emptyList()
+                } catch (e: JsonSyntaxException) {
+                    toastController.showToast("Error: Invalid file format", false)
+                    emptyList()
+                }
+
+                if (restoredEntries.isEmpty()) {
+                    toastController.showToast("Error: File is empty", false)
+                    return@rememberLauncherForActivityResult
+                }
+
+                restoreItems(restoredEntries)
+
+            } catch (e: Exception) {
+                toastController.showToast("Unexpected error: ${e.message}", false, 2000)
             }
         }
 
-    fun handleBackup() {
-        backupManager
-            .backup(AccountState.items)
-            .download()
-    }
 
+    fun handleBackup() {
+        try {
+            val items = dbHelper.getAllTotpEntries()
+            backupManager
+                .backup(items)
+                .download()
+            toastController.showToast("Backup process completed.", true, 2000)
+        } catch (ex: Exception) {
+            toastController.showToast("Unable to complete backup process.", false, 2000)
+        }
+    }
 
     fun handleRestore() {
         pickFileLauncher.launch("application/json")

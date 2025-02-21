@@ -52,18 +52,20 @@ fun HomeScreen2(navController: NavHostController) {
             if (it.secret.isNotEmpty() && it.issuer.isNotEmpty()) {
 
                 val item = dbHelper.findOneBySecret(it.secret)
-//                if (!item?.secret.isNullOrEmpty()) {
-//                    toastController.showToast(message = "Already linked.", isSuccess = true, 2000)
-//                } else {
-                val newOtp = generateTOTP(it.secret, it.algorithm)
-                val lastId = dbHelper.insertTotpEntry(it, newOtp, 0F)
-                AccountState.insertItem(it)
+                if (!item?.secret.isNullOrEmpty()) {
+                    toastController.showToast(message = "Already linked.", isSuccess = true, 2000)
+                } else {
+                    val newOtp = generateTOTP(it.secret, it.algorithm)
+                    it.newOtp = newOtp
 
-                toastController.showToast(
-                    message = "Successfully account added.",
-                    isSuccess = true
-                )
-//                }
+                    val lastId = dbHelper.insertTotpEntry(it)
+                    AccountState.insertItem(it)
+
+                    toastController.showToast(
+                        message = "Successfully account added.",
+                        isSuccess = true
+                    )
+                }
 
             } else {
                 toastController.showToast(
@@ -84,8 +86,8 @@ fun HomeScreen2(navController: NavHostController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             TokenScreen(navController, onShowBottomSheet = {
-                handleAddApp(a)
-//                showBottomSheet = true
+//                handleAddApp(a)
+                showBottomSheet = true
             })
         }
 

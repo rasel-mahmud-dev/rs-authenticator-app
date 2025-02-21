@@ -117,7 +117,7 @@ fun ScanQRCodeScreen(
             )
         }
 
-        Box(modifier = Modifier.height(35.dp)) {}
+        Box(modifier = Modifier.height(40.dp)) {}
 
 
         Box(modifier = Modifier) {

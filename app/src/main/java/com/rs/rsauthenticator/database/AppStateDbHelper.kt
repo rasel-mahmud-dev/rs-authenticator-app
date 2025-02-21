@@ -188,7 +188,7 @@ class AppStateDbHelper private constructor(context: Context) :
     }
 
 
-    fun insertTotpEntry(totp: AuthenticatorEntry, newOtp: String, remainingTime: Float): String {
+    fun insertTotpEntry(totp: AuthenticatorEntry): String {
         try {
             val db = writableDatabase
             val contentValues = ContentValues().apply {
@@ -199,14 +199,14 @@ class AppStateDbHelper private constructor(context: Context) :
                 put(COLUMN_DIGITS, totp.digits)
                 put(COLUMN_PERIOD, totp.period)
                 put(COLUMN_LOGO_URL, totp.logoUrl)
-                put(COLUMN_NEW_OTP, newOtp)
-                put(COLUMN_REMAINING_TIME, remainingTime)
+                put(COLUMN_NEW_OTP, totp.newOtp)
+                put(COLUMN_REMAINING_TIME, totp.remainingTime)
                 put(COLUMN_CREATED_AT, System.currentTimeMillis())
             }
             val rowId = db.insert(TABLE_TOTP, null, contentValues)
             if (rowId == -1L) {
                 Log.e("Database", "Error inserting row into ${TABLE_TOTP}")
-
+                return ""
             }
             return rowId.toString()
         } catch (e: Exception) {
