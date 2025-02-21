@@ -117,19 +117,14 @@ fun LoginScreen(navHostController: NavHostController) {
             )
         },
         content = { padding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-
-            ) {
 
 
                 RsColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .padding(padding)
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
@@ -258,5 +253,5 @@ fun LoginScreen(navHostController: NavHostController) {
                     }
                 }
             }
-        })
+        )
 }

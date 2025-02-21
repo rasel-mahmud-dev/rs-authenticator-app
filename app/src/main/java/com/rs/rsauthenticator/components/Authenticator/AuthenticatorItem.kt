@@ -41,7 +41,7 @@ fun AuthenticatorItem(
     remainingTime: Int,
     onClick: () -> Unit
 ) {
-    val progress = (30 - remainingTime % 30) / 30f // Normalize between 0 and 1
+    val progress = (30 - remainingTime % 30) / 30f
 
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
@@ -130,15 +130,20 @@ fun AuthenticatorItem(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+
+                    val otp = entry.newOtp ?: ""
+                    val firstPart = if (otp.length >= 3) otp.substring(0, 3) else otp
+                    val secondPart = if (otp.length > 3) otp.substring(3) else ""
+
                     CustomText(
                         color = Color(0xFF1A1A1A),
-                        text = entry.otpCode.substring(0, 3),
+                        text = firstPart,
                         fontWeight = FontWeight.Light,
                         fs = 30.sp,
                     )
                     CustomText(
                         color = Color(0xFF1A1A1A),
-                        text = entry.otpCode.substring(3),
+                        text = secondPart,
                         fontWeight = FontWeight.Light,
                         fs = 30.sp,
                     )

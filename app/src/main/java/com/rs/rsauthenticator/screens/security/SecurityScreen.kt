@@ -88,6 +88,9 @@ fun SecurityScreen(navHostController: NavHostController) {
                             AppState.updateLockState(newState)
                             AppState.changeAppLockEnabled(newState)
                             db.setPinEnabled(newState)
+                            if (newState && db.getPin().isNullOrEmpty()) {
+                                navHostController.navigate("settings/security/setpin")
+                            }
                         }
                     }
                 }

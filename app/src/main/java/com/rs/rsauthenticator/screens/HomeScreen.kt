@@ -8,20 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
-import com.rs.rsauthenticator.database.TotpDatabaseHelper
+import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
-import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.screens.TotpOtp.TokenScreen
+import com.rs.rsauthenticator.screens.common.RequestCameraPermission
 import com.rs.rsauthenticator.screens.scanQR.ScanQRCodeScreen
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.ui.providers.LocalToastController
 import com.rs.rsauthenticator.utils.generateTOTP
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -31,7 +27,7 @@ fun HomeScreen2(navController: NavHostController) {
 
     val applicationContext = LocalContext.current
 
-    val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
+    val dbHelper = AppStateDbHelper.getInstance(applicationContext)
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -48,48 +44,38 @@ fun HomeScreen2(navController: NavHostController) {
 
 
     fun handleAddApp(scannedCode: String) {
-        val totpData = TotpUriData.fromUri(scannedCode)
+        val totpData = AuthenticatorEntry.fromUri(scannedCode)
         totpData?.let {
 
             println(scannedCode)
+
             if (it.secret.isNotEmpty() && it.issuer.isNotEmpty()) {
 
                 val item = dbHelper.findOneBySecret(it.secret)
-                if (!item?.secret.isNullOrEmpty()) {
-                    toastController.showToast(message = "Already linked.", isSuccess = true)
-                } else {
-                    val newOtp = generateTOTP(it.secret, it.algorithm)
-                    val lastId = dbHelper.insertTotpEntry(it, newOtp, 0F)
+//                if (!item?.secret.isNullOrEmpty()) {
+//                    toastController.showToast(message = "Already linked.", isSuccess = true, 2000)
+//                } else {
+                val newOtp = generateTOTP(it.secret, it.algorithm)
+                val lastId = dbHelper.insertTotpEntry(it, newOtp, 0F)
+                AccountState.insertItem(it)
 
-                    AccountState.insertItem(
-                        AuthenticatorEntry(
-                            id = lastId,
-                            issuer = it.issuer,
-                            remainingTime = 0,
-                            logoUrl = it.logoUrl ?: "",
-                            accountName = it.accountName,
-                            secret = it.secret,
-                            otpCode = newOtp,
-                            algorithm = it.algorithm,
-                            createdAt = System.currentTimeMillis()
-                        )
-                    )
-                    toastController.showToast(
-                        message = "Successfully account added.",
-                        isSuccess = true
-                    )
-                }
+                toastController.showToast(
+                    message = "Successfully account added.",
+                    isSuccess = true
+                )
+//                }
 
             } else {
                 toastController.showToast(
                     message = "QR code unknown or invalid.",
-                    isSuccess = false
+                    isSuccess = false,
+                    timeout = 3000
                 )
             }
         }
     }
 
-    
+
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -99,7 +85,7 @@ fun HomeScreen2(navController: NavHostController) {
         ) {
             TokenScreen(navController, onShowBottomSheet = {
                 handleAddApp(a)
-                showBottomSheet = true
+//                showBottomSheet = true
             })
         }
 

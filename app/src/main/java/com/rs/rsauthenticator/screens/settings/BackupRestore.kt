@@ -27,46 +27,27 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.components.ScreenHeader
-import com.rs.rsauthenticator.components.Toast
-import com.rs.rsauthenticator.database.TotpDatabaseHelper
+import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
-import com.rs.rsauthenticator.dto.TotpUriData
 import com.rs.rsauthenticator.state.AccountState
-import com.rs.rsauthenticator.ui.providers.ToastState
+import com.rs.rsauthenticator.ui.providers.LocalToastController
 import com.rs.rsauthenticator.ui.theme.Purple40
 import com.rs.rsauthenticator.utils.BackupManager
 import com.rs.rsauthenticator.utils.generateTOTP
 import getInputStreamFromUri
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.InputStreamReader
 
 
 @Composable
 fun BackupRestore(navHostController: NavHostController) {
 
-
     val applicationContext = LocalContext.current
-
-
+    val toastController = LocalToastController.current
 
     val context = LocalContext.current
     val backupManager = BackupManager(context)
 
-    val coroutineScope = rememberCoroutineScope()
-
-    val dbHelper = TotpDatabaseHelper.getInstance(applicationContext)
-
-
-    var toastState by remember {
-        mutableStateOf(
-            ToastState(
-                isOpen = false,
-                isSuccess = false,
-                message = ""
-            )
-        )
-    }
+    val dbHelper = AppStateDbHelper.getInstance(applicationContext)
 
     val pickFileLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -83,60 +64,57 @@ fun BackupRestore(navHostController: NavHostController) {
                     restoredEntries.forEach {
                         val item = dbHelper.findOneBySecret(it.secret)
                         if (!item?.secret.isNullOrEmpty()) {
-                            toastState = toastState.copy(
-                                isOpen = true,
+
+                            toastController.showToast(
+                                message = "Already linked ${it.accountName} on ${it.issuer}.",
                                 isSuccess = true,
-                                message = "Already linked ${it.accountName} on ${it.issuer}."
+                                timeout = 3000
                             )
+
                         } else {
 
                             val newOtp = generateTOTP(it.secret, it.algorithm)
-                            val lastId = dbHelper.insertTotpEntry(
-                                TotpUriData(
-                                    id = it.id,
-                                    protocol = "otpauth",
-                                    type = "",
-                                    accountName = it.accountName,
-                                    secret = it.secret,
-                                    issuer = it.issuer,
-                                    algorithm = it.algorithm,
-                                    digits = 6,
-                                    period = 30,
-                                    logoUrl = it.logoUrl,
-                                    newOtp = "",
-                                    remainingTime = 0F,
-                                    createdAt = it.createdAt
-                                ), newOtp, 0F
-                            )
 
-                            AccountState.insertItem(
-                                AuthenticatorEntry(
-                                    id = lastId,
-                                    issuer = it.issuer,
-                                    remainingTime = System.currentTimeMillis() + 30 * 1000,
-                                    logoUrl = it.logoUrl ?: "",
-                                    accountName = it.accountName,
-                                    secret = it.secret,
-                                    otpCode = newOtp,
-                                    algorithm = it.algorithm,
-                                    createdAt = System.currentTimeMillis()
-                                )
-                            )
+//                            val lastId = dbHelper.insertTotpEntry(
+//                                TotpUriData(
+//                                    id = it.id,
+//                                    protocol = "otpauth",
+//                                    type = "",
+//                                    accountName = it.accountName,
+//                                    secret = it.secret,
+//                                    issuer = it.issuer,
+//                                    algorithm = it.algorithm,
+//                                    digits = 6,
+//                                    period = 30,
+//                                    logoUrl = it.logoUrl,
+//                                    newOtp = "",
+//                                    remainingTime = 0F,
+//                                    createdAt = it.createdAt
+//                                ), newOtp, 0F
+//                            )
+
+//                            AccountState.insertItem(
+//                                AuthenticatorEntry(
+//                                    id = lastId,
+//                                    issuer = it.issuer,
+//                                    remainingTime = System.currentTimeMillis() + 30 * 1000,
+//                                    logoUrl = it.logoUrl ?: "",
+//                                    accountName = it.accountName,
+//                                    secret = it.secret,
+//                                    otpCode = newOtp,
+//                                    algorithm = it.algorithm,
+//                                    createdAt = System.currentTimeMillis()
+//                                )
+//                            )
                         }
                     }
 
-                    toastState = toastState.copy(
-                        isOpen = true,
+                    toastController.showToast(
+                        message = "Restored Entries.",
                         isSuccess = true,
-                        message = "Restored Entries."
+                        timeout = 3000
                     )
-
-                    coroutineScope.launch {
-                        delay(2000)
-                        toastState = toastState.copy(isOpen = false)
-                        navHostController.navigate("home")
-                    }
-
+                    navHostController.navigate("home")
                 }
 
             } ?: run {
@@ -154,6 +132,7 @@ fun BackupRestore(navHostController: NavHostController) {
     fun handleRestore() {
         pickFileLauncher.launch("application/json")
     }
+
     Scaffold(
         topBar = {
             ScreenHeader(
@@ -169,8 +148,6 @@ fun BackupRestore(navHostController: NavHostController) {
                     .padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-
-                Toast(modifier = Modifier, toastState = toastState)
 
                 RsColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,

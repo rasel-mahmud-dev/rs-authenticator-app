@@ -8,10 +8,11 @@ import com.rs.rsauthenticator.state.AppState
 
 @Composable
 fun LockUnlockWrapperScreen(appStateDbHelper: AppStateDbHelper) {
-    val storedPin by remember { mutableStateOf(appStateDbHelper.getPin()) }
+
+    val isLocked = AppState.isLocked && !appStateDbHelper.getPin().isNullOrEmpty()
 
     AnimatedVisibility(
-        visible = AppState.isLocked,
+        visible = isLocked,
         enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
             initialOffsetX = { it / 5 },
             animationSpec = tween(300)
@@ -25,12 +26,11 @@ fun LockUnlockWrapperScreen(appStateDbHelper: AppStateDbHelper) {
             onUnlock = {
                 AppState.updateLockState(false)
             },
-            storedPin = storedPin ?: ""
         )
     }
 
     AnimatedVisibility(
-        visible = !AppState.isLocked,
+        visible = !isLocked,
         enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
             initialOffsetX = { -it / 5 },
             animationSpec = tween(300)

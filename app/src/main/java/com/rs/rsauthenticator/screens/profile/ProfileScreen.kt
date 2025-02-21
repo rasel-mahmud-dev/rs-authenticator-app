@@ -43,14 +43,13 @@ fun ProfileScreen(navHostController: NavHostController) {
         content = { padding ->
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(padding),
-                contentAlignment = Alignment.TopCenter
+                contentAlignment = Alignment.Center
             ) {
 
                 RsColumn(
                     modifier = Modifier.fillMaxWidth(),
-                    pt = 100.dp
+                    pt = 10.dp
                 ) {
 
                     RsColumn(
@@ -58,11 +57,11 @@ fun ProfileScreen(navHostController: NavHostController) {
                             .weight(1f)
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        pt = 20.dp
+                        pt = 40.dp
                     ) {
 
                         Image(
-                            painter = rememberAsyncImagePainter(auth?.avatar ?: R.drawable.avatar),
+                            painter = rememberAsyncImagePainter(if (auth?.avatar.isNullOrEmpty()) R.drawable.avatar else auth?.avatar),
                             contentDescription = "Rs Authenticator Logo",
                             modifier = Modifier
                                 .size(150.dp)
@@ -74,7 +73,7 @@ fun ProfileScreen(navHostController: NavHostController) {
                             modifier = Modifier,
                             text = auth?.username ?: "Guest.",
                             fs = 16.sp,
-                            pt = 5.dp,
+                            pt = 20.dp,
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black

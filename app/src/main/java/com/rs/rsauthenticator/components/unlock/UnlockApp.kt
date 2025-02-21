@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.RsIconButton
-import com.rs.rsauthenticator.components.unlock.PinKeyboard
 import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.ui.theme.AppColors
 import com.rs.rsauthenticator.ui.theme.faSolid
@@ -23,8 +22,11 @@ import com.rs.rsauthenticator.ui.theme.faSolid
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun UnlockScreen(onUnlock: () -> Unit, storedPin: String) {
+fun UnlockScreen(onUnlock: () -> Unit) {
     var shakeError by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val db = AppStateDbHelper.getInstance(context)
+    val storedPin = db.getPin()
 
     val shakeAnimation = remember { Animatable(0f) }
 
@@ -45,9 +47,6 @@ fun UnlockScreen(onUnlock: () -> Unit, storedPin: String) {
             shakeError = false
         }
     }
-
-    val context = LocalContext.current
-    val db = AppStateDbHelper.getInstance(context)
 
     fun handleSetupPin(pin: String) {
         if (pin != storedPin) {
@@ -70,6 +69,15 @@ fun UnlockScreen(onUnlock: () -> Unit, storedPin: String) {
             verticalArrangement = Arrangement.Center
 
         ) {
+
+            CustomText(
+                text = "Unlock.",
+                color = AppColors.Dark40,
+                fs = 30.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Spacer(modifier = Modifier.height(36.dp))
 
             RsIconButton(w = 80.dp, h = 80.dp, bgColor = AppColors.Primary40, radius = 20.dp) {
                 CustomText(

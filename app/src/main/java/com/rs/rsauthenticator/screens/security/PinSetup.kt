@@ -34,6 +34,7 @@ import com.rs.rsauthenticator.components.RsRow
 import com.rs.rsauthenticator.components.ScreenHeader
 import com.rs.rsauthenticator.components.unlock.PinKeyboard
 import com.rs.rsauthenticator.database.AppStateDbHelper
+import com.rs.rsauthenticator.state.AppState
 import com.rs.rsauthenticator.ui.theme.AppColors
 import com.rs.rsauthenticator.ui.theme.faSolid
 

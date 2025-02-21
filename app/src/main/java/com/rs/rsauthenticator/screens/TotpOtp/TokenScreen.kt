@@ -17,9 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
+
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
@@ -51,19 +53,17 @@ import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsBottomSheet
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.RsRow
-import com.rs.rsauthenticator.database.TotpDatabaseHelper
+import com.rs.rsauthenticator.database.AppStateDbHelper
 import com.rs.rsauthenticator.dto.AuthenticatorEntry
-import com.rs.rsauthenticator.screens.RequestCameraPermission
-import com.rs.rsauthenticator.screens.scanQR.ScanQRCodeScreen
 import com.rs.rsauthenticator.state.AccountState
 import com.rs.rsauthenticator.state.AppState
+import com.rs.rsauthenticator.ui.providers.LocalToastController
 import com.rs.rsauthenticator.utils.generateTOTP
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun TokenScreen(
     navController: NavHostController,
@@ -71,7 +71,7 @@ fun TokenScreen(
 ) {
 
     val context = LocalContext.current
-    val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
+    val dbHelper = remember { AppStateDbHelper.getInstance(context) }
     var remainingTime by remember { mutableIntStateOf(LocalDateTime.now().second) }
     val auth = AppState.auth
 
@@ -91,7 +91,7 @@ fun TokenScreen(
             if (remainingTime % 30 == 0) {
                 AccountState.updateAll(AccountState.items.map {
                     it.copy(
-                        otpCode = generateTOTP(
+                        newOtp = generateTOTP(
                             it.secret,
                             it.algorithm
                         )
@@ -100,7 +100,7 @@ fun TokenScreen(
                 AccountState.items.forEach {
                     dbHelper.updateTotpEntry(
                         id = it.id,
-                        newOtp = it.otpCode
+                        newOtp = it.newOtp
                     )
                 }
             }
@@ -108,11 +108,10 @@ fun TokenScreen(
         }
     }
 
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp, 0.dp),
     ) {
 
         RsColumn(
@@ -223,7 +222,7 @@ fun TokenScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 AccountState.items.forEach {
-                    SwipeItem(it.id) {
+                    SwipeItem(it.secret) {
                         AuthenticatorItem(it, remainingTime, onClick = {
                             detailEntry = it
                         })
@@ -231,6 +230,7 @@ fun TokenScreen(
                 }
             }
         }
+
 
         if (detailEntry != null) {
             RsBottomSheet(
@@ -248,16 +248,17 @@ fun TokenScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SwipeItem(id: String, content: @Composable RowScope.() -> Unit) {
+fun SwipeItem(secret: String, content: @Composable RowScope.() -> Unit) {
     val context = LocalContext.current
-    val dbHelper = remember { TotpDatabaseHelper.getInstance(context) }
+    val dbHelper = remember { AppStateDbHelper.getInstance(context) }
+    val toastContainer = LocalToastController.current
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { direction ->
             when (direction) {
                 SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> {
-                    AccountState.removeItem(dbHelper, id)
-                    Toast.makeText(context, "Account deleted", Toast.LENGTH_SHORT).show()
+                    AccountState.removeItem(dbHelper, secret)
+                    toastContainer.showToast("Account deleted", true, 2000)
                     true
                 }
 

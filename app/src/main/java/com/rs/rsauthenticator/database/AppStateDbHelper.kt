@@ -6,7 +6,10 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
+import android.util.Log
+import androidx.core.database.getLongOrNull
 import com.google.gson.Gson
+import com.rs.rsauthenticator.dto.AuthenticatorEntry
 import com.rs.rsauthenticator.state.Auth
 
 class AppStateDbHelper private constructor(context: Context) :
@@ -14,11 +17,27 @@ class AppStateDbHelper private constructor(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "ApplicationState.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
 
         const val TABLE_STATE = "state"
         private const val COLUMN_KEY = "key"
         private const val COLUMN_VALUE = "value"
+
+
+        // Table: connected_account_entries
+        private const val TABLE_TOTP = "totp_entries"
+        private const val COLUMN_ID = "id"
+        private const val COLUMN_ACCOUNT_NAME = "account_name"
+        private const val COLUMN_SECRET = "secret"
+        private const val COLUMN_ISSUER = "issuer"
+        private const val COLUMN_ALGORITHM = "algorithm"
+        private const val COLUMN_DIGITS = "digits"
+        private const val COLUMN_PERIOD = "period"
+        private const val COLUMN_LOGO_URL = "logo_url"
+        private const val COLUMN_NEW_OTP = "new_otp"
+        private const val COLUMN_REMAINING_TIME = "remaining_time"
+        private const val COLUMN_CREATED_AT = "created_at"
+
 
         @Volatile
         private var instance: AppStateDbHelper? = null
@@ -42,15 +61,37 @@ class AppStateDbHelper private constructor(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase) {
         println("Creating database and state table...")
-        val createTableQuery = """
-        CREATE TABLE IF NOT EXISTS $TABLE_STATE (
-            $COLUMN_KEY TEXT PRIMARY KEY,
-            $COLUMN_VALUE TEXT
-        )
-    """.trimIndent()
+
         try {
-            db.execSQL(createTableQuery)
+            db.execSQL(
+                """
+                    CREATE TABLE IF NOT EXISTS $TABLE_STATE (
+                $COLUMN_KEY TEXT PRIMARY KEY,
+                $COLUMN_VALUE TEXT
+            )
+            """.trimIndent()
+            )
             println("Table $TABLE_STATE created successfully")
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS $TABLE_TOTP (
+                    $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    $COLUMN_ACCOUNT_NAME TEXT NOT NULL,
+                    $COLUMN_SECRET TEXT NOT NULL,
+                    $COLUMN_ISSUER TEXT,
+                    $COLUMN_ALGORITHM TEXT DEFAULT 'SHA1',
+                    $COLUMN_DIGITS INTEGER DEFAULT 6,
+                    $COLUMN_PERIOD INTEGER DEFAULT 30,
+                    $COLUMN_LOGO_URL TEXT,
+                    $COLUMN_NEW_OTP TEXT,
+                    $COLUMN_REMAINING_TIME INTEGER,
+                    $COLUMN_CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """.trimIndent()
+            )
+            println("Table $TABLE_TOTP created successfully")
+
         } catch (e: Exception) {
             println("Error creating table: ${e.message}")
         }
@@ -113,7 +154,7 @@ class AppStateDbHelper private constructor(context: Context) :
         this.saveState("pin_enabled", "1")
     }
 
-        fun setPinEnabled(isEnabled: Boolean) {
+    fun setPinEnabled(isEnabled: Boolean) {
         this.saveState("pin_enabled", if (isEnabled) "1" else "0")
     }
 
@@ -144,5 +185,179 @@ class AppStateDbHelper private constructor(context: Context) :
     fun clearAuth() {
         val db = writableDatabase
         db.delete(TABLE_STATE, "$COLUMN_KEY = ?", arrayOf("auth"))
+    }
+
+
+    fun insertTotpEntry(totp: AuthenticatorEntry, newOtp: String, remainingTime: Float): String {
+        try {
+            val db = writableDatabase
+            val contentValues = ContentValues().apply {
+                put(COLUMN_ACCOUNT_NAME, totp.accountName)
+                put(COLUMN_SECRET, totp.secret)
+                put(COLUMN_ISSUER, totp.issuer)
+                put(COLUMN_ALGORITHM, totp.algorithm)
+                put(COLUMN_DIGITS, totp.digits)
+                put(COLUMN_PERIOD, totp.period)
+                put(COLUMN_LOGO_URL, totp.logoUrl)
+                put(COLUMN_NEW_OTP, newOtp)
+                put(COLUMN_REMAINING_TIME, remainingTime)
+                put(COLUMN_CREATED_AT, System.currentTimeMillis())
+            }
+            val rowId = db.insert(TABLE_TOTP, null, contentValues)
+            if (rowId == -1L) {
+                Log.e("Database", "Error inserting row into ${TABLE_TOTP}")
+
+            }
+            return rowId.toString()
+        } catch (e: Exception) {
+            Log.e("insertTotpEntry", e.toString())
+            return ""
+        }
+    }
+
+    fun updateTotpEntry(id: String, newOtp: String): Int {
+        val db = writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_NEW_OTP, newOtp)
+        }
+        return db.update(TABLE_TOTP, contentValues, "${COLUMN_ID} = ?", arrayOf(id))
+    }
+
+    fun getAllTotpEntries(): List<AuthenticatorEntry> {
+        val db = readableDatabase
+        val cursor: Cursor = db.query(TABLE_TOTP, null, null, null, null, null, null)
+        val totpList = mutableListOf<AuthenticatorEntry>()
+
+        if (cursor.moveToFirst()) {
+            do {
+                val accountName =
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME))
+                val secret = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_SECRET
+                    )
+                )
+                val id = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_ID
+                    )
+                )
+                val issuer = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_ISSUER
+                    )
+                )
+                val algorithm = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_ALGORITHM
+                    )
+                )
+                val digits = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_DIGITS
+                    )
+                )
+                val period = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_PERIOD
+                    )
+                )
+                val createdAt =
+                    cursor.getLongOrNull(
+                        cursor.getColumnIndexOrThrow(
+                            COLUMN_CREATED_AT
+                        )
+                    )
+                val logoUrl = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        COLUMN_LOGO_URL
+                    )
+                )
+                val newOtp =
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NEW_OTP)) // Retrieve the new OTP
+                val remainingTime =
+                    cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_REMAINING_TIME)) // Retrieve the remaining time
+
+                totpList.add(
+                    AuthenticatorEntry(
+                        id,
+                        "otpauth",
+                        "totp",
+                        accountName,
+                        secret,
+                        issuer,
+                        algorithm,
+                        digits,
+                        period,
+                        logoUrl,
+                        newOtp,
+                        remainingTime,
+                        createdAt = createdAt ?: 0
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return totpList
+    }
+
+    fun findOneBySecret(secret: String): AuthenticatorEntry? {
+        val db = readableDatabase
+        val selection = "${COLUMN_SECRET} = ?"
+        val selectionArgs = arrayOf(secret)
+
+        val cursor: Cursor = db.query(TABLE_TOTP, null, selection, selectionArgs, null, null, null)
+
+        var totpEntry: AuthenticatorEntry? = null
+        if (cursor.moveToFirst()) {
+            val accountName = cursor.getString(
+                cursor.getColumnIndexOrThrow(
+                    COLUMN_ACCOUNT_NAME
+                )
+            )
+            val id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val issuer = cursor.getString(
+                cursor.getColumnIndexOrThrow(
+                    COLUMN_ISSUER
+                )
+            )
+            val algorithm = cursor.getString(
+                cursor.getColumnIndexOrThrow(
+                    COLUMN_ALGORITHM
+                )
+            )
+            val digits = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DIGITS))
+            val period = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERIOD))
+            val createdAt =
+                cursor.getLongOrNull(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT)) ?: 0
+            val logoUrl = cursor.getString(
+                cursor.getColumnIndexOrThrow(
+                    COLUMN_LOGO_URL
+                )
+            )
+            val newOtp = cursor.getString(
+                cursor.getColumnIndexOrThrow(
+                    COLUMN_NEW_OTP
+                )
+            )
+            val remainingTime = cursor.getFloat(
+                cursor.getColumnIndexOrThrow(
+                    COLUMN_REMAINING_TIME
+                )
+            )
+
+            totpEntry = AuthenticatorEntry(
+                id, "otpauth", "totp", accountName, secret, issuer,
+                algorithm, digits, period, logoUrl, newOtp, remainingTime, createdAt
+            )
+        }
+        cursor.close()
+        return totpEntry
+    }
+
+    fun deleteTotpEntry(secret: String) {
+        val db = writableDatabase
+        val res = db.delete(TABLE_TOTP, "${COLUMN_SECRET} = ?", arrayOf(secret))
+        Log.d("app connection delete result", res.toString())
     }
 }

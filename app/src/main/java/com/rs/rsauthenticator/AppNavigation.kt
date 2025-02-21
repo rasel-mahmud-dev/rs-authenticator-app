@@ -11,7 +11,6 @@ import com.rs.rsauthenticator.screens.security.PinSetupScreen
 import com.rs.rsauthenticator.screens.settings.SettingScreen
 import com.rs.rsauthenticator.layout.HomeLayout
 import com.rs.rsauthenticator.screens.common.AboutScreen
-import com.rs.rsauthenticator.screens.ConnectAppScreen
 import com.rs.rsauthenticator.screens.auth.ForgotPasswordScreen
 import com.rs.rsauthenticator.screens.HomeScreen2
 import com.rs.rsauthenticator.screens.auth.LoginScreen
@@ -39,8 +38,8 @@ fun AppNavigation(navController: NavHostController) {
 //        startDestination = if (isAuthenticated) "home" else "login"
 //        startDestination = "settings/security"
 //        startDestination = "connect_app"
-        startDestination = "login"
-//        startDestination = if (!isInit) "tour" else "home"
+//        startDestination = "settings/backup-restore"
+        startDestination = if (!isInit) "tour" else "home"
     ) {
 
         composable("home") {
@@ -52,12 +51,6 @@ fun AppNavigation(navController: NavHostController) {
         composable("settings") {
             HomeLayout(navController) {
                 SettingScreen(navController)
-            }
-        }
-
-        composable("capture_qr") {
-            ProtectedRoute(isAuthenticated = isAuthenticated, navController = navController) {
-                ConnectAppScreen(navController)
             }
         }
 
