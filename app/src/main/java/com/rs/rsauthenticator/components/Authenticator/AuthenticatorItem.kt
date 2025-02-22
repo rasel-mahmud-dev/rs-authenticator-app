@@ -77,7 +77,7 @@ fun AuthenticatorItem(
                         CustomText(icon = icon, fs = 35.sp, fontFamily = faBrand)
                     } else {
                         Image(
-                            painter = rememberAsyncImagePainter(if (entry.logoUrl == "") R.drawable.site else entry.logoUrl),
+                            painter = rememberAsyncImagePainter(if (entry.logoUrl == "") R.drawable.internet_logo else entry.logoUrl),
                             contentDescription = "Rs",
                             modifier = Modifier
                                 .size(35.dp)

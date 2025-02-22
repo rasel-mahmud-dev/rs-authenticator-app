@@ -21,37 +21,18 @@ data class ToastState(
 
 
 class ToastController {
-    private val toastQueue = mutableListOf<ToastState>()
-    private var currentToastIndex = 0
-
     var toastState by mutableStateOf(ToastState())
         private set
 
     fun showToast(message: String, isSuccess: Boolean = true, timeout: Long? = null) {
-        toastQueue.add(
+        toastState =
             ToastState(
                 isOpen = true, isSuccess = isSuccess, message = message, timeout,
-                yOffset = -(toastQueue.size * 100).dp
             )
-        )
-
-        if (!toastState.isOpen && toastQueue.isNotEmpty()) {
-            toastState = toastQueue[currentToastIndex]
-        }
     }
 
     fun hideToast() {
-        if (toastQueue.isNotEmpty()) {
-            toastQueue.removeAt(0)
-
-            if (toastQueue.isNotEmpty()) {
-                toastState = toastQueue[toastQueue.size - 1]
-            } else {
-                toastState = toastState.copy(isOpen = false)
-            }
-        } else {
-            toastState = toastState.copy(isOpen = false)
-        }
+        toastState = toastState.copy(isOpen = false)
     }
 }
 

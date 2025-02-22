@@ -30,6 +30,7 @@ fun HomeScreen2(navController: NavHostController) {
     val dbHelper = AppStateDbHelper.getInstance(applicationContext)
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
+    var isScanCompleted by remember { mutableStateOf(false) }
 
 //    otpauth://totp/rasel.mahmud.dev?secret=GEC7FRTCQRTFQIU6DNDZZWWB4A46FFBW&digits=6&issuer=Facebook
 //    var scannedCode by remember { mutableStateOf("otpauth://totp/RsAuth%7Chttps://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr:rasel@gmail.com?algorithm=SHA256&digits=6&issuer=RsAuth%7Chttps:%2F%2Fplay-lh.googleusercontent.com%2FDTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr&period=30&secret=V364VS7WUNHR4UJA3JEB4MVSNNFYSPYL") }
@@ -50,10 +51,9 @@ fun HomeScreen2(navController: NavHostController) {
             println(scannedCode)
 
             if (it.secret.isNotEmpty() && it.issuer.isNotEmpty()) {
-
                 val item = dbHelper.findOneBySecret(it.secret)
                 if (!item?.secret.isNullOrEmpty()) {
-                    toastController.showToast(message = "Already linked.", isSuccess = true, 2000)
+                    toastController.showToast(message = "Already linked.", isSuccess = true, 1000)
                 } else {
                     val newOtp = generateTOTP(it.secret, it.algorithm)
                     it.newOtp = newOtp
@@ -66,7 +66,6 @@ fun HomeScreen2(navController: NavHostController) {
                         isSuccess = true
                     )
                 }
-
             } else {
                 toastController.showToast(
                     message = "QR code unknown or invalid.",
@@ -88,13 +87,17 @@ fun HomeScreen2(navController: NavHostController) {
             TokenScreen(navController, onShowBottomSheet = {
 //                handleAddApp(a)
                 showBottomSheet = true
+                isScanCompleted = false
             })
         }
 
         if (showBottomSheet) {
             RsBottomSheet(
                 sheetState = sheetState,
-                onClose = { showBottomSheet = false },
+                onClose = {
+                    showBottomSheet = false
+                    isScanCompleted = true
+                },
                 backgroundColor = Color(0xFFFFFFFF),
             ) {
 
@@ -102,9 +105,15 @@ fun HomeScreen2(navController: NavHostController) {
                     RequestCameraPermission(onPermissionGranted = {})
 
                     ScanQRCodeScreen(navController, onQRCodeScanned = {
-                        scannedCode = it
-                        handleAddApp(it)
+
                         scope.launch {
+                            sheetState.hide()
+                            showBottomSheet = false
+
+                            if (!isScanCompleted) {
+                                handleAddApp(it)
+                            }
+                            isScanCompleted = true
                             sheetState.hide()
                             showBottomSheet = false
                         }
@@ -112,6 +121,7 @@ fun HomeScreen2(navController: NavHostController) {
                         scope.launch {
                             sheetState.hide()
                             showBottomSheet = false
+                            isScanCompleted = true
                         }
                     })
                 }
