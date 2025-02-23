@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,7 +33,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.navigation.NavHostController
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.rs.rsauthenticator.components.CustomText
@@ -64,19 +62,14 @@ fun processImageProxy(imageProxy: ImageProxy, onQrCodeScanned: (String) -> Unit)
 
 @Composable
 fun ScanQRCodeScreen(
-    navController: NavHostController,
-    onQRCodeScanned: (String) -> Unit,
-    onClose: () -> Unit
+    onQRCodeScanned: (String) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
-    var scannedCode by remember { mutableStateOf("") }
-
     var cameraSelector3 by remember { mutableIntStateOf(CameraSelector.LENS_FACING_BACK) }
-
 
     LaunchedEffect(Unit, cameraSelector3) {
         val cameraProvider = cameraProviderFuture.get()
@@ -94,9 +87,7 @@ fun ScanQRCodeScreen(
             .also { analysis ->
                 analysis.setAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
                     processImageProxy(imageProxy) { qrCode ->
-                        scannedCode = qrCode
                         onQRCodeScanned(qrCode)
-                        navController.popBackStack()
                     }
                 }
             }

@@ -52,7 +52,7 @@ fun RegistrationScreen(navHostController: NavHostController) {
             if (!userId.isNullOrEmpty()) {
                 toastController.showToast(
                     message = "Successfully registered user.",
-                    isSuccess = false,
+                    isSuccess = true,
                     timeout = 3000
                 )
 

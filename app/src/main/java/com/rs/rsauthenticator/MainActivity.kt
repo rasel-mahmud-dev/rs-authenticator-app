@@ -1,6 +1,10 @@
 package com.rs.rsauthenticator
 
 import LockUnlockWrapperScreen
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,7 +15,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
@@ -37,12 +40,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val screenOffReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_SCREEN_OFF) {
+                Log.d("Screen", "Screen turned off - Locking")
+                lockRunnable.run()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         observeLifecycleToInactivity()
         AppState.initialize(this)
         AppStateDbHelper.getInstance(this)
+
+        val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
+        registerReceiver(screenOffReceiver, filter)
 
         setContent {
             RsAuthenticatorTheme {
@@ -85,7 +100,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startInactivityTimer() {
-        lockHandler.postDelayed(lockRunnable, 30 * 1000)
+        lockHandler.postDelayed(lockRunnable, 10 * 1000)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(screenOffReceiver)
     }
 }
 

@@ -3,8 +3,6 @@ package com.rs.rsauthenticator.screens.auth
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,15 +34,12 @@ import com.rs.rsauthenticator.components.CustomText
 import com.rs.rsauthenticator.components.PrimaryButton
 import com.rs.rsauthenticator.components.RsColumn
 import com.rs.rsauthenticator.components.ScreenHeader
-import com.rs.rsauthenticator.components.Toast
 import com.rs.rsauthenticator.components.form.TextInput
 import com.rs.rsauthenticator.http.services.ApiService
 import com.rs.rsauthenticator.state.Auth
 import com.rs.rsauthenticator.state.AppState
 import com.rs.rsauthenticator.ui.providers.LocalToastController
-import com.rs.rsauthenticator.ui.providers.ToastState
 import com.rs.rsauthenticator.ui.theme.Primary40
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable

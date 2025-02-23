@@ -33,9 +33,10 @@ object AccountState {
         _items = items
     }
 
-    fun insertItem(entry: AuthenticatorEntry) {
-//        val newOtp = generateTOTP(entry.secret)
-//        dbHelper.insertTotpEntry(entry, newOtp, 30F)
+    fun insertItem(entry: AuthenticatorEntry, dbHelper: AppStateDbHelper) {
+        val newOtp = generateTOTP(entry.secret, entry.algorithm)
+        entry.newOtp = newOtp
+        dbHelper.insertTotpEntry(entry)
         _items = _items + entry
     }
 

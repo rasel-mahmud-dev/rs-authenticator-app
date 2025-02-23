@@ -58,11 +58,7 @@ class BackupManager(private val context: Context) {
                     remainingTime = 0F,
                     createdAt = it.createdAt
                 )
-
-                val lastId = dbHelper.insertTotpEntry(newItem)
-                if (lastId != "") {
-                    AccountState.insertItem(newItem)
-                }
+                AccountState.insertItem(newItem, dbHelper)
             }
         }
     }
