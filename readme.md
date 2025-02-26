@@ -3,7 +3,7 @@ Here's your **enhanced and well-structured README** by merging and rearranging t
 
 # RS Authenticator – Secure & Offline 2FA App
 
-[![Download RS Authenticator](https://img.shields.io/badge/Download-RS%20Authenticator-blue?style=for-the-badge&logo=android)](https://github.com/rasel-mahmud-dev/rs-authenticator-app/releases)
+[![Download RS Authenticator](https://img.shields.io/badge/Download-RS%20Authenticator-blue?style=for-the-badge&logo=android)](https://rs-authenticator.vercel.app/download-app)
 
 RS Authenticator is a **secure and feature-rich authentication app** that allows users to generate **Time-Based One-Time Passwords (TOTP)**, manage authentication codes, and ensure app security with and PIN-based unlocking**. Built using **Kotlin Jetpack Compose**, it offers **100% offline functionality** without tracking user data.
 
@@ -39,7 +39,7 @@ RS Authenticator is a **secure and feature-rich authentication app** that allows
 
 ## 📲 How to Set Up MFA with RS Authenticator
 
-1. **Download & Install**: Get RS Authenticator from the [Download Page](https://github.com/rasel-mahmud-dev/rs-authenticator-app/releases).
+1. **Download & Install**: Get RS Authenticator from the [Download Page](https://rs-authenticator.vercel.app/download-app).
 2. **Scan QR Code**: Open the app, tap **Add Account**, and scan the MFA QR code from your service provider.
 3. **Generate Codes**: RS Authenticator will generate a **6-digit TOTP code** that refreshes every 30 seconds.
 4. **Secure Your App**: Enable **App Lock** (PIN/Biometric) for added security.
