@@ -5,7 +5,7 @@ Here's your **enhanced and well-structured README** by merging and rearranging t
 
 [![Download RS Authenticator](https://img.shields.io/badge/Download-RS%20Authenticator-blue?style=for-the-badge&logo=android)](https://github.com/rasel-mahmud-dev/rs-authenticator-app/releases)
 
-RS Authenticator is a **secure and feature-rich authentication app** that allows users to generate **Time-Based One-Time Passwords (TOTP)**, manage authentication codes, and ensure app security with **biometric and PIN-based unlocking**. Built using **Kotlin Jetpack Compose**, it offers **100% offline functionality** without tracking user data.
+RS Authenticator is a **secure and feature-rich authentication app** that allows users to generate **Time-Based One-Time Passwords (TOTP)**, manage authentication codes, and ensure app security with and PIN-based unlocking**. Built using **Kotlin Jetpack Compose**, it offers **100% offline functionality** without tracking user data.
 
 ---
 
