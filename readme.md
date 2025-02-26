@@ -17,12 +17,11 @@ RS Authenticator is a **secure and feature-rich authentication app** that allows
 - **🗄️ Offline Data Storage:** Securely stores authentication data **locally** using **SQLite**.
 - **📂 Backup & Restore:** Securely export/import your authentication codes.
 - **⚡ Multiple Algorithm Support:** Supports **SHA1, SHA256, and SHA512** for generating TOTP codes.
-- **🌙 Dark Mode:** Auto adapts to system themes for better usability.
 
 ---
 
 ## 📸 Screenshots
-![preview](public/Screenshot_2025-02-23-01-30-47-738_com.rs.rsauthenticator.jpg)
+![preview](./public/Screenshot_2025-02-23-01-30-47-738_com.rs.rsauthenticator.jpg)
 
 ---
 
