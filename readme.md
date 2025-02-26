@@ -21,7 +21,8 @@ RS Authenticator is a **secure and feature-rich authentication app** that allows
 ---
 
 ## 📸 Screenshots
-![preview](./public/Screenshot_2025-02-23-01-30-47-738_com.rs.rsauthenticator.jpg)
+<img src="./public/Screenshot_2025-02-23-01-30-47-738_com.rs.rsauthenticator.jpg" alt="preview" width="300px">
+
 
 ---
 
