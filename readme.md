@@ -1,20 +1,53 @@
-# RS Authenticator App
+Here's your **enhanced and well-structured README** by merging and rearranging the previous versions:
 
-RS Authenticator is a secure and feature-rich authentication application that allows users to generate time-based OTPs (TOTP), manage authentication codes, and ensure app security with biometric and PIN-based unlocking.
+
+# RS Authenticator – Secure & Offline 2FA App
+
+[![Download RS Authenticator](https://img.shields.io/badge/Download-RS%20Authenticator-blue?style=for-the-badge&logo=android)](https://github.com/rasel-mahmud-dev/rs-authenticator-app/releases)
+
+RS Authenticator is a **secure and feature-rich authentication app** that allows users to generate **Time-Based One-Time Passwords (TOTP)**, manage authentication codes, and ensure app security with **biometric and PIN-based unlocking**. Built using **Kotlin Jetpack Compose**, it offers **100% offline functionality** without tracking user data.
+
+---
 
 ## 🚀 Features
 
-- **🔐 Authentication System:** User Login, Registration, and Forgot Password functionality.
-- **🔑 App Security:** Unlock/Lock using PIN or Biometrics.
-- **🕒 Authenticator Code Generation:** Supports TOTP-based 2FA authentication.
-- **🗄️ Database Preservation:** Securely stores authentication data with SQLite.
-- **📸 QR Code Scanning:** Easily scan QR codes to add authentication accounts.
+- **🔐 App Security:** Unlock/Lock using **PIN or Biometrics**.
+- **🕒 Authenticator Code Generation:** Supports **TOTP-based 2FA authentication**.
+- **📸 QR Code Scanning:** Easily **scan QR codes** to add authentication accounts.
+- **🗄️ Offline Data Storage:** Securely stores authentication data **locally** using **SQLite**.
+- **📂 Backup & Restore:** Securely export/import your authentication codes.
+- **⚡ Multiple Algorithm Support:** Supports **SHA1, SHA256, and SHA512** for generating TOTP codes.
+- **🌙 Dark Mode:** Auto adapts to system themes for better usability.
 
-## 📱 Screenshots
+---
 
-(Include screenshots here to showcase the app's UI)
+## 📸 Screenshots
+![preview](public/Screenshot_2025-02-23-01-30-47-738_com.rs.rsauthenticator.jpg)
 
-## 🛠️ Installation
+---
+
+## 🏗️ Built With
+
+- **Language:** Kotlin
+- **Framework:** Jetpack Compose
+- **Database:** SQLite (Room)
+- **Authentication:** Offline (No tracking, no internet required)
+- **Navigation:** Jetpack Navigation
+- **UI Components:** Material 3 + Custom Components
+
+---
+
+## 📲 How to Set Up MFA with RS Authenticator
+
+1. **Download & Install**: Get RS Authenticator from the [Download Page](https://github.com/rasel-mahmud-dev/rs-authenticator-app/releases).
+2. **Scan QR Code**: Open the app, tap **Add Account**, and scan the MFA QR code from your service provider.
+3. **Generate Codes**: RS Authenticator will generate a **6-digit TOTP code** that refreshes every 30 seconds.
+4. **Secure Your App**: Enable **App Lock** (PIN/Biometric) for added security.
+5. **Backup Your Accounts**: Export your data securely to restore later.
+
+---
+
+## 🛠️ Installation Guide
 
 ### Prerequisites
 - Android Studio (Latest Version)
@@ -22,20 +55,21 @@ RS Authenticator is a secure and feature-rich authentication application that al
 
 ### Clone the Repository
 ```sh
- git clone https://github.com/rasel-mahmud-dev/rs-authenticator-app.git
- cd rs-authenticator-app
+git clone https://github.com/rasel-mahmud-dev/rs-authenticator-app.git
+cd rs-authenticator-app
 ```
 
 ### Open in Android Studio
-1. Open **Android Studio**
-2. Click **Open an existing project**
-3. Select the **rs-authenticator-app** folder
-4. Wait for Gradle to sync dependencies
+1. Open **Android Studio**.
+2. Click **Open an existing project**.
+3. Select the **rs-authenticator-app** folder.
+4. Wait for Gradle to sync dependencies.
 
 ### Build & Run
-- Connect a physical device or start an emulator
-- Click on **Run ▶️** to launch the app
+- Connect a physical device or start an emulator.
+- Click on **Run ▶️** to launch the app.
 
+---
 
 ## 📜 Usage Guide
 
@@ -44,76 +78,84 @@ RS Authenticator is a secure and feature-rich authentication application that al
 - **View Generated OTPs** securely within the app.
 - **Enable App Lock** for additional security.
 
-## 👨‍💻 Technologies Used
+---
 
-- **Language:** Kotlin
-- **Framework:** Jetpack Compose
-- **Database:** SQLite
-- **Authentication:** Server
-- **Navigation:** Jetpack Navigation
-- **UI Components:** Material 3 + Custom components.
+## 📂 Project Structure
 
-## Project structures
+### 📺 Screens
+```
+screens/
+ ├── AboutScreen.kt
+ ├── AppsScreen.kt
+ ├── BackupRestore.kt
+ ├── ConnectAppScreen.kt
+ ├── FeaturesScreen.kt
+ ├── ForgotPasswordScreen.kt
+ ├── HomeScreen.kt
+ ├── LoginScreen.kt
+ ├── ProfileScreen.kt
+ ├── RegistrationScreen.kt
+ ├── ScanQRCodeScreen.kt
+ ├── SecurityScreen.kt
+ ├── TokenScreen.kt
+ ├── TourScreen.kt
+ ├── TrashScreen.kt
+```
 
+### 🏗️ Components
+```
+components/
+ ├── form/
+ ├── security/
+ ├── settings/
+ ├── AuthenticatorItem.kt
+ ├── BottomSheet.kt
+ ├── CustomText.kt
+ ├── GradientCircularProgressIndicator.kt
+ ├── HomeBottomNav.kt
+ ├── MainSidebar.kt
+ ├── PrimaryButton.kt
+ ├── ProtectedRoute.kt
+ ├── RsColumn.kt
+ ├── RsIconButton.kt
+ ├── RsRow.kt
+ ├── ScreenHeader.kt
+ ├── Toast.kt
+ ├── UnlockWrapperScreen.kt
+```
 
-screens
-AboutScreen.kt
-AppsScreen.kt
-BackupRestore.kt
-ConnectAppScreen.kt
-FeaturesScreen.kt
-ForgotPasswordScreen.kt
-HomeScreen.kt
-LoginScreen.kt
-ProfileScreen.kt
-RegistrationScreen.kt
-ScanQRCodeScreen.kt
-SecurityScreen.kt
-TokenScreen.kt
-TourScreen.kt
-TrashScreen.kt
-
-
-
-components
-form
-security
-settings
-AuthenticatorItem.kt
-BottomSheet.kt
-CustomText.kt
-GradientCircularProgressIndicator.kt
-HomeBottomNav.kt
-MainSidebar.kt
-PrimaryButton.kt
-ProtectedRoute.kt
-RsColumn.kt
-RsIconButton.kt
-RsRow.kt
-ScreenHeader.kt
-Toast.kt
-UnlockWrapperScreen.kt
-
-rsauthenticator
-apis
-components
-database
-dto
-http
-layout
-screens
-state
-theme
-utils
-AppNavigation.kt
-MainActivity
-here my jetpack compose screen and component
- 
-
-## 📞 Contact
-For any queries, reach out to **[Rasel Mahmud](https://www.linkedin.com/in/rasel-mahmud-dev)**
+### 🔧 Core Modules
+```
+rsauthenticator/
+ ├── apis/
+ ├── components/
+ ├── database/
+ ├── dto/
+ ├── http/
+ ├── layout/
+ ├── screens/
+ ├── state/
+ ├── theme/
+ ├── utils/
+ ├── AppNavigation.kt
+ ├── MainActivity.kt
+```
 
 ---
 
-**Happy Coding! 🚀**
+## 🚀 Contributing
+
+We welcome contributions! If you’d like to improve the project:
+
+1. **Fork the repository**.
+2. **Create a feature branch** (`git checkout -b feature-name`).
+3. **Commit changes** (`git commit -m "Add new feature"`).
+4. **Push to your fork** (`git push origin feature-name`).
+5. **Open a pull request**.
+
+---
+
+## 📞 Contact
+
+For any queries, reach out to **[Rasel Mahmud](https://www.linkedin.com/in/rasel-mahmud-dev)**.
 

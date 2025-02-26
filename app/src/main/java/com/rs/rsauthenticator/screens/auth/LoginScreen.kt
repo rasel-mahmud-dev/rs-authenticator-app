@@ -45,7 +45,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(navHostController: NavHostController) {
 
-
     val applicationContext = LocalContext.current
     val toastController = LocalToastController.current
 

@@ -96,7 +96,7 @@ fun AuthenticatorItem(
                         )
 
                         CustomText(
-                            text = entry.accountName,
+                            text = if (entry.accountName.length > 32) entry.accountName.take(32) + ".." else entry.accountName,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF525252),
                             fs = 13.sp,

@@ -1,13 +1,13 @@
 package com.rs.rsauthenticator.http.services
 
 
+import com.rs.rsauthenticator.BuildConfig
 import com.rs.rsauthenticator.http.HttpClient
 import com.rs.rsauthenticator.http.model.request.LoginApiResponse
 import com.rs.rsauthenticator.http.model.request.RegistrationApiResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 
 object ApiService {
@@ -18,8 +18,13 @@ object ApiService {
         return try {
             val response: HttpResponse = client.post("/api/v1/auth/login") {
                 contentType(ContentType.Application.Json)
+
+                headers {
+                    append("API_SECRET", BuildConfig.API_SECRET)
+                }
                 setBody(mapOf("email" to username, "password" to password))
             }
+
             response.body<LoginApiResponse>()
         } catch (e: Exception) {
             e.printStackTrace()
