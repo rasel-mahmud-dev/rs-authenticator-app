@@ -1,5 +1,3 @@
-Here's your **enhanced and well-structured README** by merging and rearranging the previous versions:
-
 
 # RS Authenticator – Secure & Offline 2FA App
 
@@ -11,7 +9,7 @@ RS Authenticator is a **secure and feature-rich authentication app** that allows
 
 ## 🚀 Features
 
-- **🔐 App Security:** Unlock/Lock using **PIN or Biometrics**.
+- **🔐 App Security:** Unlock/Lock using **PIN**.
 - **🕒 Authenticator Code Generation:** Supports **TOTP-based 2FA authentication**.
 - **📸 QR Code Scanning:** Easily **scan QR codes** to add authentication accounts.
 - **🗄️ Offline Data Storage:** Securely stores authentication data **locally** using **SQLite**.
