@@ -30,7 +30,7 @@ RS Authenticator is a **secure and feature-rich authentication app** that allows
 
 - **Language:** Kotlin
 - **Framework:** Jetpack Compose
-- **Database:** SQLite (Room)
+- **Database:** SQLite
 - **Authentication:** Offline (No tracking, no internet required)
 - **Navigation:** Jetpack Navigation
 - **UI Components:** Material 3 + Custom Components
